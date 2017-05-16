@@ -10,7 +10,7 @@ public class Gerente extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("GerenteFXML.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("GerenteDocument.fxml"));
         
         Scene scene = new Scene(root);
         

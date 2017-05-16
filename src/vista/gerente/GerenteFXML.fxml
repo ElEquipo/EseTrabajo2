@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.web.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -10,37 +7,42 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="ac_gerente" prefHeight="576.0" prefWidth="1024.0" stylesheets="@css.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vista.gerente.GerenteController">
+<AnchorPane id="ac_AnchorPane" fx:id="ac_gerente" prefHeight="576.0" prefWidth="1024.0" stylesheets="@gerente.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vista.gerente.GerenteController">
    <children>
-      <Pane id="pnFondoInicio" layoutX="148.0" prefHeight="578.0" prefWidth="744.0" stylesheets="@css.css">
+      <Pane id="pn_Fondo" layoutX="148.0" prefHeight="578.0" prefWidth="740.0" stylesheets="@gerente.css">
          <children>
-            <Pane id="pnInicioCabecera" layoutX="-21.0" layoutY="30.0" prefHeight="93.0" prefWidth="790.0" stylesheets="@css.css">
+            <Pane id="pn_Cabecera" layoutX="-21.0" layoutY="30.0" prefHeight="93.0" prefWidth="790.0" stylesheets="@gerente.css">
                <children>
-                  <Button id="btProductos" layoutX="27.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="141.0" stylesheets="@css.css" textFill="WHITE">
-                     <font>
+                  <Button id="bt_Inicio" layoutX="27.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="141.0" stylesheets="@gerente.css">
+                      <font>
                         <Font name="Arial" size="21.0" />
                      </font>
                   </Button>
-                  <Button id="btLogOut" fx:id="bt_closeSesion" layoutX="673.0" mnemonicParsing="false" onAction="#closeAction" prefHeight="72.0" prefWidth="90.0" stylesheets="@css.css" />
-                  <Button id="btAyuda" layoutX="573.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@css.css" text="Ayuda" textFill="WHITE">
+                  <Button id="bt_Perfil" layoutX="475.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@gerente.css" text="Perfil" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
-                     </font>
-                  </Button>
-                  <Button id="btPerfil" layoutX="475.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@css.css" text="Perfil" textFill="WHITE">
+                     </font></Button>
+                  <Button id="bt_Ayuda" layoutX="573.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@gerente.css" text="Ayuda" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
-                     </font>
-                  </Button>
-               </children></Pane>
-          <AnchorPane layoutY="114.0" minHeight="0.0" minWidth="0.0" prefHeight="464.0" prefWidth="744.0">
-               <children>
-                  <Button id="btIcono1" layoutX="148.0" layoutY="58.0" mnemonicParsing="false" prefHeight="111.0" prefWidth="112.0" stylesheets="@css.css" />
-                  <Button id="btIcono2" layoutX="470.0" layoutY="58.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@css.css" />
-                  <Button id="btIcono3" layoutX="149.0" layoutY="262.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@css.css" />
-                  <Button id="btIcono4" layoutX="470.0" layoutY="262.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@css.css" />
+                     </font></Button>
+                  <Button id="bt_LogOut" layoutX="673.0" mnemonicParsing="false" onAction="#CloseAction" prefHeight="72.0" prefWidth="90.0" stylesheets="@gerente.css" />
                </children>
-            </AnchorPane>
+            </Pane>
+            <Pane fx:id="pn_Trabajadores" layoutX="-2.0" layoutY="110.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <Button fx:id="bt_TrabajadorMenos" layoutX="149.0" layoutY="96.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" />
+                  <Button fx:id="bt_TrabajadorMas" layoutX="468.0" layoutY="96.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" />
+                  <Button fx:id="bt_Atras" layoutX="304.0" layoutY="291.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" />
+               </children>
+            </Pane>
+            <Pane id="pn_FondoIconos" fx:id="pn_Inicio" layoutY="114.0" prefHeight="464.0" prefWidth="744.0" stylesheets="@gerente.css">
+               <children>
+                  <Button fx:id="bt_Incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" />
+                  <Button fx:id="bt_Productos" layoutX="109.0" layoutY="287.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" />
+                  <Button fx:id="bt_Tiendas" layoutX="508.0" layoutY="287.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
+                  <Button fx:id="bt_Trabajadores" layoutX="109.0" layoutY="67.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" />
+               </children></Pane>
          </children>
       </Pane>
    </children>
