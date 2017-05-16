@@ -1,0 +1,64 @@
+#ac_Empleado{
+    -fx-background-image: url(/vista/Empleado/Images/fondo.jpg);
+    -fx-background-size: cover;
+}
+
+#pn_FondoEmpleado{
+    -fx-background-color: linear-gradient(rgba(105,105,105,0.4) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+#pn_CabeceraEmpleado{
+    -fx-background-image: url(/vista/Empleado/Images/cabecera.png);
+}
+
+#bt_Inicio{
+    -fx-background-image: url(/vista/Empleado/Images/inicio.png);
+    -fx-background-size: cover;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    
+}
+
+#bt_Perfil, #bt_Ayuda{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;    
+}
+
+#bt_Perfil:hover, #bt_Ayuda:hover, #bt_LogOut:hover, #bt_Inicio:hover {
+    -fx-background-color: rgba(0, 0,0, 0.3);
+}
+
+#bt_LogOut{
+    -fx-background-image: url(/vista/Empleado/Images/logOut.png);
+    -fx-background-size: cover;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;    
+}
+
+#bt_Fichar, #bt_Productos, #bt_Ventas{
+    -fx-background-insets:0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
+    -fx-background-size: cover;
+}
+
+#bt_Fichar{
+    -fx-background-image: url(/vista/Empleado/Images/fichar.jpg);    
+}
+
+#bt_Productos{
+    -fx-background-image: url(/vista/Empleado/Images/productos.jpg);    
+}
+
+#bt_Ventas{
+    -fx-background-image: url(/vista/Empleado/Images/ventas.jpg);    
+}
+
+#bt_Fichar:pressed, #bt_Productos:pressed, #bt_Ventas:pressed{
+   -fx-translate-x: 5;
+   -fx-translate-y: 5;
+   -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
+}
+
+#bt_Fichar:hover, #bt_Productos:hover, #bt_Ventas:hover{
+   -fx-border-color: white;
+}
