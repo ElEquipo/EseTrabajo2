@@ -101,23 +101,29 @@ public class LoginController implements Initializable {
                 if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
 
                     if (conexion.existe(user, pass)) {
-                        AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
-                        paneLogin.getChildren().setAll(pane);
-                    }else{
+                        
+                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) {
+                            AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
+                            paneLogin.getChildren().setAll(pane);
+                        }else if(conexion.puesto(user).equalsIgnoreCase("Dependiente")){
+                            
+                        }
+
+                    } else {
                         lb_errorIniciar.setText("Usuario no existente");
                         lb_errorIniciar.setVisible(true);
                         lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
-                        + " -fx-border-radius:2px;");
+                                + " -fx-border-radius:2px;");
                     }
 
                 } else {
                     lb_errorIniciar.setText("Error en la conexión");
                     lb_errorIniciar.setVisible(true);
                     lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
-                        + " -fx-border-radius:2px;");
+                            + " -fx-border-radius:2px;");
                 }
 
-            }else{
+            } else {
                 lb_errorIniciar.setVisible(true);
                 lb_errorIniciar.setText("Rellene los campos");
                 lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"

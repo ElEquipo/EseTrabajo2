@@ -10,13 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConexionBD {
-    
+
     private Connection conexion;
     private String mensajeErrorConexion;
-    
+
     public ConexionBD() {
     }
-    
+
     public boolean conectar(String bd, String user, String pwd) {
         boolean conectado = false;
         String mensaje = "";
@@ -26,19 +26,19 @@ public class ConexionBD {
                 conectado = true;
             }
             mensaje = "Conexión establecida con la Base de Datos " + bd;
-            
+
         } catch (SQLException ex) {
             mensaje = "Hubo un problema al intentar conectarse con la base de datos " + bd + "\n"
                     + "Error: " + ex.getMessage();
         } catch (Exception e) {
             mensaje = e.getMessage();
         }
-        
+
         this.mensajeErrorConexion = mensaje;
-        
+
         return conectado;
     }
-    
+
     public boolean desconectar() {
         boolean desconectado = false;
         try {
@@ -48,35 +48,53 @@ public class ConexionBD {
         } catch (Exception e) {
         }
         return desconectado;
-        
+
     }
-    
+
     public boolean existe(String user, String pass) {
-        
-        PreparedStatement ps;
+
+        PreparedStatement psExiste;
         ResultSet resultado = null;
         boolean existe = false;
+
+        try {
+            psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
+            psExiste.setString(1, user);
+            psExiste.setString(2, pass);
+            resultado = psExiste.executeQuery();
+            resultado.next();
+            existe = resultado.getBoolean("existe");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return existe;
+    }
+
+    public String puesto(String user) {
+        PreparedStatement psPuesto;
+        ResultSet resultado;
+        String puesto = null;
         
         try {
-            ps = conexion.prepareStatement("SELECT idTrabajador FROM trabajadores WHERE nick=? AND password=?;");
-            ps.setString(1, user);
-            ps.setString(2, pass);
-            resultado = ps.executeQuery();
+            psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
+            psPuesto.setString(1, user);
+
+            resultado = psPuesto.executeQuery();
             resultado.next();
-            
+            puesto = resultado.getString("puesto");
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         
-        return existe;
-        
+        return puesto;
     }
 
     // * * * * * * * * * * GET AND SET * * * * * * * * * * 
     public String getMsgErrorConexion() {
         return mensajeErrorConexion;
     }
-    
+
     public Connection getConexion() {
         return conexion;
     }
