@@ -1,5 +1,6 @@
 package vista.login;
 
+import Datos.ConexionBD;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +29,7 @@ import javafx.util.Duration;
 public class LoginController implements Initializable {
 
     private boolean mayusculasActivadas = false;
+    private ConexionBD conexion;
     /*ATRIBUTOS FXML*/
     @FXML
     private TextField tf_user;
@@ -54,8 +56,9 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        conexion = new ConexionBD();
 
-        FadeTransition transicion = new FadeTransition(Duration.millis(5000), pn_principalBienvenida);
+        FadeTransition transicion = new FadeTransition(Duration.millis(4000), pn_principalBienvenida);
         transicion.setAutoReverse(true);
         transicion.setFromValue(1.0);
         transicion.setToValue(0.0);
@@ -69,7 +72,7 @@ public class LoginController implements Initializable {
         timer.setRepeats(false);
         timer.start();
 
-        Timer tiempoTransicion = new Timer(6000, new ActionListener() { // Permite que podemaos interactuar con el segundo panel
+        Timer tiempoTransicion = new Timer(5000, new ActionListener() { // Permite que podemaos interactuar con el segundo panel
             @Override
             public void actionPerformed(java.awt.event.ActionEvent ae) {
                 pn_principalBienvenida.setVisible(false);
@@ -90,14 +93,35 @@ public class LoginController implements Initializable {
     }
 
     public void iniciarSesion() {
+        String user = tf_user.getText(), pass = pf_contraseña.getText();
         try {
-            if (tf_user.getText().isEmpty() || pf_contraseña.getText().isEmpty()) {
+
+            if (!user.isEmpty() && !pass.isEmpty()) {
+
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
+
+                    if (conexion.existe(user, pass)) {
+                        AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
+                        paneLogin.getChildren().setAll(pane);
+                    }else{
+                        lb_errorIniciar.setText("Usuario no existente");
+                        lb_errorIniciar.setVisible(true);
+                        lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
+                        + " -fx-border-radius:2px;");
+                    }
+
+                } else {
+                    lb_errorIniciar.setText("Error en la conexión");
+                    lb_errorIniciar.setVisible(true);
+                    lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
+                        + " -fx-border-radius:2px;");
+                }
+
+            }else{
+                lb_errorIniciar.setVisible(true);
                 lb_errorIniciar.setText("Rellene los campos");
                 lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
                         + " -fx-border-radius:2px;");
-            } else {
-                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
-                paneLogin.getChildren().setAll(pane);
             }
 
         } catch (IOException ex) {
@@ -108,6 +132,10 @@ public class LoginController implements Initializable {
     @FXML
     private void conectarAction(KeyEvent event) {
         KeyCode tecla = event.getCode();
+
+        if (tecla == KeyCode.ENTER) {
+            iniciarSesion();
+        }
 //        boolean isOn = Toolkit.getDefaultToolkit().getLockingKeyState(java.awt.event.KeyEvent.VK_CAPS_LOCK);
 //        System.out.println(isOn);
 //        if (isOn) {
@@ -160,10 +188,6 @@ public class LoginController implements Initializable {
 //            mayusculasActivadas = false;
 //            tf_user.setText("7");
 //        }
-
-        if (tecla == KeyCode.ENTER) {
-            iniciarSesion();
-        }
     }
 
 }

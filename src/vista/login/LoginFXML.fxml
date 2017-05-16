@@ -42,7 +42,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label fx:id="lb_errorIniciar" alignment="CENTER" contentDisplay="CENTER" layoutX="54.0" layoutY="217.0" prefHeight="20.0" prefWidth="245.0" textAlignment="CENTER" textFill="#eb0c0c">
+            <Label fx:id="lb_errorIniciar" alignment="CENTER" contentDisplay="CENTER" layoutX="54.0" layoutY="217.0" prefHeight="20.0" prefWidth="245.0" textAlignment="CENTER" textFill="#eb0c0c" visible="false">
                <font>
                   <Font size="14.0" />
                </font>
