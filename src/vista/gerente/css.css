@@ -1,0 +1,175 @@
+#AnchorPane{
+    -fx-background-image: url(/vista/gerente/images/fondo3.jpg);
+    -fx-background-size: cover;
+}
+
+#pnIcono1{
+    -fx-background-image: url(/vista/gerente/images/fichar.jpg);
+}
+
+#pnIcono2{
+    -fx-background-image: url(/vista/gerente/images/perfil.jpg);
+}
+
+#pnIcono3{
+    -fx-background-image: url(/vista/gerente/images/incidencias.jpg);
+}
+
+#pnFondoInicio{
+    -fx-background-color: linear-gradient(rgba(105,105,105,0.4) 0%, rgba(0,0,0,0.4) 100%);
+}
+
+#pnInicioCabecera{
+    -fx-background-image: url(/vista/gerente/images/cabecera3.png);
+}
+
+#btIcono1,#btIcono2,#btIcono3,#btIcono4{
+    -fx-background-insets:0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
+}
+
+#btIcono1{
+    -fx-background-image: url(/vista/gerente/images/fichar.jpg);
+    
+}
+
+#btIcono2{
+    -fx-background-image: url(/vista/gerente/images/productos.jpg);
+    -fx-background-size: cover;
+}
+
+#btIcono3{
+    -fx-background-image: url(/vista/gerente/images/incidencias.jpg);
+}
+
+#btIcono4{
+    -fx-background-image: url(/vista/gerente/images/tiendas.jpg);
+}
+
+#btIcono1:pressed,#btIcono2:pressed,#btIcono3:pressed,#btIcono4:pressed{
+   -fx-translate-x: 5;
+   -fx-translate-y: 5;
+   -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
+}
+
+#btIcono1:hover,#btIcono2:hover,#btIcono3:hover,#btIcono4:hover{
+   -fx-border-color: white;
+}
+
+
+#btProductos{
+    -fx-background-image: url(/vista/gerente/images/inicio2.png);
+    -fx-background-size: cover;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    
+}
+
+#btProductos:hover {
+    -fx-background-color: rgba(0, 0,0, 0.3);
+    -fx-border-radius: 0;
+}
+
+/*#btProductos:pressed {
+    -fx-text-fill: white;
+    -fx-background-color: -fx-outer-border;
+}*/
+
+#btLogOut{
+    -fx-background-image: url(/vista/gerente/images/logOut.png);
+    -fx-background-size: cover;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    
+}
+
+#btLogOut:hover {
+    -fx-background-color: rgba(0, 0,0, 0.3);
+    -fx-background-size: cover;
+}
+
+#btAyuda{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    
+}
+
+#btAyuda:hover {
+    -fx-background-color: rgba(0, 0,0, 0.3);
+}
+
+#btPerfil{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    
+}
+
+#btPerfil:hover {
+    -fx-background-color: rgba(0, 0,0, 0.3);
+}
+
+#pnFicharDp {
+    -fx-background-image: url(/vista/gerente/images/pnFicharDp.jpg);
+}
+
+#pnProductosDp {
+    -fx-background-image: url(/vista/gerente/images/pnProductosDp.jpg);
+}
+
+#pnIncidenciasDp {
+    -fx-background-image: url(/vista/gerente/images/pnIncidenciasDp.jpg);
+}
+
+#pnTiendasDp {
+    -fx-background-image: url(/vista/gerente/images/pnTiendasDp.jpg);
+}
+
+
+
+/* ---------------- SCROLL BAR ---------------- */
+
+/* Hacer transparente el ScrollPane */
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+/* The main scrollbar CSS class of ListView */
+#scrollPaneInicio .scroll-bar:horizontal ,
+#scrollPaneInicio  .scroll-bar:vertical{
+    -fx-background-color:transparent;
+
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+#scrollPaneInicio .increment-button ,#scrollPaneInicio .decrement-button {
+    -fx-background-color:transparent;
+    -fx-border-color:derive(grey,80%);
+}
+
+/* Borde del recorrido del Scroll  */
+#scrollPaneInicio .scroll-bar:horizontal .track ,
+#scrollPaneInicio .scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color:derive(grey,80%);
+    -fx-background-radius: 0em;
+}
+
+/* Color de la barra de Scroll y forma */
+#scrollPaneInicio .scroll-bar:horizontal .thumb,
+#scrollPaneInicio .scroll-bar:vertical .thumb {
+    -fx-background-color: rgb(193, 193, 193);
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+    -dx-border-style: solid 1px;
+
+}
+
+/* Color de la barra de Scroll al pasar mouse por encima */
+#scrollPaneInicio .scroll-bar .thumb:hover,
+#scrollPaneInicio .scroll-bar .thumb:pressed{
+    -fx-background-color: rgb(168, 168, 168);
+}

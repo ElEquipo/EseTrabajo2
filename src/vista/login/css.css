@@ -1,0 +1,51 @@
+/* ------------------PANTALLA LOGIN------------------ */
+
+#pantallaLogin{
+    -fx-background-image: url(/vista/login/images/fondoLogin2.jpg);
+}
+
+#paneLogin{
+    -fx-background-radius: 15px;
+    -fx-background-color: rgba(89, 89, 89, 0.3);
+}
+
+/* BOTONES INCIAR SESION */
+
+#btIniciarSesion{
+    -fx-background-color: rgb(26, 26, 26);
+}
+
+#btIniciarSesion:hover{
+    -fx-background-color: rgb(46, 46, 46);
+}
+
+#btIniciarSesion:pressed{
+    -fx-background-color: rgb(46, 46, 46);
+    -fx-effect: dropshadow(three-pass-box, #e29406, 10, 0, 0, 0);
+}
+
+#barraLogin{
+    -fx-background-color: white;
+}
+
+#paneTransicion{
+    -fx-background-image: url(/vista/login/images/logo.png);
+}
+
+#paneFondo{
+    -fx-background-image: url(/vista/login/images/transicion3.jpg);
+}
+
+#acord_principal{
+    -fx-background-image: url(/vista/login/images/transicion.jpg);
+}
+
+#pn_izquierda{
+    -fx-background-color: rgba(89, 89, 89, 0.3);
+}
+
+#textos{
+    -fx-border-color: #e29406;
+    -fx-border-radius: 2px;
+    -fx-border-width: 1.5px;
+}
