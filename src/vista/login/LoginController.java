@@ -98,7 +98,7 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
 
                     if (conexion.existe(user, pass)) {
                         

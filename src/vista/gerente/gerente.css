@@ -1,17 +1,17 @@
-#ac_AnchorPane{
+#ac_gerente{
     -fx-background-image: url(/vista/gerente/images/fondo.jpg);
     -fx-background-size: cover;
 }
 
-#pn_Fondo{
+#pn_general{
     -fx-background-color: linear-gradient(rgba(105,105,105,0.4) 0%, rgba(0,0,0,0.4) 100%);
 }
 
-#pn_Cabecera{
+#pn_titulo{
     -fx-background-image: url(/vista/gerente/images/cabecera.png);
 }
 
-#bt_Inicio{
+#bt_home{
     -fx-background-image: url(/vista/gerente/images/inicio.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
@@ -19,68 +19,67 @@
     
 }
 
-#bt_Perfil, #bt_Ayuda{
+#bt_perfil, #bt_ayuda{
     -fx-border-color: transparent;
     -fx-background-color: transparent;    
 }
 
-#bt_Perfil:hover, #bt_Ayuda:hover, #bt_LogOut:hover, #bt_Inicio:hover {
+#bt_perfil:hover, #bt_ayuda:hover, #bt_cerrarSesion:hover, #bt_inicio:hover {
     -fx-background-color: rgba(0, 0,0, 0.3);
 }
 
-#bt_LogOut{
+#bt_cerrarSesion{
     -fx-background-image: url(/vista/gerente/images/logOut.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;    
 }
 
-#bt_Fichar, #bt_Productos, #bt_Incidencias, #bt_Tiendas, #bt_Trabajadores, #bt_TrabajadorMas, #bt_TrabajadorMenos, #bt_Atras{
+#bt_productos, #bt_incidencias, #bt_tiendas, #bt_personal, #bt_contratarPersonal, 
+#bt_despedirPersonal, #bt_atras{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
     -fx-background-size: cover;
 }
 
-#bt_Fichar{
-    -fx-background-image: url(/vista/gerente/images/fichar.jpg);    
-}
-
-#bt_Productos{
+#bt_productos{
     -fx-background-image: url(/vista/gerente/images/productos.jpg);    
 }
 
-#bt_Incidencias{
+#bt_incidencias{
     -fx-background-image: url(/vista/gerente/images/incidencias.jpg);    
 }
 
-#bt_Tiendas{
+#bt_tienda{
     -fx-background-image: url(/vista/gerente/images/tiendas.jpg);    
 }
 
-#bt_Trabajadores{
+#bt_personal{
     -fx-background-image: url(/vista/gerente/images/trabajador.jpg);
 }
 
-#bt_TrabajadorMas{
+#bt_contratarPersonal{
     -fx-background-image: url(/vista/gerente/images/trabajadorMas.jpg);
 }
 
-#bt_TrabajadorMenos{
+#bt_despedirPersonal{
     -fx-background-image: url(/vista/gerente/images/trabajadorMenos.jpg);
 }
 
-#bt_Atras{
+#bt_atras{
     -fx-background-image: url(/vista/gerente/images/atras.jpg);
 }
 
-#bt_Fichar:pressed, #bt_Productos:pressed, #bt_Incidencias:pressed, #bt_Tiendas:pressed, 
-#bt_Trabajadores:pressed, #bt_TrabajadorMas:pressed, #bt_TrabajadorMenos:pressed, #bt_Atras:pressed{
+#bt_productos:pressed, #bt_incidencias:pressed, #bt_tiendas:pressed, 
+#bt_personal:pressed, #bt_contratarPersonal:pressed, #bt_despedirPersonal:pressed,
+#bt_atras:pressed{
    -fx-translate-x: 5;
    -fx-translate-y: 5;
    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
 }
 
-#bt_Fichar:hover, #bt_Productos:hover, #bt_Incidencias:hover, #bt_Tiendas:hover, 
-#bt_Trabajadores:hover, #bt_TrabajadorMas:hover, #bt_TrabajadorMenos:hover, #bt_Atras:hover{
+#bt_productos:hover, #bt_incidencias:hover, #bt_tiendas:hover, 
+#bt_personal:hover, #bt_contratarPersonal:hover, #bt_despedirPersonal:hover,
+#bt_atras:hover{
    -fx-border-color: white;
 }

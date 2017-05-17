@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class ConexionBD {
 
-    private Connection conexion;
+    public static Connection conexion;
     private String mensajeErrorConexion;
 
     public ConexionBD() {
@@ -42,7 +42,7 @@ public class ConexionBD {
     public boolean desconectar() {
         boolean desconectado = false;
         try {
-            this.conexion.close();
+            conexion.close();
             desconectado = true;
         } catch (SQLException ex) {
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class ConexionBD {
     public boolean existe(String user, String pass) {
 
         PreparedStatement psExiste;
-        ResultSet resultado = null;
+        ResultSet resultado;
         boolean existe = false;
 
         try {
