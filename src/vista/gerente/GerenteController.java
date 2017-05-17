@@ -69,33 +69,33 @@ public class GerenteController implements Initializable {
 //        bt_personal.setTooltip(tooltip);
         
         tt_incidencias = new Tooltip("Incidencias");
-       tt_incidencias.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_incidencias.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_incidencias, tt_incidencias);
        
         tt_productos = new Tooltip("Productos");
-       tt_productos.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_productos.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_productos, tt_productos);
        
         tt_tienda = new Tooltip("Tienda");
-       tt_tienda.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_tienda.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_tienda, tt_tienda);
 
        tt_contratar = new Tooltip("Contratar trabajador");
-       tt_contratar.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_contratar.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_contratarPersonal, tt_contratar);
        
        tt_despedir = new Tooltip("Despedir trabajador");
-       tt_despedir.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_despedir.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_despedirPersonal, tt_despedir);
        
        tt_atras = new Tooltip("Volver");
-       tt_atras.setStyle("-fx-background-color:hsl(0, 0%, 40%);"
-               + " -fx-text-fill:white; -fx-font-size:16px;");
+       tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+               + " -fx-text-fill:orange; -fx-font-size:16px;");
        Tooltip.install(bt_atras, tt_atras);
         
     }
