@@ -12,7 +12,7 @@
 }
 
 #bt_home{
-    -fx-background-image: url(/vista/gerente/images/inicio.png);
+    -fx-background-image: url(/vista/gerente/images/inicio2.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
@@ -35,7 +35,7 @@
     -fx-background-color: transparent;    
 }
 
-#bt_productos, #bt_incidencias, #bt_tiendas, #bt_personal, #bt_contratarPersonal, 
+#bt_productos, #bt_incidencias, #bt_tienda, #bt_personal, #bt_contratarPersonal, 
 #bt_despedirPersonal, #bt_atras{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
@@ -70,7 +70,7 @@
     -fx-background-image: url(/vista/gerente/images/atras.jpg);
 }
 
-#bt_productos:pressed, #bt_incidencias:pressed, #bt_tiendas:pressed, 
+#bt_productos:pressed, #bt_incidencias:pressed, #bt_tienda:pressed, 
 #bt_personal:pressed, #bt_contratarPersonal:pressed, #bt_despedirPersonal:pressed,
 #bt_atras:pressed{
    -fx-translate-x: 5;
@@ -78,7 +78,7 @@
    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
 }
 
-#bt_productos:hover, #bt_incidencias:hover, #bt_tiendas:hover, 
+#bt_productos:hover, #bt_incidencias:hover, #bt_tienda:hover, 
 #bt_personal:hover, #bt_contratarPersonal:hover, #bt_despedirPersonal:hover,
 #bt_atras:hover{
    -fx-border-color: white;
