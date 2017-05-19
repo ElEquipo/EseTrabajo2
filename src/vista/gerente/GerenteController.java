@@ -160,14 +160,18 @@ public class GerenteController implements Initializable {
     @FXML
     private void contratarAction(ActionEvent event) {
         Object evento = event.getSource();
-        if(evento == bt_contratarPersonal){
+        if(evento == bt_contratarPersonal){ // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_contratar.setVisible(true);
+        }
+        
+        if(evento == bt_contratar){ // INSERTA EN LA BD
+            
         }
     }
 
     @FXML
-    private void inicioAction(ActionEvent event) {
+    private void inicioAction(ActionEvent event) { // VUELVE AL INCIO
         pn_contratar.setVisible(false);
         pn_menuTrabajadores.setVisible(false);
         pn_inicio.setVisible(true);
