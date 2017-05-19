@@ -13,7 +13,7 @@
          <children>
             <Pane id="pn_titulo" fx:id="pn_titulo" layoutX="-21.0" layoutY="30.0" prefHeight="93.0" prefWidth="790.0" stylesheets="@gerente.css">
                <children>
-                  <Button id="bt_home" fx:id="bt_home" layoutX="27.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="141.0" stylesheets="@gerente.css">
+                  <Button id="bt_home" fx:id="bt_home" layoutX="27.0" mnemonicParsing="false" onAction="#inicioAction" prefHeight="72.0" prefWidth="141.0" stylesheets="@gerente.css">
                       <font>
                         <Font name="Arial" size="21.0" />
                      </font>
@@ -29,10 +29,10 @@
                   <Button id="bt_cerrarSesion" fx:id="bt_cerrarSesion" layoutX="673.0" mnemonicParsing="false" onAction="#CloseAction" prefHeight="72.0" prefWidth="90.0" stylesheets="@gerente.css" />
                </children>
             </Pane>
-            <Pane fx:id="pn_personal" layoutX="-2.0" layoutY="110.0" prefHeight="464.0" prefWidth="744.0">
+            <Pane fx:id="pn_menuTrabajadores" layoutX="-2.0" layoutY="110.0" prefHeight="464.0" prefWidth="744.0">
                <children>
                   <Button id="bt_despedirPersonal" fx:id="bt_despedirPersonal" layoutX="510.0" layoutY="96.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
-                  <Button id="bt_contratarPersonal" fx:id="bt_contratarPersonal" layoutX="111.0" layoutY="96.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
+                  <Button id="bt_contratarPersonal" fx:id="bt_contratarPersonal" layoutX="111.0" layoutY="96.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
                   <Button id="bt_atras" fx:id="bt_atras" layoutX="304.0" layoutY="291.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
                </children>
             </Pane>
@@ -43,6 +43,24 @@
                   <Button id="bt_tienda" fx:id="bt_tienda" layoutX="508.0" layoutY="287.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
                   <Button id="bt_personal" fx:id="bt_personal" layoutX="109.0" layoutY="67.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css" />
                </children></Pane>
+            <Pane fx:id="pn_contratar" layoutX="8.0" layoutY="120.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <TextField fx:id="tf_id" layoutX="68.0" layoutY="25.0" promptText="id" />
+                  <TextField fx:id="tf_dni" layoutX="68.0" layoutY="73.0" promptText="dni" />
+                  <TextField fx:id="tf_nombre" layoutX="68.0" layoutY="121.0" promptText="nombre" />
+                  <TextField fx:id="tf_apellido1" layoutX="68.0" layoutY="163.0" promptText="apellido1" />
+                  <TextField fx:id="tf_apellido2" layoutX="68.0" layoutY="209.0" promptText="apellido2" />
+                  <TextField fx:id="tf_puesto" layoutX="68.0" layoutY="255.0" promptText="puesto" />
+                  <TextField fx:id="tf_salario" layoutX="68.0" layoutY="292.0" promptText="salario" />
+                  <TextField fx:id="tf_fecha" layoutX="68.0" layoutY="340.0" promptText="fecha" />
+                  <TextField fx:id="tf_nick" layoutX="259.0" layoutY="25.0" promptText="nick" />
+                  <TextField fx:id="tf_pass" layoutX="259.0" layoutY="73.0" promptText="pass" />
+                  <TextField fx:id="tf_horaEntrada" layoutX="259.0" layoutY="121.0" promptText="horaEntrada" />
+                  <TextField fx:id="tf_horaSalida" layoutX="259.0" layoutY="163.0" promptText="horaSalida" />
+                  <TextField fx:id="tf_tienda" layoutX="259.0" layoutY="209.0" promptText="idTienda" />
+                  <Button fx:id="bt_contratar" layoutX="320.0" layoutY="305.0" mnemonicParsing="false" onAction="#contratarAction" text="Contratar" />
+               </children>
+            </Pane>
          </children>
       </Pane>
    </children>
