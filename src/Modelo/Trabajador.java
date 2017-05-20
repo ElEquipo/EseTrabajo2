@@ -28,11 +28,11 @@ public class Trabajador {
     private final IntegerProperty id;
     private final StringProperty dni;
     private final StringProperty nombre;
-    private final StringProperty apellido1;
-    private final StringProperty apellido2;
+    private StringProperty apellido1;
+    private StringProperty apellido2;
     private final SetProperty<String> puesto = new SimpleSetProperty<>(); // ENUM?;
     private final DoubleProperty salarioBrutoAnual;
-    private final ObjectProperty<LocalDate> fechaAlta;
+    private ObjectProperty<LocalDate> fechaAlta;
     private final StringProperty nick;
     private final StringProperty pass;
     private final ObjectProperty<LocalTime> horaEntrada;
