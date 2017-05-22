@@ -1,7 +1,12 @@
 package vista.gerente;
 
+import Datos.ConexionBD;
+import Datos.TrabajadorDAO;
+import Modelo.Trabajador;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -23,6 +28,8 @@ import vista.Empleado.EmpleadoController;
 
 public class GerenteController implements Initializable {
 
+    private TrabajadorDAO trabajador;
+    /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
     @FXML
@@ -112,6 +119,7 @@ public class GerenteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        trabajador = new TrabajadorDAO(ConexionBD.conexion);
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
@@ -214,55 +222,74 @@ public class GerenteController implements Initializable {
 
     public void contratar() {
         Set<String> camposVacios = new HashSet<>();
-        
-        if(tf_id.getText().isEmpty()){
+        String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
+                apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
+                pass = tf_pass.getText(), idText = tf_id.getText(), idTiendaText = tf_tienda.getText(),
+                salariotext = tf_salario.getText(), fechaText = tf_fecha.getText(),
+                horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
+        int id, idTienda;
+        Double salario;
+        LocalDate fecha;
+        LocalTime horaEntrada, horaSalida;
+
+        if (idText.isEmpty()) {
             camposVacios.add("Id");
+        } else {
+            id = Integer.parseInt(idText);
         }
-        
-        if(tf_nombre.getText().isEmpty()){
+
+        if (nombre.isEmpty()) {
             camposVacios.add("Nombre");
         }
-        
-        if(tf_dni.getText().isEmpty()){
+
+        if (dni.isEmpty()) {
             camposVacios.add("DNI");
         }
-        
-        if(tf_puesto.getText().isEmpty()){
+
+        if (puesto.isEmpty()) {
             camposVacios.add("Puesto");
         }
-        
-        if(tf_salario.getText().isEmpty()){
+
+        if (salariotext.isEmpty()) {
             camposVacios.add("Salario");
+        } else {
+            salario = Double.parseDouble(salariotext);
         }
-        
-        if(tf_nick.getText().isEmpty()){
+
+        if (nick.isEmpty()) {
             camposVacios.add("Nick");
         }
-        
-        if(tf_pass.getText().isEmpty()){
+
+        if (pass.isEmpty()) {
             camposVacios.add("Password");
         }
-        
-        if(tf_tienda.getText().isEmpty()){
+
+        if (idTiendaText.isEmpty()) {
             camposVacios.add("Tienda");
+        } else {
+            idTienda = Integer.parseInt(idTiendaText);
         }
-        
-        if(tf_horaEntrada.getText().isEmpty()){
+
+        if (horaEntradaText.isEmpty()) {
             camposVacios.add("Hora entrada");
+        } else {
+            horaEntrada = LocalTime.parse(horaEntradaText);
         }
-        
-        if(tf_horaSalida.getText().isEmpty()){
+
+        if (horaSalidatext.isEmpty()) {
             camposVacios.add("Hora salida");
+        } else {
+            horaSalida = LocalTime.parse(horaSalidatext);
         }
-        
-        if(!camposVacios.isEmpty()){
+
+        if (!camposVacios.isEmpty()) {
             Alert alerta = new Alert(AlertType.WARNING);
             alerta.setTitle("Error Ingresar");
             alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
             alerta.setContentText("Campos Vacios: " + camposVacios.toString());
             alerta.showAndWait();
-        }else{
-            
+        } else {
+//            Trabajador trabajador = new Trabajador();
         }
     }
 

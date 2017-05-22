@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class ConexionBD {
 
-    public Connection conexion;
+    public static Connection conexion;
     private String mensajeErrorConexion;
 
     public ConexionBD() {

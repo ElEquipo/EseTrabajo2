@@ -6,6 +6,7 @@
 package Datos;
 
 import Modelo.Trabajador;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,9 +19,9 @@ import java.time.LocalDate;
  */
 public class TrabajadorDAO {
 
-    ConexionBD conexion;
+    Connection conexion;
 
-    public TrabajadorDAO(ConexionBD conexion) {
+    public TrabajadorDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
@@ -31,7 +32,7 @@ public class TrabajadorDAO {
 // p_apellido2 VARCHAR(45), p_puesto VARCHAR(30), p_salario DECIMAL(8,2), p_fecha DATE, p_nick VARCHAR(45),
 // p_pass VARCHAR(45), p_horaEntrada TIME, p_horaSalida TIME, p_idTienda INT(5))
         PreparedStatement psInsertar;
-        psInsertar = conexion.getConexion().prepareStatement("SELECT insertarTrabajador(?,?,?,?,?,?,?,?,?,?,?,?,?);");
+        psInsertar = conexion.prepareStatement("SELECT insertarTrabajador(?,?,?,?,?,?,?,?,?,?,?,?,?);");
         psInsertar.setInt(1, trabajador.getId());
         psInsertar.setString(2, trabajador.getDni());
         psInsertar.setString(3, trabajador.getNombre());
