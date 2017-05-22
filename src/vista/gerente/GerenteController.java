@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -81,55 +82,88 @@ public class GerenteController implements Initializable {
     private Pane pn_menuTrabajadores;
     @FXML
     private Pane pn_contratar;
+    @FXML
+    private Pane pn_productos;
+    @FXML
+    private TableView<?> tv_productos;
+    @FXML
+    private Button bt_atrasContratar;
+    @FXML
+    private Button bt_atrasProductos;
+    @FXML
+    private Pane pn_despedir;
+    @FXML
+    private Button bt_atrasDespedir;
+    @FXML
+    private Button bt_despedir;
+    @FXML
+    private TextField tf_apellido2Despedir;
+    @FXML
+    private TextField tf_apellido1Despedir;
+    @FXML
+    private TextField tf_nombreDespedir;
+    @FXML
+    private TextField tf_dniDespedir;
+    @FXML
+    private TextField tf_idDespedir;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
+        pn_productos.setVisible(false);
+        pn_despedir.setVisible(false);
         cargarTooltips();
     }
 
     public void cargarTooltips() {
-        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias
-                ,tt_productos, tt_tienda;
+        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias, tt_productos, tt_tienda;
 
         // ESTO DEJALO AQUÍ Y TE LO EXOPLICARÉ EL LUNES
-//        Image image = new Image("/vista/gerente/images/inicio2.png");
+//        Image image = new Image("../gerente/images/inicio2.png");
 //        ImageView imageView = new ImageView(image);
 //        Tooltip tooltip = new Tooltip();
 //        tooltip.setGraphic(imageView);
 //        bt_personal.setTooltip(tooltip);
-        
-        tt_incidencias = new Tooltip("Incidencias");
-       tt_incidencias.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_incidencias, tt_incidencias);
-       
-        tt_productos = new Tooltip("Productos");
-       tt_productos.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_productos, tt_productos);
-       
-        tt_tienda = new Tooltip("Tienda");
-       tt_tienda.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_tienda, tt_tienda);
 
-       tt_contratar = new Tooltip("Contratar trabajador");
-       tt_contratar.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_contratarPersonal, tt_contratar);
-       
-       tt_despedir = new Tooltip("Despedir trabajador");
-       tt_despedir.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_despedirPersonal, tt_despedir);
-       
-       tt_atras = new Tooltip("Volver");
-       tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
-               + " -fx-text-fill:orange; -fx-font-size:16px;");
-       Tooltip.install(bt_atras, tt_atras);
-        
+        tt_personal = new Tooltip("Personal");
+        tt_personal.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_personal, tt_personal);
+
+        tt_incidencias = new Tooltip("Incidencias");
+        tt_incidencias.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_incidencias, tt_incidencias);
+
+        tt_productos = new Tooltip("Productos");
+        tt_productos.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_productos, tt_productos);
+
+        tt_tienda = new Tooltip("Tiendas");
+        tt_tienda.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_tienda, tt_tienda);
+
+        tt_contratar = new Tooltip("Contratar trabajador");
+        tt_contratar.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_contratarPersonal, tt_contratar);
+
+        tt_despedir = new Tooltip("Despedir trabajador");
+        tt_despedir.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_despedirPersonal, tt_despedir);
+
+        tt_atras = new Tooltip("Volver");
+        tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_atras, tt_atras);
+        Tooltip.install(bt_atrasDespedir, tt_atras);
+        Tooltip.install(bt_atrasContratar, tt_atras);
+        Tooltip.install(bt_atrasProductos, tt_atras);
+
     }
 
     @FXML
@@ -160,25 +194,65 @@ public class GerenteController implements Initializable {
     @FXML
     private void contratarAction(ActionEvent event) {
         Object evento = event.getSource();
-        if(evento == bt_contratarPersonal){ // ACCEDE AL MENU DE INTRODUCCION DE DATOS
+        if (evento == bt_contratarPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_contratar.setVisible(true);
         }
         
-        if(evento == bt_contratar){ // INSERTA EN LA BD
-            
+        if (evento == bt_atrasContratar) {
+            pn_menuTrabajadores.setVisible(true);
+            pn_contratar.setVisible(false);
+        }
+
+        if (evento == bt_contratar) { // INSERTA EN LA BD
+
+        }
+    }
+    
+    
+    @FXML
+    private void despedirAction(ActionEvent event) {
+        Object evento = event.getSource();
+        
+        if (evento == bt_despedirPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
+            pn_menuTrabajadores.setVisible(false);
+            pn_despedir.setVisible(true);
+        }
+        
+        if (evento == bt_atrasDespedir) {
+            pn_menuTrabajadores.setVisible(true);
+            pn_despedir.setVisible(false);
+        }
+
+        if (evento == bt_despedir) { // INSERTA EN LA BD
+
+        }
+        
+    }
+
+
+    @FXML
+    private void productosAction(ActionEvent event) {
+
+        pn_productos.setVisible(true);
+        pn_inicio.setVisible(false);
+        
+        if (bt_atrasProductos.isFocused()) {
+            pn_productos.setVisible(false);
+            pn_inicio.setVisible(true);
         }
     }
 
     @FXML
-    private void inicioAction(ActionEvent event) { // VUELVE AL INCIO
-        pn_contratar.setVisible(false);
-        pn_menuTrabajadores.setVisible(false);
+    private void inicioAction(ActionEvent event) { // VUELVE AL INICIO
         pn_inicio.setVisible(true);
+        pn_contratar.setVisible(false);
+        pn_menuTrabajadores.setVisible(false);        
+        pn_productos.setVisible(false);
         limpiarCampos();
     }
-    
-    public void limpiarCampos(){
+
+    public void limpiarCampos() {
         tf_id.clear();
         tf_dni.clear();
         tf_nombre.clear();

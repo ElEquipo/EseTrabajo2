@@ -1,5 +1,5 @@
 #ac_gerente{
-    -fx-background-image: url(/vista/gerente/images/fondo.jpg);
+    -fx-background-image: url(../gerente/images/fondo.jpg);
     -fx-background-size: cover;
 }
 
@@ -8,15 +8,15 @@
 }
 
 #pn_titulo{
-    -fx-background-image: url(/vista/gerente/images/cabecera.png);
+    -fx-background-image: url(../gerente/images/cabecera.png);
 }
 
 #bt_home{
-    -fx-background-image: url(/vista/gerente/images/inicio2.png);
+    -fx-background-image: url(../gerente/images/inicio2.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
-    
+
 }
 
 #bt_perfil, #bt_ayuda{
@@ -24,62 +24,147 @@
     -fx-background-color: transparent;    
 }
 
-#bt_perfil:hover, #bt_ayuda:hover, #bt_cerrarSesion:hover, #bt_inicio:hover {
-    -fx-background-color: rgba(0, 0,0, 0.3);
+#bt_perfil:hover, #bt_ayuda:hover, #bt_cerrarSesion:hover, #bt_home:hover{
+    -fx-background-color: rgba(0, 0, 0, 0.3);
 }
 
 #bt_cerrarSesion{
-    -fx-background-image: url(/vista/gerente/images/logOut.png);
+    -fx-background-image: url(../gerente/images/logOut.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;    
 }
 
 #bt_productos, #bt_incidencias, #bt_tienda, #bt_personal, #bt_contratarPersonal, 
-#bt_despedirPersonal, #bt_atras{
+#bt_despedirPersonal, #bt_atras, #bt_contratar, #bt_despedir{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
     -fx-background-size: cover;
 }
 
 #bt_productos{
-    -fx-background-image: url(/vista/gerente/images/productos.jpg);    
+    -fx-background-image: url(../gerente/images/productos.jpg);    
 }
 
 #bt_incidencias{
-    -fx-background-image: url(/vista/gerente/images/incidencias.jpg);    
+    -fx-background-image: url(../gerente/images/incidencias.jpg);    
 }
 
 #bt_tienda{
-    -fx-background-image: url(/vista/gerente/images/tiendas.jpg);    
+    -fx-background-image: url(../gerente/images/tiendas.jpg);    
 }
 
 #bt_personal{
-    -fx-background-image: url(/vista/gerente/images/trabajador.jpg);
+    -fx-background-image: url(../gerente/images/trabajador.jpg);
 }
 
 #bt_contratarPersonal{
-    -fx-background-image: url(/vista/gerente/images/trabajadorMas.jpg);
+    -fx-background-image: url(../gerente/images/trabajadorMas.jpg);
 }
 
 #bt_despedirPersonal{
-    -fx-background-image: url(/vista/gerente/images/trabajadorMenos.jpg);
+    -fx-background-image: url(../gerente/images/trabajadorMenos.jpg);
 }
 
 #bt_atras{
-    -fx-background-image: url(/vista/gerente/images/atras.jpg);
+    -fx-background-image: url(../gerente/images/atras.jpg);
+}
+
+#bt_contratar{
+    -fx-background-image: url(../gerente/images/contratarMas.jpg);
+}
+
+#bt_despedir{
+    -fx-background-image: url(../gerente/images/contratarMenos.jpg);
 }
 
 #bt_productos:pressed, #bt_incidencias:pressed, #bt_tienda:pressed, 
 #bt_personal:pressed, #bt_contratarPersonal:pressed, #bt_despedirPersonal:pressed,
-#bt_atras:pressed{
-   -fx-translate-x: 5;
-   -fx-translate-y: 5;
-   -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
+#bt_atras:pressed , #bt_contratar:pressed, #bt_despedir:pressed{
+    -fx-translate-x: 5;
+    -fx-translate-y: 5;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
 }
 
 #bt_productos:hover, #bt_incidencias:hover, #bt_tienda:hover, 
 #bt_personal:hover, #bt_contratarPersonal:hover, #bt_despedirPersonal:hover,
-#bt_atras:hover{
-   -fx-border-color: white;
+#bt_atras:hover, #bt_contratar:hover, #bt_despedir:hover{
+    -fx-border-color: white;
+}
+
+#tf_id, #tf_nombre, #tf_apellido1, #tf_apellido2, #tf_dni, #tf_puesto, 
+#tf_fecha, #tf_salario, #tf_nick, #tf_pass, #tf_tienda, #tf_horaEntrada,
+#tf_horaSalida,
+#tf_idDespedir, #tf_nombreDespedir, #tf_apellido1Despedir, #tf_apellido2Despedir, 
+#tf_dniDespedir{
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #e29406;
+}
+
+/* -------------- TableView --------------- */
+
+.root{
+    -fx-background-color: #262626;
+}
+
+.table-view{
+   -fx-background-color: transparent;
+}
+
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+/* Spaltenköpfe
+    Struktur column-header-background -> column-header */
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(#131313 0%, #424141 100%);
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #616161;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */  
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #005797;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
 }
