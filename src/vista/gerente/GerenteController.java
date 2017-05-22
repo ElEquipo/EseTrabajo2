@@ -2,14 +2,17 @@ package vista.gerente;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -125,7 +128,6 @@ public class GerenteController implements Initializable {
 //        Tooltip tooltip = new Tooltip();
 //        tooltip.setGraphic(imageView);
 //        bt_personal.setTooltip(tooltip);
-
         tt_personal = new Tooltip("Personal");
         tt_personal.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
@@ -189,6 +191,7 @@ public class GerenteController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @FXML
@@ -198,27 +201,80 @@ public class GerenteController implements Initializable {
             pn_menuTrabajadores.setVisible(false);
             pn_contratar.setVisible(true);
         }
-        
+
         if (evento == bt_atrasContratar) {
             pn_menuTrabajadores.setVisible(true);
             pn_contratar.setVisible(false);
         }
 
         if (evento == bt_contratar) { // INSERTA EN LA BD
-
+            contratar();
         }
     }
-    
-    
+
+    public void contratar() {
+        Set<String> camposVacios = new HashSet<>();
+        
+        if(tf_id.getText().isEmpty()){
+            camposVacios.add("Id");
+        }
+        
+        if(tf_nombre.getText().isEmpty()){
+            camposVacios.add("Nombre");
+        }
+        
+        if(tf_dni.getText().isEmpty()){
+            camposVacios.add("DNI");
+        }
+        
+        if(tf_puesto.getText().isEmpty()){
+            camposVacios.add("Puesto");
+        }
+        
+        if(tf_salario.getText().isEmpty()){
+            camposVacios.add("Salario");
+        }
+        
+        if(tf_nick.getText().isEmpty()){
+            camposVacios.add("Nick");
+        }
+        
+        if(tf_pass.getText().isEmpty()){
+            camposVacios.add("Password");
+        }
+        
+        if(tf_tienda.getText().isEmpty()){
+            camposVacios.add("Tienda");
+        }
+        
+        if(tf_horaEntrada.getText().isEmpty()){
+            camposVacios.add("Hora entrada");
+        }
+        
+        if(tf_horaSalida.getText().isEmpty()){
+            camposVacios.add("Hora salida");
+        }
+        
+        if(!camposVacios.isEmpty()){
+            Alert alerta = new Alert(AlertType.WARNING);
+            alerta.setTitle("Error Ingresar");
+            alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
+            alerta.setContentText("Campos Vacios: " + camposVacios.toString());
+            alerta.showAndWait();
+        }else{
+            
+        }
+    }
+
     @FXML
     private void despedirAction(ActionEvent event) {
         Object evento = event.getSource();
-        
+
         if (evento == bt_despedirPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_despedir.setVisible(true);
         }
-        
+
         if (evento == bt_atrasDespedir) {
             pn_menuTrabajadores.setVisible(true);
             pn_despedir.setVisible(false);
@@ -227,16 +283,15 @@ public class GerenteController implements Initializable {
         if (evento == bt_despedir) { // INSERTA EN LA BD
 
         }
-        
-    }
 
+    }
 
     @FXML
     private void productosAction(ActionEvent event) {
 
         pn_productos.setVisible(true);
         pn_inicio.setVisible(false);
-        
+
         if (bt_atrasProductos.isFocused()) {
             pn_productos.setVisible(false);
             pn_inicio.setVisible(true);
@@ -247,7 +302,7 @@ public class GerenteController implements Initializable {
     private void inicioAction(ActionEvent event) { // VUELVE AL INICIO
         pn_inicio.setVisible(true);
         pn_contratar.setVisible(false);
-        pn_menuTrabajadores.setVisible(false);        
+        pn_menuTrabajadores.setVisible(false);
         pn_productos.setVisible(false);
         limpiarCampos();
     }

@@ -101,9 +101,17 @@
 #tf_horaSalida,
 #tf_idDespedir, #tf_nombreDespedir, #tf_apellido1Despedir, #tf_apellido2Despedir, 
 #tf_dniDespedir{
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #e29406;
+    -fx-background-color: #cccccc;
+    -fx-text-fill: black;
+    -fx-border-radius: 2px;
+    -fx-prompt-text-fill: #8e8c88;
 }
+
+#tf_id, #tf_nombre, #tf_dni, #tf_puesto,#tf_salario, #tf_nick, #tf_pass, #tf_tienda, #tf_horaEntrada,
+#tf_horaSalida{
+    -fx-prompt-text-fill: #eba037;
+}
+
 
 /* -------------- TableView --------------- */
 
