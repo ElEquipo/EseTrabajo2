@@ -28,6 +28,10 @@
     -fx-background-color: rgba(0, 0,0, 0.3);
 }
 
+#bt_Perfil:pressed, #bt_Ayuda:pressed, #bt_LogOut:pressed, #bt_Inicio:pressed {
+    -fx-border-color: orange;
+}
+
 #bt_LogOut{
     -fx-background-image: url(/vista/Empleado/Images/logOut.png);
     -fx-background-size: cover;

@@ -28,6 +28,10 @@
     -fx-background-color: rgba(0, 0, 0, 0.3);
 }
 
+#bt_perfil:pressed, #bt_ayuda:pressed, #bt_cerrarSesion:pressed, #bt_home:pressed{
+    -fx-border-color: orange;
+}
+
 #bt_cerrarSesion{
     -fx-background-image: url(../gerente/images/logOut.png);
     -fx-background-size: cover;

@@ -47,5 +47,9 @@ public class EmpleadoController implements Initializable {
             Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @FXML
+    private void inicioAction(ActionEvent event) {
+    }
     
 }
