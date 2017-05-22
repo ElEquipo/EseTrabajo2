@@ -92,13 +92,13 @@
                   <TextField fx:id="tf_salario" layoutX="358.0" layoutY="210.0" prefHeight="25.0" prefWidth="164.0" promptText="salario" />
                   <TextField fx:id="tf_nick" layoutX="32.0" layoutY="268.0" promptText="nick" />
                   <TextField fx:id="tf_pass" layoutX="195.0" layoutY="268.0" promptText="pass" />
-                  <TextField fx:id="tf_tienda" layoutX="32.0" layoutY="323.0" prefHeight="25.0" prefWidth="66.0" promptText="idTienda" />
                   <TextField fx:id="tf_horaEntrada" layoutX="32.0" layoutY="360.0" promptText="horaEntrada" />
                   <TextField fx:id="tf_horaSalida" layoutX="195.0" layoutY="360.0" promptText="horaSalida" />
                   <Button fx:id="bt_contratar" layoutX="411.0" layoutY="275.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="110.0" prefWidth="111.0" />
                   <Button id="bt_atras" fx:id="bt_atrasContratar" layoutX="573.0" layoutY="275.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="111.0" prefWidth="112.0" stylesheets="@gerente.css" />
                   <DatePicker fx:id="dp_fecha" layoutX="195.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0" />
                   <Label fx:id="lb_id" contentDisplay="CENTER" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="66.0" textAlignment="CENTER" />
+                  <ComboBox fx:id="cb_tiendas" layoutX="31.0" layoutY="318.0" prefWidth="150.0" promptText="Tienda" />
                </children>
             </Pane>
          </children>

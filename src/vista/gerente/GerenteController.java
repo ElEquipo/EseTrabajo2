@@ -1,7 +1,9 @@
 package vista.gerente;
 
 import Datos.ConexionBD;
+import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
+import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +17,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -34,6 +39,8 @@ import vista.Empleado.EmpleadoController;
 public class GerenteController implements Initializable {
 
     private TrabajadorDAO trabajador;
+    private TiendaDAO tienda;
+    private ObservableList<Tienda> listaTiendas;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -65,7 +72,6 @@ public class GerenteController implements Initializable {
     private Button bt_personal;
     @FXML
     private Pane pn_inicio;
-    private TextField tf_id;
     @FXML
     private TextField tf_nombre;
     @FXML
@@ -85,8 +91,6 @@ public class GerenteController implements Initializable {
     private TextField tf_horaEntrada;
     @FXML
     private TextField tf_horaSalida;
-    @FXML
-    private TextField tf_tienda;
     @FXML
     private TextField tf_dni;
     @FXML
@@ -123,10 +127,13 @@ public class GerenteController implements Initializable {
     private DatePicker dp_fecha;
     @FXML
     private Label lb_id;
+    @FXML
+    private ComboBox<Tienda> cb_tiendas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        tienda = new TiendaDAO(ConexionBD.conexion);
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
@@ -139,6 +146,17 @@ public class GerenteController implements Initializable {
             alerta.setHeaderText("Error al cargar el siguiente id");
             alerta.showAndWait();
         }
+        try {
+            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos()); 
+            cb_tiendas.setItems(listaTiendas);
+        } catch (SQLException ex) {
+            Alert alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error Carga Tiendas");
+            alerta.setHeaderText("Error al cargar la lista de tiendas");
+            alerta.showAndWait();
+        }
+       
+        
         cargarTooltips();
     }
 
@@ -240,7 +258,7 @@ public class GerenteController implements Initializable {
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
-                pass = tf_pass.getText(), idTiendaText = tf_tienda.getText(),
+                pass = tf_pass.getText(),
                 salariotext = tf_salario.getText(),
                 horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
         Integer idTienda = null;
@@ -282,10 +300,10 @@ public class GerenteController implements Initializable {
                 camposVacios.add("Password");
             }
 
-            if (idTiendaText.isEmpty()) {
+            if (cb_tiendas.getSelectionModel().isEmpty()) {
                 camposVacios.add("Tienda");
             } else {
-                idTienda = Integer.parseInt(idTiendaText);
+                idTienda = cb_tiendas.getSelectionModel().getSelectedItem().getId();
             }
 
             if (horaEntradaText.isEmpty()) {
@@ -373,7 +391,6 @@ public class GerenteController implements Initializable {
     }
 
     public void limpiarCampos() {
-        tf_id.clear();
         tf_dni.clear();
         tf_nombre.clear();
         tf_apellido1.clear();
@@ -385,7 +402,6 @@ public class GerenteController implements Initializable {
         tf_pass.clear();
         tf_horaEntrada.clear();
         tf_horaSalida.clear();
-        tf_tienda.clear();
     }
 
 }
