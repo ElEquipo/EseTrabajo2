@@ -5,6 +5,7 @@ import Datos.TrabajadorDAO;
 import Modelo.Trabajador;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -221,16 +222,17 @@ public class GerenteController implements Initializable {
     }
 
     public void contratar() {
+        Alert alerta;
         Set<String> camposVacios = new HashSet<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
                 pass = tf_pass.getText(), idText = tf_id.getText(), idTiendaText = tf_tienda.getText(),
                 salariotext = tf_salario.getText(), fechaText = tf_fecha.getText(),
                 horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
-        int id, idTienda;
-        Double salario;
-        LocalDate fecha;
-        LocalTime horaEntrada, horaSalida;
+        Integer id = null, idTienda = null;
+        Double salario = null;
+        LocalDate fecha = LocalDate.now();
+        LocalTime horaEntrada = null, horaSalida = null;
 
         if (idText.isEmpty()) {
             camposVacios.add("Id");
@@ -283,13 +285,21 @@ public class GerenteController implements Initializable {
         }
 
         if (!camposVacios.isEmpty()) {
-            Alert alerta = new Alert(AlertType.WARNING);
+            alerta = new Alert(AlertType.WARNING);
             alerta.setTitle("Error Ingresar");
             alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
             alerta.setContentText("Campos Vacios: " + camposVacios.toString());
             alerta.showAndWait();
         } else {
-//            Trabajador trabajador = new Trabajador();
+            Trabajador trabajador = new Trabajador(id,dni,nombre,apellido1,apellido2,puesto,salario,fecha,nick,pass,horaEntrada,horaSalida,idTienda);
+            try {
+                this.trabajador.insertar(trabajador);
+            } catch (SQLException ex) {
+                alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error Introducir");
+                alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
+                alerta.showAndWait();
+            }
         }
     }
 
