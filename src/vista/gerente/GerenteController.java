@@ -8,7 +8,9 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,6 +22,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -61,7 +65,6 @@ public class GerenteController implements Initializable {
     private Button bt_personal;
     @FXML
     private Pane pn_inicio;
-    @FXML
     private TextField tf_id;
     @FXML
     private TextField tf_nombre;
@@ -73,7 +76,6 @@ public class GerenteController implements Initializable {
     private TextField tf_puesto;
     @FXML
     private TextField tf_salario;
-    @FXML
     private TextField tf_fecha;
     @FXML
     private TextField tf_nick;
@@ -117,6 +119,10 @@ public class GerenteController implements Initializable {
     private TextField tf_dniDespedir;
     @FXML
     private TextField tf_idDespedir;
+    @FXML
+    private DatePicker dp_fecha;
+    @FXML
+    private Label lb_id;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -125,6 +131,14 @@ public class GerenteController implements Initializable {
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
+        try {
+            lb_id.setText("ID: " + String.valueOf(trabajador.mostrarSiguienteID()));
+        } catch (SQLException ex) {
+            Alert alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error Id");
+            alerta.setHeaderText("Error al cargar el siguiente id");
+            alerta.showAndWait();
+        }
         cargarTooltips();
     }
 
@@ -223,83 +237,97 @@ public class GerenteController implements Initializable {
 
     public void contratar() {
         Alert alerta;
-        Set<String> camposVacios = new HashSet<>();
+        List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
-                pass = tf_pass.getText(), idText = tf_id.getText(), idTiendaText = tf_tienda.getText(),
-                salariotext = tf_salario.getText(), fechaText = tf_fecha.getText(),
+                pass = tf_pass.getText(), idTiendaText = tf_tienda.getText(),
+                salariotext = tf_salario.getText(),
                 horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
-        Integer id = null, idTienda = null;
+        Integer idTienda = null;
         Double salario = null;
-        LocalDate fecha = LocalDate.now();
+        LocalDate fecha;
         LocalTime horaEntrada = null, horaSalida = null;
 
-        if (idText.isEmpty()) {
-            camposVacios.add("Id");
-        } else {
-            id = Integer.parseInt(idText);
-        }
-
-        if (nombre.isEmpty()) {
-            camposVacios.add("Nombre");
-        }
-
-        if (dni.isEmpty()) {
-            camposVacios.add("DNI");
-        }
-
-        if (puesto.isEmpty()) {
-            camposVacios.add("Puesto");
-        }
-
-        if (salariotext.isEmpty()) {
-            camposVacios.add("Salario");
-        } else {
-            salario = Double.parseDouble(salariotext);
-        }
-
-        if (nick.isEmpty()) {
-            camposVacios.add("Nick");
-        }
-
-        if (pass.isEmpty()) {
-            camposVacios.add("Password");
-        }
-
-        if (idTiendaText.isEmpty()) {
-            camposVacios.add("Tienda");
-        } else {
-            idTienda = Integer.parseInt(idTiendaText);
-        }
-
-        if (horaEntradaText.isEmpty()) {
-            camposVacios.add("Hora entrada");
-        } else {
-            horaEntrada = LocalTime.parse(horaEntradaText);
-        }
-
-        if (horaSalidatext.isEmpty()) {
-            camposVacios.add("Hora salida");
-        } else {
-            horaSalida = LocalTime.parse(horaSalidatext);
-        }
-
-        if (!camposVacios.isEmpty()) {
-            alerta = new Alert(AlertType.WARNING);
-            alerta.setTitle("Error Ingresar");
-            alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
-            alerta.setContentText("Campos Vacios: " + camposVacios.toString());
-            alerta.showAndWait();
-        } else {
-            Trabajador trabajador = new Trabajador(id,dni,nombre,apellido1,apellido2,puesto,salario,fecha,nick,pass,horaEntrada,horaSalida,idTienda);
-            try {
-                this.trabajador.insertar(trabajador);
-            } catch (SQLException ex) {
-                alerta = new Alert(AlertType.ERROR);
-                alerta.setTitle("Error Introducir");
-                alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
-                alerta.showAndWait();
+        try {
+            
+            if (nombre.isEmpty()) {
+                camposVacios.add("Nombre");
             }
+
+            if (dni.isEmpty()) {
+                camposVacios.add("DNI");
+            }
+
+            if (puesto.isEmpty()) {
+                camposVacios.add("Puesto");
+            }
+            
+            if(dp_fecha.getValue() == null){
+                fecha = LocalDate.now();
+            }else{
+                fecha = dp_fecha.getValue();
+            }
+
+            if (salariotext.isEmpty()) {
+                camposVacios.add("Salario");
+            } else {
+                salario = Double.parseDouble(salariotext);
+            }
+
+            if (nick.isEmpty()) {
+                camposVacios.add("Nick");
+            }
+
+            if (pass.isEmpty()) {
+                camposVacios.add("Password");
+            }
+
+            if (idTiendaText.isEmpty()) {
+                camposVacios.add("Tienda");
+            } else {
+                idTienda = Integer.parseInt(idTiendaText);
+            }
+
+            if (horaEntradaText.isEmpty()) {
+                camposVacios.add("Hora entrada");
+            } else {
+                horaEntrada = LocalTime.parse(horaEntradaText);
+            }
+
+            if (horaSalidatext.isEmpty()) {
+                camposVacios.add("Hora salida");
+            } else {
+                horaSalida = LocalTime.parse(horaSalidatext);
+            }
+
+            if (!camposVacios.isEmpty()) {
+                alerta = new Alert(AlertType.WARNING);
+                alerta.setTitle("Error Ingresar");
+                alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
+                alerta.setContentText("Campos Vacios: " + camposVacios.toString());
+                alerta.showAndWait();
+            } else {
+                Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, pass, horaEntrada, horaSalida, idTienda);
+                this.trabajador.insertar(trabajador);
+                lb_id.setText("ID: " + this.trabajador.mostrarSiguienteID());
+            }
+            
+        } catch (NumberFormatException | NullPointerException e) {
+            alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error Tipo dato");
+            alerta.setContentText(e.getMessage());
+            alerta.showAndWait();
+
+        } catch (SQLException ex) {
+            alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error Introducir");
+            alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
+            alerta.showAndWait();
+        } catch(Exception e){
+            alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error");
+            alerta.setContentText(e.getMessage());
+            alerta.showAndWait();
         }
     }
 

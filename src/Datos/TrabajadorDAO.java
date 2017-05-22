@@ -9,6 +9,7 @@ import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -59,6 +60,14 @@ public class TrabajadorDAO {
         psInsertar.setTime(12, Time.valueOf(trabajador.getHoraSalida()));
         psInsertar.setInt(13, trabajador.getIdTienda());
         psInsertar.executeQuery();
+    }
+    
+    public int mostrarSiguienteID() throws SQLException{
+        PreparedStatement psMostrar;
+        psMostrar = conexion.prepareStatement("SELECT idSiguienteTrabajador() AS 'id';");
+        ResultSet resultado = psMostrar.executeQuery();
+        resultado.next();
+        return (resultado.getInt("id")+1);
     }
 
 }
