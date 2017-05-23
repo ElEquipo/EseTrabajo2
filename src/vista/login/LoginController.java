@@ -150,12 +150,11 @@ public class LoginController implements Initializable {
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Bienvenido");
         alerta.setHeaderText("Bienvenido a JustComerce " + tf_user.getText());
-        alerta.setContentText(null);
         // Al parar el Thread no se muestra el gif en movimiento
         Image loading = new Image("file:///C:/Users/Daniel/Desktop/JustComerce/JustComerceV2/src/vista/login/images/loading.gif", 150,150, false, false);
         alerta.setGraphic(new ImageView(loading));
         darleEstiloAlPanel(alerta);
-        alerta.show();
+        alerta.showAndWait();
         try {
             Thread.sleep(1500);
         } catch (InterruptedException ex) {
@@ -237,7 +236,8 @@ public class LoginController implements Initializable {
         dialogPane.getStylesheets().add(getClass().getResource("css.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-//        alertaStage.getIcons().add(new Image("file:images/icono_pizza.png"));
+        // COGER LA RUTA DEL ICONO
+        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
     }
 
 }

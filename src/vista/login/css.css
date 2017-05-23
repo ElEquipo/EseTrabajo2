@@ -52,17 +52,15 @@
 
 /* ------------------- ESTILO ALERTAS ---------------------------*/
 .dialog-pane {
-    -fx-background-color: #fff8c7;
-    -fx-border-color: lightgreen;
-    -fx-border-width: 5px;
+    -fx-background-color: linear-gradient(rgba(0,0,0,0.4) 0%, rgba(153, 153, 153,0.4) 100%);
 }
 
 .dialog-pane .label {
-    -fx-text-fill: black;
+    -fx-text-fill: white;
 }
 
 .dialog-pane:header .header-panel {
-    -fx-background-color: lightgreen;
+    -fx-background-color: linear-gradient(rgba(0,0,0,0.4) 0%, rgba(153, 153, 153,0.4) 150%);
 }
 
 .dialog-pane:header .header-panel .label {
@@ -71,5 +69,5 @@
 }
 
 .myDialog > *.button-bar > *.container{
-    -fx-background-color: lightgreen;
+    -fx-background-color: pink;
 }
