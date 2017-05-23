@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class EmpleadoController implements Initializable {
 
@@ -121,6 +123,7 @@ public class EmpleadoController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Id");
             alerta.setHeaderText("Error al cargar el id de la venta \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -139,6 +142,7 @@ public class EmpleadoController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Productos");
             alerta.setHeaderText("Error al cargar la lista de productos");
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -150,6 +154,7 @@ public class EmpleadoController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Tiendas");
             alerta.setHeaderText("Error al cargar la lista de tiendas");
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -161,6 +166,7 @@ public class EmpleadoController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Trabajdores");
             alerta.setHeaderText("Error al cargar la lista de trabajadores \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -172,6 +178,7 @@ public class EmpleadoController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Productos");
             alerta.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -224,5 +231,18 @@ public class EmpleadoController implements Initializable {
         }
 
     }
+    
+      private void darleEstiloAlPanel(Alert panel) {
+        DialogPane dialogPane;
+        Stage alertaStage;
+
+        dialogPane = panel.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("empleado.css").toExternalForm());
+        dialogPane.getStyleClass().add("dialog-pane");
+        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
+        // COGER LA RUTA DEL ICONO
+        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
+    }
+
 
 }

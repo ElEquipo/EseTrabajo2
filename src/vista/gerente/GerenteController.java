@@ -30,6 +30,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -38,6 +39,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import vista.Empleado.EmpleadoController;
 
 public class GerenteController implements Initializable {
@@ -164,6 +166,7 @@ public class GerenteController implements Initializable {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Id");
             alerta.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
         try {
@@ -174,6 +177,7 @@ public class GerenteController implements Initializable {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Carga Tiendas");
             alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
         
@@ -192,6 +196,7 @@ public class GerenteController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Productos");
             alerta.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
         
@@ -203,6 +208,7 @@ public class GerenteController implements Initializable {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Carga Tiendas");
             alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
 
@@ -372,6 +378,7 @@ public class GerenteController implements Initializable {
                 alerta.setTitle("Error Ingresar");
                 alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
                 alerta.setContentText("Campos Vacios: " + camposVacios.toString());
+                darleEstiloAlPanel(alerta);
                 alerta.showAndWait();
             } else {
                 Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, pass, horaEntrada, horaSalida, idTienda);
@@ -383,17 +390,20 @@ public class GerenteController implements Initializable {
             alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Tipo dato");
             alerta.setContentText(e.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
 
         } catch (SQLException ex) {
             alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Introducir");
             alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         } catch (Exception e) {
             alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error");
             alerta.setContentText(e.getMessage());
+            darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
     }
@@ -450,6 +460,19 @@ public class GerenteController implements Initializable {
         tf_pass.clear();
         tf_horaEntrada.clear();
         tf_horaSalida.clear();
+    }
+    
+    
+    private void darleEstiloAlPanel(Alert panel) {
+        DialogPane dialogPane;
+        Stage alertaStage;
+
+        dialogPane = panel.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("gerente.css").toExternalForm());
+        dialogPane.getStyleClass().add("dialog-pane");
+        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
+        // COGER LA RUTA DEL ICONO
+        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
     }
 
 }
