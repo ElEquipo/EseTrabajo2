@@ -71,6 +71,7 @@ public class Trabajador {
         this.horaSalida = new SimpleObjectProperty<>(horaSalida);
         this.idTienda = new SimpleIntegerProperty(idTienda);
         
+        
     }
 
     
