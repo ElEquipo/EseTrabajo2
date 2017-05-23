@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
@@ -26,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class LoginController implements Initializable {
@@ -148,7 +150,11 @@ public class LoginController implements Initializable {
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Bienvenido");
         alerta.setHeaderText("Bienvenido a JustComerce " + tf_user.getText());
-        alerta.setGraphic(new ImageView(this.getClass().getResource("logo.png").toString()));
+        alerta.setContentText(null);
+        // Al parar el Thread no se muestra el gif en movimiento
+        Image loading = new Image("file:///C:/Users/Daniel/Desktop/JustComerce/JustComerceV2/src/vista/login/images/loading.gif", 150,150, false, false);
+        alerta.setGraphic(new ImageView(loading));
+        darleEstiloAlPanel(alerta);
         alerta.show();
         try {
             Thread.sleep(1500);
@@ -221,6 +227,17 @@ public class LoginController implements Initializable {
 //            mayusculasActivadas = false;
 //            tf_user.setText("7");
 //        }
+    }
+    
+    private void darleEstiloAlPanel(Alert panel) {
+        DialogPane dialogPane;
+        Stage alertaStage;
+
+        dialogPane = panel.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("css.css").toExternalForm());
+        dialogPane.getStyleClass().add("dialog-pane");
+        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
+//        alertaStage.getIcons().add(new Image("file:images/icono_pizza.png"));
     }
 
 }
