@@ -148,7 +148,7 @@ public class LoginController implements Initializable {
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Bienvenido");
         alerta.setHeaderText("Bienvenido a JustComerce " + tf_user.getText());
-        alerta.setGraphic();
+        alerta.setGraphic(new ImageView(this.getClass().getResource("logo.png").toString()));
         alerta.show();
         try {
             Thread.sleep(1500);
