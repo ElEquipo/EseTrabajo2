@@ -1,6 +1,7 @@
 package vista.gerente;
 
 import Datos.ConexionBD;
+import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
 import Modelo.Producto;
@@ -43,6 +44,7 @@ public class GerenteController implements Initializable {
 
     private TrabajadorDAO trabajador;
     private TiendaDAO tienda;
+    private ProductoDAO producto;
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Producto> listaProductos;
     /*ATRIBUTOS FXML*/
@@ -151,6 +153,7 @@ public class GerenteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
+        producto = new ProductoDAO(ConexionBD.conexion);
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
@@ -160,7 +163,7 @@ public class GerenteController implements Initializable {
         } catch (SQLException ex) {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Id");
-            alerta.setHeaderText("Error al cargar el siguiente id");
+            alerta.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
             alerta.showAndWait();
         }
         try {
@@ -170,11 +173,12 @@ public class GerenteController implements Initializable {
         } catch (SQLException ex) {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Carga Tiendas");
-            alerta.setHeaderText("Error al cargar la lista de tiendas");
+            alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
             alerta.showAndWait();
         }
+        
         try {            
-            listaProductos = FXCollections.observableArrayList(tienda.cargarProductos());
+            listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
             tv_productos.setItems(listaProductos);
             tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
             tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -187,10 +191,20 @@ public class GerenteController implements Initializable {
         } catch (SQLException ex) {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Productos");
-            alerta.setHeaderText("Error al cargar la lista de productos");
+            alerta.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
             alerta.showAndWait();
         }
         
+        try {
+            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
+            cb_tiendas.setItems(listaTiendas);
+
+        } catch (SQLException ex) {
+            Alert alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error Carga Tiendas");
+            alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
+            alerta.showAndWait();
+        }
 
         cargarTooltips();
     }

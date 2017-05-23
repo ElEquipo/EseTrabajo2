@@ -93,7 +93,7 @@
 #bt_productos:hover, #bt_incidencias:hover, #bt_tienda:hover, 
 #bt_personal:hover, #bt_contratarPersonal:hover, #bt_despedirPersonal:hover,
 #bt_atras:hover, #bt_contratar:hover, #bt_despedir:hover{
-    -fx-border-color: white;
+    -fx-border-color: orange;
 }
 
 #tf_id, #tf_nombre, #tf_apellido1, #tf_apellido2, #tf_dni, #tf_puesto, 

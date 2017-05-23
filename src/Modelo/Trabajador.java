@@ -239,4 +239,11 @@ public class Trabajador {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return id.get() + "-" +nombre.get();
+    }
+
+    
+    
 }

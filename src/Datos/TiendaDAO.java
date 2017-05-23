@@ -41,21 +41,4 @@ public class TiendaDAO {
         return listaTiendas;
     }
 
-    public List cargarProductos() throws SQLException {
-        Producto producto;
-        PreparedStatement psProductos;
-        ResultSet rsProductos;
-        List<Producto> listaProductos = new ArrayList<>();
-        psProductos = conexion.prepareStatement("SELECT * FROM productos;");
-        rsProductos = psProductos.executeQuery();
-        while (rsProductos.next()) {
-            producto = new Producto(rsProductos.getInt("referencia"), 
-                    rsProductos.getString("nombre"), rsProductos.getString("categoria"), 
-                    rsProductos.getString("descripcion"), rsProductos.getDouble("precioCompra"), 
-                    rsProductos.getDouble("precioVenta"), rsProductos.getDouble("IVA"));
-            listaProductos.add(producto);
-        }
-        return listaProductos;
-
-    }
 }

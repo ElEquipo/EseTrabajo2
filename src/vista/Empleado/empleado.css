@@ -60,7 +60,7 @@
 }
 
 #bt_productos:hover, #bt_ventas:hover{
-   -fx-border-color: white;
+   -fx-border-color: orange;
 }
 
 #lb_idVenta{

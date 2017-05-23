@@ -5,6 +5,7 @@
  */
 package Datos;
 
+import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.Date;
@@ -13,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -68,6 +71,24 @@ public class TrabajadorDAO {
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
         return (resultado.getInt("id")+1);
+    }
+    
+    public List<Trabajador> cargarDatos() throws SQLException {
+        PreparedStatement psTrabajadores;
+        ResultSet rsTrabajadores;
+        Trabajador trabajador;
+        List<Trabajador> listaTrabajadores = new ArrayList<>();
+        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores;");
+        rsTrabajadores = psTrabajadores.executeQuery();
+        while (rsTrabajadores.next()) {
+            trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"), rsTrabajadores.getString("dni"), rsTrabajadores.getString("nombre"), 
+                    rsTrabajadores.getString("apellido1"), rsTrabajadores.getString("apellido2"), rsTrabajadores.getString("puesto"),
+                    rsTrabajadores.getDouble("salarioBrutoAnual"), rsTrabajadores.getDate("fechaAlta").toLocalDate(), rsTrabajadores.getString("nick"),
+                    rsTrabajadores.getString("password"), rsTrabajadores.getTime("horaEntrada").toLocalTime(), rsTrabajadores.getTime("horaSalida").toLocalTime(),
+                    rsTrabajadores.getInt("idTienda"));
+            listaTrabajadores.add(trabajador);
+        }
+        return listaTrabajadores;
     }
 
 }
