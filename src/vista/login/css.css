@@ -50,7 +50,7 @@
     -fx-border-width: 1.5px;
 }
 
-/* ------------------- ESTILO ALERTAS ---------------------------*/
+/* ----------- ESTILO ALERTAS -----'''''CAMBIAR 3 POR CADA MODIFICACIÓN'''''---------*/
 .dialog-pane {
     -fx-background-color: linear-gradient(rgba(0,0,0,0.4) 0%, rgba(153, 153, 153,0.4) 100%);
 }
@@ -69,5 +69,5 @@
 }
 
 .myDialog > *.button-bar > *.container{
-    -fx-background-color: pink;
+    -fx-background-color: black;
 }

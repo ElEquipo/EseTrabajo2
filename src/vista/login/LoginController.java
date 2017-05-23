@@ -154,9 +154,9 @@ public class LoginController implements Initializable {
         Image loading = new Image("file:///C:/Users/Daniel/Desktop/JustComerce/JustComerceV2/src/vista/login/images/loading.gif", 150,150, false, false);
         alerta.setGraphic(new ImageView(loading));
         darleEstiloAlPanel(alerta);
-        alerta.showAndWait();
+        alerta.show();
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1200);
         } catch (InterruptedException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
