@@ -92,7 +92,6 @@ public class GerenteController implements Initializable {
     private TextField tf_salario;
     @FXML
     private TextField tf_nick;
-    @FXML
     private TextField tf_pass;
     @FXML
     private TextField tf_horaEntrada;
@@ -349,10 +348,8 @@ public class GerenteController implements Initializable {
 
             if (nick.isEmpty()) {
                 camposVacios.add("Nick");
-            }
-
-            if (pass.isEmpty()) {
-                camposVacios.add("Password");
+            }else{
+                pass = dni;
             }
 
             if (cb_tiendas.getSelectionModel().isEmpty()) {
