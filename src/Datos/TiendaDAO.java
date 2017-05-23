@@ -35,7 +35,10 @@ public class TiendaDAO {
         psTiendas = conexion.prepareStatement("SELECT * FROM tiendas;");
         rsTiendas = psTiendas.executeQuery();
         while (rsTiendas.next()) {
-            tienda = new Tienda(rsTiendas.getInt("idTienda"), rsTiendas.getString("nombre"), rsTiendas.getString("direccion"), rsTiendas.getString("ciudad"));
+            tienda = new Tienda(rsTiendas.getInt("idTienda"),
+                    rsTiendas.getString("nombre"),
+                    rsTiendas.getString("direccion"),
+                    rsTiendas.getString("ciudad"));
             listaTiendas.add(tienda);
         }
         return listaTiendas;

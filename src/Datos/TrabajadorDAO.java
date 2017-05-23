@@ -81,10 +81,19 @@ public class TrabajadorDAO {
         psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores;");
         rsTrabajadores = psTrabajadores.executeQuery();
         while (rsTrabajadores.next()) {
-            trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"), rsTrabajadores.getString("dni"), rsTrabajadores.getString("nombre"), 
-                    rsTrabajadores.getString("apellido1"), rsTrabajadores.getString("apellido2"), rsTrabajadores.getString("puesto"),
-                    rsTrabajadores.getDouble("salarioBrutoAnual"), rsTrabajadores.getDate("fechaAlta").toLocalDate(), rsTrabajadores.getString("nick"),
-                    rsTrabajadores.getString("password"), rsTrabajadores.getTime("horaEntrada").toLocalTime(), rsTrabajadores.getTime("horaSalida").toLocalTime(),
+ 
+            trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
+                    rsTrabajadores.getString("dni"),
+                    rsTrabajadores.getString("nombre"), 
+                    rsTrabajadores.getString("apellido1"),
+                    rsTrabajadores.getString("apellido2"),
+                    rsTrabajadores.getString("puesto"),
+                    rsTrabajadores.getDouble("salarioBrutoAnual"),
+                    rsTrabajadores.getDate("fechaAlta").toLocalDate(),
+                    rsTrabajadores.getString("nick"),
+                    rsTrabajadores.getString("password"),
+                    rsTrabajadores.getTime("horaEntrada").toLocalTime(),
+                    rsTrabajadores.getTime("horaSalida").toLocalTime(),
                     rsTrabajadores.getInt("idTienda"));
             listaTrabajadores.add(trabajador);
         }

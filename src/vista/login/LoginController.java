@@ -13,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -30,6 +32,7 @@ public class LoginController implements Initializable {
 
     private boolean mayusculasActivadas = false;
     private ConexionBD conexion;
+    
     /*ATRIBUTOS FXML*/
     @FXML
     private TextField tf_user;
@@ -94,6 +97,7 @@ public class LoginController implements Initializable {
 
     public void iniciarSesion() {
         String user = tf_user.getText(), pass = pf_contraseña.getText();
+        Alert alerta;
         try {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
@@ -102,12 +106,16 @@ public class LoginController implements Initializable {
 
                     if (conexion.existe(user, pass)) {
                         
-                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) {
+                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) { 
+                            alerta = bienvenida();
                             AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                             paneLogin.getChildren().setAll(pane);
+                            cerrarBienvendia(alerta);
+                           
                         }else if(conexion.puesto(user).equalsIgnoreCase("Dependiente")){
                             AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                             paneLogin.getChildren().setAll(pane);
+                            
                         }
 
                     } else {
@@ -134,6 +142,24 @@ public class LoginController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public Alert bienvenida(){
+        Alert alerta = new Alert(AlertType.INFORMATION);
+        alerta.setTitle("Bienvenido");
+        alerta.setHeaderText("Bienvenido a JustComerce " + tf_user.getText());
+        alerta.setGraphic();
+        alerta.show();
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return alerta;
+    }
+    
+    public void cerrarBienvendia(Alert alerta){
+        alerta.close();
     }
 
     @FXML

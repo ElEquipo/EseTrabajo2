@@ -87,7 +87,7 @@
             </Pane>
             <Pane fx:id="pn_productos" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
                <children>
-                  <TableView fx:id="tv_productos" layoutX="9.0" layoutY="28.0" prefHeight="303.0" prefWidth="719.0">
+                  <TableView fx:id="tv_productos" layoutX="9.0" layoutY="28.0" prefHeight="352.0" prefWidth="719.0">
                      <columns>
                         <TableColumn fx:id="tb_referencia" prefWidth="64.0" text="referencia" />
                         <TableColumn fx:id="tb_nombre" prefWidth="82.0" text="nombre" />
@@ -98,7 +98,7 @@
                         <TableColumn fx:id="tb_iva" prefWidth="77.0" text="IVA" />
                      </columns>
                   </TableView>
-                  <Button id="bt_atras" fx:id="bt_atrasProductos" layoutX="316.0" layoutY="339.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="111.0" prefWidth="112.0" stylesheets="@gerente.css" />
+                  <Button id="bt_atras" fx:id="bt_atrasProductos" layoutX="340.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css" />
                </children>
             </Pane>
          </children>

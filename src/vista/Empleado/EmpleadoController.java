@@ -120,7 +120,7 @@ public class EmpleadoController implements Initializable {
         } catch (SQLException ex) {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Id");
-            alerta.setHeaderText("Error al cargar el id de la vente \n" + ex.getMessage());
+            alerta.setHeaderText("Error al cargar el id de la venta \n" + ex.getMessage());
             alerta.showAndWait();
         }
 
