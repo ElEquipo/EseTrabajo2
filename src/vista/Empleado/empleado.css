@@ -1,5 +1,5 @@
 #ac_Empleado{
-    -fx-background-image: url(/vista/Empleado/Images/fondo.jpg);
+    -fx-background-image: url(../Empleado/Images/fondo.jpg);
     -fx-background-size: cover;
 }
 
@@ -8,11 +8,11 @@
 }
 
 #pn_CabeceraEmpleado{
-    -fx-background-image: url(/vista/Empleado/Images/cabecera.png);
+    -fx-background-image: url(../Empleado/Images/cabecera.png);
 }
 
 #bt_Inicio{
-    -fx-background-image: url(/vista/Empleado/Images/inicio2.png);
+    -fx-background-image: url(../Empleado/Images/inicio2.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
@@ -33,36 +33,106 @@
 }
 
 #bt_LogOut{
-    -fx-background-image: url(/vista/Empleado/Images/logOut.png);
+    -fx-background-image: url(../Empleado/Images/logOut.png);
     -fx-background-size: cover;
     -fx-border-color: transparent;
     -fx-background-color: transparent;    
 }
 
-#bt_Fichar, #bt_Productos, #bt_Ventas{
+#bt_productos, #bt_ventas{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
     -fx-background-size: cover;
 }
 
-#bt_Fichar{
-    -fx-background-image: url(/vista/Empleado/Images/fichar.jpg);    
+#bt_productos{
+    -fx-background-image: url(../Empleado/Images/productos.jpg);    
 }
 
-#bt_Productos{
-    -fx-background-image: url(/vista/Empleado/Images/productos.jpg);    
+#bt_ventas{
+    -fx-background-image: url(../Empleado/Images/ventas.jpg);    
 }
 
-#bt_Ventas{
-    -fx-background-image: url(/vista/Empleado/Images/ventas.jpg);    
-}
-
-#bt_Fichar:pressed, #bt_Productos:pressed, #bt_Ventas:pressed{
+#bt_productos:pressed, #bt_ventas:pressed{
    -fx-translate-x: 5;
    -fx-translate-y: 5;
    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
 }
 
-#bt_Fichar:hover, #bt_Productos:hover, #bt_Ventas:hover{
+#bt_productos:hover, #bt_ventas:hover{
    -fx-border-color: white;
+}
+
+#lb_idVenta{
+    -fx-background-color: #cccccc;
+    -fx-text-fill: #eba037;
+    -fx-border-radius: 2px;
+}
+
+/* -------------- TableView --------------- */
+
+.root{
+    -fx-background-color: #262626;
+}
+
+.table-view{
+   -fx-background-color: transparent;
+}
+
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+/* Spaltenköpfe
+    Struktur column-header-background -> column-header */
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(#131313 0%, #424141 100%);
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #616161;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */  
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #005797;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
 }

@@ -1,7 +1,7 @@
 /* ------------------PANTALLA LOGIN------------------ */
 
 #pantallaLogin{
-    -fx-background-image: url(/vista/login/images/fondoLogin2.jpg);
+    -fx-background-image: url(../login/images/fondoLogin2.jpg);
 }
 
 #paneLogin{
@@ -29,15 +29,15 @@
 }
 
 #paneTransicion{
-    -fx-background-image: url(/vista/login/images/logo.png);
+    -fx-background-image: url(../login/images/logo.png);
 }
 
 #paneFondo{
-    -fx-background-image: url(/vista/login/images/transicion3.jpg);
+    -fx-background-image: url(../login/images/transicion3.jpg);
 }
 
 #acord_principal{
-    -fx-background-image: url(/vista/login/images/transicion.jpg);
+    -fx-background-image: url(../login/images/transicion.jpg);
 }
 
 #pn_izquierda{

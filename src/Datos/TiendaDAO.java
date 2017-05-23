@@ -5,6 +5,7 @@
  */
 package Datos;
 
+import Modelo.Producto;
 import Modelo.Tienda;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,15 +19,15 @@ import java.util.List;
  * @author Daniel
  */
 public class TiendaDAO {
-    
+
     Connection conexion;
 
     public TiendaDAO(Connection conexion) {
         this.conexion = conexion;
     }
-    
-      public List cargarDatos() throws SQLException {
-        
+
+    public List cargarDatos() throws SQLException {
+
         PreparedStatement psTiendas;
         ResultSet rsTiendas;
         Tienda tienda;
@@ -34,9 +35,27 @@ public class TiendaDAO {
         psTiendas = conexion.prepareStatement("SELECT * FROM tiendas;");
         rsTiendas = psTiendas.executeQuery();
         while (rsTiendas.next()) {
-            tienda = new Tienda(rsTiendas.getInt("idTienda"),rsTiendas.getString("nombre"),rsTiendas.getString("direccion"),rsTiendas.getString("ciudad"));
+            tienda = new Tienda(rsTiendas.getInt("idTienda"), rsTiendas.getString("nombre"), rsTiendas.getString("direccion"), rsTiendas.getString("ciudad"));
             listaTiendas.add(tienda);
         }
         return listaTiendas;
+    }
+
+    public List cargarProductos() throws SQLException {
+        Producto producto;
+        PreparedStatement psProductos;
+        ResultSet rsProductos;
+        List<Producto> listaProductos = new ArrayList<>();
+        psProductos = conexion.prepareStatement("SELECT * FROM productos;");
+        rsProductos = psProductos.executeQuery();
+        while (rsProductos.next()) {
+            producto = new Producto(rsProductos.getInt("referencia"), 
+                    rsProductos.getString("nombre"), rsProductos.getString("categoria"), 
+                    rsProductos.getString("descripcion"), rsProductos.getDouble("precioCompra"), 
+                    rsProductos.getDouble("precioVenta"), rsProductos.getDouble("IVA"));
+            listaProductos.add(producto);
+        }
+        return listaProductos;
+
     }
 }

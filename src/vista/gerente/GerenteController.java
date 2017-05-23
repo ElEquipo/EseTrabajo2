@@ -3,6 +3,7 @@ package vista.gerente;
 import Datos.ConexionBD;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
+import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.io.IOException;
@@ -29,9 +30,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import vista.Empleado.EmpleadoController;
@@ -41,6 +44,7 @@ public class GerenteController implements Initializable {
     private TrabajadorDAO trabajador;
     private TiendaDAO tienda;
     private ObservableList<Tienda> listaTiendas;
+    private ObservableList<Producto> listaProductos;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -82,7 +86,6 @@ public class GerenteController implements Initializable {
     private TextField tf_puesto;
     @FXML
     private TextField tf_salario;
-    private TextField tf_fecha;
     @FXML
     private TextField tf_nick;
     @FXML
@@ -102,7 +105,7 @@ public class GerenteController implements Initializable {
     @FXML
     private Pane pn_productos;
     @FXML
-    private TableView<?> tv_productos;
+    private TableView<Producto> tv_productos;
     @FXML
     private Button bt_atrasContratar;
     @FXML
@@ -129,6 +132,20 @@ public class GerenteController implements Initializable {
     private Label lb_id;
     @FXML
     private ComboBox<Tienda> cb_tiendas;
+    @FXML
+    private TableColumn<Producto, Integer> tb_referencia;
+    @FXML
+    private TableColumn<Producto, String> tb_nombre;
+    @FXML
+    private TableColumn<Producto, String> tb_categoria;
+    @FXML
+    private TableColumn<Producto, String> tb_descripcion;
+    @FXML
+    private TableColumn<Producto, Double> tb_precioCompra;
+    @FXML
+    private TableColumn<Producto, Double> tb_precioVenta;
+    @FXML
+    private TableColumn<Producto, Double> tb_iva;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -147,16 +164,34 @@ public class GerenteController implements Initializable {
             alerta.showAndWait();
         }
         try {
-            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos()); 
+            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
             cb_tiendas.setItems(listaTiendas);
+
         } catch (SQLException ex) {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Carga Tiendas");
             alerta.setHeaderText("Error al cargar la lista de tiendas");
             alerta.showAndWait();
         }
-       
+        try {            
+            listaProductos = FXCollections.observableArrayList(tienda.cargarProductos());
+            tv_productos.setItems(listaProductos);
+            tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+            tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+            tb_categoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+            tb_descripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+            tb_precioCompra.setCellValueFactory(new PropertyValueFactory<>("precioCompra"));
+            tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
+            tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
+            
+        } catch (SQLException ex) {
+            Alert alerta = new Alert(Alert.AlertType.ERROR);
+            alerta.setTitle("Error Carga Productos");
+            alerta.setHeaderText("Error al cargar la lista de productos");
+            alerta.showAndWait();
+        }
         
+
         cargarTooltips();
     }
 
@@ -267,7 +302,7 @@ public class GerenteController implements Initializable {
         LocalTime horaEntrada = null, horaSalida = null;
 
         try {
-            
+
             if (nombre.isEmpty()) {
                 camposVacios.add("Nombre");
             }
@@ -279,10 +314,10 @@ public class GerenteController implements Initializable {
             if (puesto.isEmpty()) {
                 camposVacios.add("Puesto");
             }
-            
-            if(dp_fecha.getValue() == null){
+
+            if (dp_fecha.getValue() == null) {
                 fecha = LocalDate.now();
-            }else{
+            } else {
                 fecha = dp_fecha.getValue();
             }
 
@@ -329,7 +364,7 @@ public class GerenteController implements Initializable {
                 this.trabajador.insertar(trabajador);
                 lb_id.setText("ID: " + this.trabajador.mostrarSiguienteID());
             }
-            
+
         } catch (NumberFormatException | NullPointerException e) {
             alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Tipo dato");
@@ -341,7 +376,7 @@ public class GerenteController implements Initializable {
             alerta.setTitle("Error Introducir");
             alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
             alerta.showAndWait();
-        } catch(Exception e){
+        } catch (Exception e) {
             alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error");
             alerta.setContentText(e.getMessage());
@@ -397,7 +432,6 @@ public class GerenteController implements Initializable {
         tf_apellido2.clear();
         tf_puesto.clear();
         tf_salario.clear();
-        tf_fecha.clear();
         tf_nick.clear();
         tf_pass.clear();
         tf_horaEntrada.clear();
