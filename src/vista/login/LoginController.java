@@ -115,8 +115,10 @@ public class LoginController implements Initializable {
                             cerrarBienvendia(alerta);
                            
                         }else if(conexion.puesto(user).equalsIgnoreCase("Dependiente")){
+                            alerta = bienvenida();
                             AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                             paneLogin.getChildren().setAll(pane);
+                            cerrarBienvendia(alerta);
                             
                         }
 

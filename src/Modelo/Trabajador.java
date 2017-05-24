@@ -47,7 +47,7 @@ public class Trabajador {
         this.apellido2 = new SimpleStringProperty(apellido2);
         this.puesto  = new SimpleStringProperty(puesto);
         this.salarioBrutoAnual = new SimpleDoubleProperty(salario);
-        this.fechaAlta  = new SimpleObjectProperty<>(LocalDate.now());
+        this.fechaAlta  = new SimpleObjectProperty<>(fecha);
         this.nick = new SimpleStringProperty(nick);
         this.pass = new SimpleStringProperty(pass);
         this.horaEntrada = new SimpleObjectProperty<>(horaEntrada);
