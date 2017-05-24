@@ -98,6 +98,7 @@
                   <DatePicker fx:id="dp_fecha" layoutX="195.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0" />
                   <Label fx:id="lb_id" contentDisplay="CENTER" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="66.0" textAlignment="CENTER" />
                   <ComboBox fx:id="cb_tiendas" layoutX="31.0" layoutY="318.0" prefWidth="150.0" promptText="Tienda" />
+                  <TextField fx:id="tf_pass" layoutX="195.0" layoutY="268.0" promptText="contraseña" />
                </children>
             </Pane>
          </children>

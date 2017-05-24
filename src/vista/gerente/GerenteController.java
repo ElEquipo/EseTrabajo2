@@ -92,6 +92,7 @@ public class GerenteController implements Initializable {
     private TextField tf_salario;
     @FXML
     private TextField tf_nick;
+    @FXML
     private TextField tf_pass;
     @FXML
     private TextField tf_horaEntrada;
@@ -160,7 +161,7 @@ public class GerenteController implements Initializable {
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
         try {
-            lb_id.setText("ID: " + String.valueOf(trabajador.mostrarSiguienteID()));
+            lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
         } catch (SQLException ex) {
             Alert alerta = new Alert(AlertType.ERROR);
             alerta.setTitle("Error Id");
@@ -380,7 +381,7 @@ public class GerenteController implements Initializable {
             } else {
                 Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, pass, horaEntrada, horaSalida, idTienda);
                 this.trabajador.insertar(trabajador);
-                lb_id.setText("ID: " + this.trabajador.mostrarSiguienteID());
+                lb_id.setText(" " + this.trabajador.mostrarSiguienteID());
             }
 
         } catch (NumberFormatException | NullPointerException e) {
