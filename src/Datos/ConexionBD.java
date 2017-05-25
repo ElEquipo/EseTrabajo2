@@ -16,73 +16,93 @@ public class ConexionBD {
     public ConexionBD() {
     }
 
-    public boolean conectar(String bd, String user, String pwd) throws SQLException {
+    public boolean conectar(String bd, String user, String pwd) {
         boolean conectado = false;
         String mensaje = "";
+        try {
 
-        conexion = DriverManager.getConnection(bd, user, pwd);
-        if (conexion != null) {
-            conectado = true;
+            conexion = DriverManager.getConnection(bd, user, pwd);
+            if (conexion != null) {
+                conectado = true;
+            }
+            mensaje = "Conexión establecida con la Base de Datos " + bd;
+
+            this.mensajeErrorConexion = mensaje;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mensaje = "Conexión establecida con la Base de Datos " + bd;
-
-        this.mensajeErrorConexion = mensaje;
-
         return conectado;
     }
 
-    public boolean desconectar() throws SQLException {
+    public boolean desconectar() {
         boolean desconectado = false;
 
-        conexion.close();
-        desconectado = true;
+        try {
+            conexion.close();
+            desconectado = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return desconectado;
 
     }
 
-    public boolean existe(String user, String pass) throws SQLException {
+    public boolean existe(String user, String pass) {
 
         PreparedStatement psExiste;
         ResultSet resultado;
         boolean existe = false;
 
-        psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
-        psExiste.setString(1, user);
-        psExiste.setString(2, pass);
-        resultado = psExiste.executeQuery();
-        resultado.next();
-        existe = resultado.getBoolean("existe");
+        try {
+            psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
+            psExiste.setString(1, user);
+            psExiste.setString(2, pass);
+            resultado = psExiste.executeQuery();
+            resultado.next();
+            existe = resultado.getBoolean("existe");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return existe;
     }
 
-    public String puesto(String user) throws SQLException {
+    public String puesto(String user) {
         PreparedStatement psPuesto;
         ResultSet resultado;
         String puesto = null;
 
-        psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
-        psPuesto.setString(1, user);
+        try {
+            psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
+            psPuesto.setString(1, user);
 
-        resultado = psPuesto.executeQuery();
-        resultado.next();
-        puesto = resultado.getString("puesto");
+            resultado = psPuesto.executeQuery();
+            resultado.next();
+            puesto = resultado.getString("puesto");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return puesto;
     }
 
-    public boolean cambiarContraseña(String user) throws SQLException {
+    public boolean cambiarContraseña(String user) {
 
         PreparedStatement psExiste;
         ResultSet resultado;
         boolean existe = false;
 
-        psExiste = conexion.prepareStatement("SELECT cambiarContraseña(?) AS 'cambiar';");
-        psExiste.setString(1, user);
-        resultado = psExiste.executeQuery();
-        resultado.next();
-        existe = resultado.getBoolean("cambiar");
+        try {
+            psExiste = conexion.prepareStatement("SELECT contraseñaParaCambiar(?) AS 'cambiar';");
+            psExiste.setString(1, user);
+            resultado = psExiste.executeQuery();
+            resultado.next();
+            existe = resultado.getBoolean("cambiar");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return existe;
     }

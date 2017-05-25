@@ -5,7 +5,6 @@
  */
 package Datos;
 
-import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.Date;
@@ -16,6 +15,8 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,7 +37,7 @@ public class TrabajadorDAO {
 // p_apellido2 VARCHAR(45), p_puesto VARCHAR(30), p_salario DECIMAL(8,2), p_fecha DATE, p_nick VARCHAR(45),
 // p_pass VARCHAR(45), p_horaEntrada TIME, p_horaSalida TIME, p_idTienda INT(5))
         PreparedStatement psInsertar;
-        psInsertar = conexion.prepareStatement("Call insertarTrabajador(?,?,?,?,?,?,?,?,?,?,?,?,?);");
+        psInsertar = conexion.prepareStatement("CALL insertarTrabajador(?,?,?,?,?,?,?,?,?,?,?,?,?);");
         psInsertar.setInt(1, trabajador.getId());
         psInsertar.setString(2, trabajador.getDni());
         psInsertar.setString(3, trabajador.getNombre());
@@ -64,15 +65,15 @@ public class TrabajadorDAO {
         psInsertar.setInt(13, trabajador.getIdTienda());
         psInsertar.executeQuery();
     }
-    
-    public int mostrarSiguienteID() throws SQLException{
+
+    public int mostrarSiguienteID() throws SQLException {
         PreparedStatement psMostrar;
         psMostrar = conexion.prepareStatement("SELECT idSiguienteTrabajador() AS 'id';");
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
-        return (resultado.getInt("id")+1);
+        return (resultado.getInt("id") + 1);
     }
-    
+
     public List<Trabajador> cargarDatos() throws SQLException {
         PreparedStatement psTrabajadores;
         ResultSet rsTrabajadores;
@@ -81,10 +82,10 @@ public class TrabajadorDAO {
         psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores;");
         rsTrabajadores = psTrabajadores.executeQuery();
         while (rsTrabajadores.next()) {
- 
+
             trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
                     rsTrabajadores.getString("dni"),
-                    rsTrabajadores.getString("nombre"), 
+                    rsTrabajadores.getString("nombre"),
                     rsTrabajadores.getString("apellido1"),
                     rsTrabajadores.getString("apellido2"),
                     rsTrabajadores.getString("puesto"),
@@ -98,6 +99,19 @@ public class TrabajadorDAO {
             listaTrabajadores.add(trabajador);
         }
         return listaTrabajadores;
+    }
+
+    public void cambiarContraseña(String usuario, String pass) {
+        try {
+            PreparedStatement psTrabajadores;
+            psTrabajadores = conexion.prepareStatement("CALL cambiarContraseña(?,?);");
+            psTrabajadores.setString(1, usuario);
+            psTrabajadores.setString(2, pass);
+            psTrabajadores.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Que cojones pasa");
+        }
+
     }
 
 }

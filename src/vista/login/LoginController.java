@@ -1,6 +1,7 @@
 package vista.login;
 
 import Datos.ConexionBD;
+import Datos.TrabajadorDAO;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
@@ -39,6 +40,7 @@ public class LoginController implements Initializable {
 
     private boolean mayusculasActivadas = false;
     private ConexionBD conexion;
+    private TrabajadorDAO trabajadorDAO;
     private String user;
 
     /*ATRIBUTOS FXML*/
@@ -68,7 +70,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new ConexionBD();
-
+        trabajadorDAO = new TrabajadorDAO(ConexionBD.conexion);
         FadeTransition transicion = new FadeTransition(Duration.millis(4000), pn_principalBienvenida);
         transicion.setAutoReverse(true);
         transicion.setFromValue(1.0);
@@ -111,16 +113,17 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
 
                     if (conexion.existe(user, pass)) {
 
                         if (conexion.puesto(user).equalsIgnoreCase("Gerente")) {
-                            cambiarContraseña(user);
-                            alerta = bienvenida();
-                            AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
-                            paneLogin.getChildren().setAll(pane);
-                            cerrarBienvendia(alerta);
+                            if (cambiarContraseña(user)) {
+                                alerta = bienvenida();
+                                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
+                                paneLogin.getChildren().setAll(pane);
+                                cerrarBienvendia(alerta);
+                            }
 
                         } else if (conexion.puesto(user).equalsIgnoreCase("Dependiente")) {
                             cambiarContraseña(user);
@@ -132,23 +135,23 @@ public class LoginController implements Initializable {
                         }
 
                     } else {
-                        lb_errorIniciar.setText("Usuario no existente");
+                        lb_errorIniciar.setText("Usuario o contraseña erroneos");
                         lb_errorIniciar.setVisible(true);
-                        lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
+                        lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.7);"
                                 + " -fx-border-radius:2px;");
                     }
 
                 } else {
                     lb_errorIniciar.setText("Error en la conexión");
                     lb_errorIniciar.setVisible(true);
-                    lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
+                    lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.7);"
                             + " -fx-border-radius:2px;");
                 }
 
             } else {
                 lb_errorIniciar.setVisible(true);
                 lb_errorIniciar.setText("Rellene los campos");
-                lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.6);"
+                lb_errorIniciar.setStyle("-fx-background-color:rgba(89, 89, 89, 0.7);"
                         + " -fx-border-radius:2px;");
             }
 
@@ -156,6 +159,9 @@ public class LoginController implements Initializable {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("error cambiar contraseña");
+            System.out.println(ex.getMessage());
+            System.out.println(ex.getErrorCode());
         }
     }
 
@@ -174,13 +180,15 @@ public class LoginController implements Initializable {
         return alerta;
     }
 
-    public void cambiarContraseña(String user) throws SQLException {
-        Alert alerta;
+    public boolean cambiarContraseña(String user) throws SQLException {
+        Alert alerta, subAlerta;
+        String password, comprobante;
+        boolean cambiado = false, salir = false;
 
         if (conexion.cambiarContraseña(user)) {
             alerta = new Alert(AlertType.CONFIRMATION);
             alerta.setTitle("Modificar contraseña");
-            alerta.setHeaderText("Porfavor intruduza su contraseña");
+            alerta.setHeaderText("Por favor introduza su contraseña");
 
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -188,43 +196,68 @@ public class LoginController implements Initializable {
             grid.setPadding(new Insets(20, 150, 10, 10));
 
             PasswordField pass1 = new PasswordField();
-            pass1.setPromptText("Username");
+            pass1.setPromptText("Contraseña");
             PasswordField pass2 = new PasswordField();
-            pass2.setPromptText("Password");
+            pass2.setPromptText("Contraseña");
             Label lbl = new Label();
 
-            grid.add(new Label("Password:"), 0, 0);
+            grid.add(new Label("Contraseña:"), 0, 0);
             grid.add(pass1, 1, 0);
-            grid.add(new Label("Password:"), 0, 1);
+            grid.add(new Label("Repetir contraseña:"), 0, 1);
             grid.add(pass2, 1, 1);
-            grid.add(lbl, 2, 0);
+            grid.add(lbl, 1, 2);
             alerta.getDialogPane().setContent(grid);
+            darleEstiloAlPanel(alerta);
 
-            Optional<ButtonType> resultado = alerta.showAndWait();
-            ButtonType marcado = resultado.get();
+            do {
+                Optional<ButtonType> resultado = alerta.showAndWait();
+                ButtonType marcado = resultado.get();
+                password = pass1.getText();
+                comprobante = pass2.getText();
 
-            if (marcado == ButtonType.OK) {
-                if (pass1 != pass2) {
-                    lbl.setText("Las contraseñas no coinciden");
-                    cambiarContraseña(user);
-                } else {
+                if (marcado == ButtonType.OK) {
+                    if (pass1.getText().isEmpty() || pass2.getText().isEmpty()) {
+                        lbl.setText("Rellena los dos campos");
+                        lbl.setStyle("-fx-text-fill:red;");
 
+                    } else if (!password.equalsIgnoreCase(comprobante)) {
+                        lbl.setText("Las contraseñas no coinciden");
+                        lbl.setStyle("-fx-text-fill:red;");
+
+                    } else {
+                        System.out.println("1");
+                        trabajadorDAO.cambiarContraseña(user, password);
+                        System.out.println("2");
+                        cambiado = true;
+                        salir = true;
+                    }
+
+                } else if (marcado == ButtonType.CANCEL) {
+                    salir = true;
+                    limpiarCampos();
+                    subAlerta = new Alert(AlertType.INFORMATION);
+                    subAlerta.setTitle("Información");
+                    subAlerta.setHeaderText("Inicio de sesión");
+                    subAlerta.setContentText("Por concidiones de seguridad es "
+                            + "obligatorio cambiar de contraseña la primera vez"
+                            + " que se ingresa en el sistema.");
+                    darleEstiloAlPanel(subAlerta);
+                    subAlerta.showAndWait();
                 }
-                 
-                Alert error = new Alert(AlertType.ERROR);
-                error.setTitle("adios");
-                error.showAndWait();
-            }else if(marcado == ButtonType.CANCEL){
-                Alert error = new Alert(AlertType.ERROR);
-                error.setTitle("hola");
-                error.showAndWait();
-            }
-
+            } while (salir != true);
+            alerta.close();
         }
+
+        return cambiado;
     }
 
     public void cerrarBienvendia(Alert alerta) {
         alerta.close();
+    }
+
+    public void limpiarCampos() {
+        tf_user.clear();
+        pf_contraseña.clear();
     }
 
     @FXML
