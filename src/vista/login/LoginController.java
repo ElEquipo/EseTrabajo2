@@ -70,7 +70,6 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new ConexionBD();
-        trabajadorDAO = new TrabajadorDAO(ConexionBD.conexion);
         FadeTransition transicion = new FadeTransition(Duration.millis(4000), pn_principalBienvenida);
         transicion.setAutoReverse(true);
         transicion.setFromValue(1.0);
@@ -181,6 +180,7 @@ public class LoginController implements Initializable {
     }
 
     public boolean cambiarContraseña(String user) throws SQLException {
+        trabajadorDAO = new TrabajadorDAO(ConexionBD.conexion);
         Alert alerta, subAlerta;
         String password, comprobante;
         boolean cambiado = false, salir = false;
@@ -195,6 +195,7 @@ public class LoginController implements Initializable {
             grid.setVgap(10);
             grid.setPadding(new Insets(20, 150, 10, 10));
 
+            
             PasswordField pass1 = new PasswordField();
             pass1.setPromptText("Contraseña");
             PasswordField pass2 = new PasswordField();
@@ -216,7 +217,7 @@ public class LoginController implements Initializable {
                 comprobante = pass2.getText();
 
                 if (marcado == ButtonType.OK) {
-                    if (pass1.getText().isEmpty() || pass2.getText().isEmpty()) {
+                    if (password.isEmpty() || comprobante.isEmpty()) {
                         lbl.setText("Rellena los dos campos");
                         lbl.setStyle("-fx-text-fill:red;");
 
