@@ -116,37 +116,41 @@ public class LoginController implements Initializable {
 
                     if (conexion.existe(user, pass)) {
                         
-                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) {
-                            if (conexion.cambiarContraseña(user)) {
-                                if (cambiarContraseña(user)) {
+                        switch (conexion.puesto(user)) {
+                            case "Gerente":
+                                if (conexion.cambiarContraseña(user)) {
+                                    if (cambiarContraseña(user)) {
+                                        alerta = bienvenida();
+                                        AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
+                                        paneLogin.getChildren().setAll(pane);
+                                        cerrarBienvendia(alerta);
+                                    }
+                                } else {
                                     alerta = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
                                     cerrarBienvendia(alerta);
                                 }
-                            } else {
-                                alerta = bienvenida();
-                                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
-                                paneLogin.getChildren().setAll(pane);
-                                cerrarBienvendia(alerta);
-                            }
+                                break;
 
-                        } else if (conexion.puesto(user).equalsIgnoreCase("Dependiente")) {
-                            if (conexion.cambiarContraseña(user)) {
-                                if (cambiarContraseña(user)) {
+                            case "Dependiente":
+                                if (conexion.cambiarContraseña(user)) {
+                                    if (cambiarContraseña(user)) {
+                                        alerta = bienvenida();
+                                        AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
+                                        paneLogin.getChildren().setAll(pane);
+                                        cerrarBienvendia(alerta);
+                                    }
+                                } else {
+
                                     alerta = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
                                     cerrarBienvendia(alerta);
                                 }
-                            } else {
-
-                                alerta = bienvenida();
-                                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
-                                paneLogin.getChildren().setAll(pane);
-                                cerrarBienvendia(alerta);
-                            }
-
+                                break;
+                            default:
+                                throw new AssertionError();
                         }
 
                     } else {

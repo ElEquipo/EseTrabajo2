@@ -90,7 +90,6 @@ public class GerenteController implements Initializable {
     private TextField tf_salario;
     @FXML
     private TextField tf_nick;
-    private TextField tf_pass;
     @FXML
     private TextField tf_horaEntrada;
     @FXML
@@ -301,10 +300,10 @@ public class GerenteController implements Initializable {
 
     public void contratar() {
         Alert alerta;
+        String pass = null;
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
-                pass = tf_pass.getText(),
                 salariotext = tf_salario.getText(),
                 horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
         Integer idTienda = null;
@@ -446,7 +445,6 @@ public class GerenteController implements Initializable {
         tf_puesto.clear();
         tf_salario.clear();
         tf_nick.clear();
-        tf_pass.clear();
         tf_horaEntrada.clear();
         tf_horaSalida.clear();
     }
