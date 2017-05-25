@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 public class ConexionBD {
 
@@ -93,21 +94,27 @@ public class ConexionBD {
         PreparedStatement psExiste;
         ResultSet resultado;
         boolean existe = false;
+        StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+        String  dni;
 
         try {
-            psExiste = conexion.prepareStatement("SELECT contraseñaParaCambiar(?) AS 'cambiar';");
+            psExiste = conexion.prepareStatement("SELECT dni FROM trabajadores WHERE nick=?;");
             psExiste.setString(1, user);
             resultado = psExiste.executeQuery();
             resultado.next();
-            existe = resultado.getBoolean("cambiar");
+            dni = resultado.getString("dni");
+            if(passwordEncryptor.checkPassword(dni, contraseña(user))){
+                existe = true;
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return existe;
     }
-    
-    public String contraseña(String user){
+
+    public String contraseña(String user) {
         PreparedStatement psContraseña;
         ResultSet resultado;
         String contraseña = null;

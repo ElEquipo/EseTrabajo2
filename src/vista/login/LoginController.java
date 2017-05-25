@@ -116,11 +116,11 @@ public class LoginController implements Initializable {
             if (!user.isEmpty() && !pass.isEmpty()) {
 
                 if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
-                     passwordEncryptor = new StrongPasswordEncryptor();
-                     passEncriptada = passwordEncryptor.encryptPassword(pass);
-                     
+                    passwordEncryptor = new StrongPasswordEncryptor();
+                    passEncriptada = passwordEncryptor.encryptPassword(pass);
+
                     if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
-                        
+
                         switch (conexion.puesto(user)) {
                             case "Gerente":
                                 if (conexion.cambiarContraseña(user)) {
@@ -206,6 +206,8 @@ public class LoginController implements Initializable {
         Alert alerta, subAlerta;
         String password, comprobante;
         boolean cambiado = false, salir = false;
+        StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
+        String passEncriptada;
 
         alerta = new Alert(AlertType.CONFIRMATION);
         alerta.setTitle("Modificar contraseña");
@@ -246,7 +248,8 @@ public class LoginController implements Initializable {
                     lbl.setStyle("-fx-text-fill:red;");
 
                 } else {
-                    trabajadorDAO.cambiarContraseña(user, password);
+                    passEncriptada = passwordEncryptor.encryptPassword(password);
+                    trabajadorDAO.cambiarContraseña(user, passEncriptada);
                     cambiado = true;
                     salir = true;
                 }
