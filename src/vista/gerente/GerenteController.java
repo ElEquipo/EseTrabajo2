@@ -92,7 +92,6 @@ public class GerenteController implements Initializable {
     private TextField tf_salario;
     @FXML
     private TextField tf_nick;
-    @FXML
     private TextField tf_pass;
     @FXML
     private TextField tf_horaEntrada;
@@ -218,12 +217,6 @@ public class GerenteController implements Initializable {
     public void cargarTooltips() {
         Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias, tt_productos, tt_tienda;
 
-        // ESTO DEJALO AQUÍ Y TE LO EXOPLICARÉ EL LUNES
-//        Image image = new Image("../gerente/images/inicio2.png");
-//        ImageView imageView = new ImageView(image);
-//        Tooltip tooltip = new Tooltip();
-//        tooltip.setGraphic(imageView);
-//        bt_personal.setTooltip(tooltip);
         tt_personal = new Tooltip("Personal");
         tt_personal.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");

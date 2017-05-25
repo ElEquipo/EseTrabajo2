@@ -5,7 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ConexionBD {
 
@@ -15,77 +16,75 @@ public class ConexionBD {
     public ConexionBD() {
     }
 
-    public boolean conectar(String bd, String user, String pwd) {
+    public boolean conectar(String bd, String user, String pwd) throws SQLException {
         boolean conectado = false;
         String mensaje = "";
-        try {
-            conexion = DriverManager.getConnection(bd, user, pwd);
-            if (conexion != null) {
-                conectado = true;
-            }
-            mensaje = "Conexión establecida con la Base de Datos " + bd;
 
-        } catch (SQLException ex) {
-            mensaje = "Hubo un problema al intentar conectarse con la base de datos " + bd + "\n"
-                    + "Error: " + ex.getMessage();
-        } catch (Exception e) {
-            mensaje = e.getMessage();
+        conexion = DriverManager.getConnection(bd, user, pwd);
+        if (conexion != null) {
+            conectado = true;
         }
+        mensaje = "Conexión establecida con la Base de Datos " + bd;
 
         this.mensajeErrorConexion = mensaje;
 
         return conectado;
     }
 
-    public boolean desconectar() {
+    public boolean desconectar() throws SQLException {
         boolean desconectado = false;
-        try {
-            conexion.close();
-            desconectado = true;
-        } catch (SQLException ex) {
-        } catch (Exception e) {
-        }
+
+        conexion.close();
+        desconectado = true;
+
         return desconectado;
 
     }
 
-    public boolean existe(String user, String pass) {
+    public boolean existe(String user, String pass) throws SQLException {
 
         PreparedStatement psExiste;
         ResultSet resultado;
         boolean existe = false;
 
-        try {
-            psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
-            psExiste.setString(1, user);
-            psExiste.setString(2, pass);
-            resultado = psExiste.executeQuery();
-            resultado.next();
-            existe = resultado.getBoolean("existe");
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
+        psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
+        psExiste.setString(1, user);
+        psExiste.setString(2, pass);
+        resultado = psExiste.executeQuery();
+        resultado.next();
+        existe = resultado.getBoolean("existe");
 
         return existe;
     }
 
-    public String puesto(String user) {
+    public String puesto(String user) throws SQLException {
         PreparedStatement psPuesto;
         ResultSet resultado;
         String puesto = null;
-        
-        try {
-            psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
-            psPuesto.setString(1, user);
 
-            resultado = psPuesto.executeQuery();
-            resultado.next();
-            puesto = resultado.getString("puesto");
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        
+        psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
+        psPuesto.setString(1, user);
+
+        resultado = psPuesto.executeQuery();
+        resultado.next();
+        puesto = resultado.getString("puesto");
+
         return puesto;
+    }
+
+    public boolean cambiarContraseña(String user) throws SQLException {
+
+        PreparedStatement psExiste;
+        ResultSet resultado;
+        boolean existe = false;
+
+        psExiste = conexion.prepareStatement("SELECT cambiarContraseña(?) AS 'cambiar';");
+        psExiste.setString(1, user);
+        resultado = psExiste.executeQuery();
+        resultado.next();
+        existe = resultado.getBoolean("cambiar");
+
+        return existe;
     }
 
     // * * * * * * * * * * GET AND SET * * * * * * * * * * 

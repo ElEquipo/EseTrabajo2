@@ -4,6 +4,7 @@ import Datos.ConexionBD;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import javax.swing.Timer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -34,7 +35,8 @@ public class LoginController implements Initializable {
 
     private boolean mayusculasActivadas = false;
     private ConexionBD conexion;
-    
+    private String user;
+
     /*ATRIBUTOS FXML*/
     @FXML
     private TextField tf_user;
@@ -98,28 +100,31 @@ public class LoginController implements Initializable {
     }
 
     public void iniciarSesion() {
-        String user = tf_user.getText(), pass = pf_contraseña.getText();
+        user = tf_user.getText();
+        String pass = pf_contraseña.getText();
         Alert alerta;
         try {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
 
                     if (conexion.existe(user, pass)) {
-                        
-                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) { 
+
+                        if (conexion.puesto(user).equalsIgnoreCase("Gerente")) {
+                            cambiarContraseña(user);
                             alerta = bienvenida();
                             AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                             paneLogin.getChildren().setAll(pane);
                             cerrarBienvendia(alerta);
-                           
-                        }else if(conexion.puesto(user).equalsIgnoreCase("Dependiente")){
+
+                        } else if (conexion.puesto(user).equalsIgnoreCase("Dependiente")) {
+                            cambiarContraseña(user);
                             alerta = bienvenida();
                             AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                             paneLogin.getChildren().setAll(pane);
                             cerrarBienvendia(alerta);
-                            
+
                         }
 
                     } else {
@@ -145,16 +150,16 @@ public class LoginController implements Initializable {
 
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public Alert bienvenida(){
+
+    public Alert bienvenida() {
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle("Bienvenido");
-        alerta.setHeaderText("Bienvenido a JustComerce " + tf_user.getText());
-        // Al parar el Thread no se muestra el gif en movimiento
-        Image loading = new Image("file:///C:/Users/Daniel/Desktop/JustComerce/JustComerceV2/src/vista/login/images/loading.gif", 150,150, false, false);
-        alerta.setGraphic(new ImageView(loading));
+        alerta.setHeaderText("Bienvenido a JustComerce " + user);
+        alerta.setGraphic(null);
         darleEstiloAlPanel(alerta);
         alerta.show();
         try {
@@ -164,8 +169,19 @@ public class LoginController implements Initializable {
         }
         return alerta;
     }
-    
-    public void cerrarBienvendia(Alert alerta){
+
+    public void cambiarContraseña(String user) throws SQLException {
+        Alert alerta;
+        
+        if (conexion.cambiarContraseña(user)) {
+            alerta = new Alert(AlertType.CONFIRMATION);
+            alerta.setTitle("Modificar contraseña");
+            alerta.setHeaderText("Porfavor intruduza su contraseña");
+            alerta.showAndWait();
+        }
+    }
+
+    public void cerrarBienvendia(Alert alerta) {
         alerta.close();
     }
 
@@ -229,7 +245,7 @@ public class LoginController implements Initializable {
 //            tf_user.setText("7");
 //        }
     }
-    
+
     private void darleEstiloAlPanel(Alert panel) {
         DialogPane dialogPane;
         Stage alertaStage;
