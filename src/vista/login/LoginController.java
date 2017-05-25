@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import javax.swing.Timer;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -14,9 +15,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -27,6 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -172,12 +176,50 @@ public class LoginController implements Initializable {
 
     public void cambiarContraseña(String user) throws SQLException {
         Alert alerta;
-        
+
         if (conexion.cambiarContraseña(user)) {
             alerta = new Alert(AlertType.CONFIRMATION);
             alerta.setTitle("Modificar contraseña");
             alerta.setHeaderText("Porfavor intruduza su contraseña");
-            alerta.showAndWait();
+
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            PasswordField pass1 = new PasswordField();
+            pass1.setPromptText("Username");
+            PasswordField pass2 = new PasswordField();
+            pass2.setPromptText("Password");
+            Label lbl = new Label();
+
+            grid.add(new Label("Password:"), 0, 0);
+            grid.add(pass1, 1, 0);
+            grid.add(new Label("Password:"), 0, 1);
+            grid.add(pass2, 1, 1);
+            grid.add(lbl, 2, 0);
+            alerta.getDialogPane().setContent(grid);
+
+            Optional<ButtonType> resultado = alerta.showAndWait();
+            ButtonType marcado = resultado.get();
+
+            if (marcado == ButtonType.OK) {
+                if (pass1 != pass2) {
+                    lbl.setText("Las contraseñas no coinciden");
+                    cambiarContraseña(user);
+                } else {
+
+                }
+                 
+                Alert error = new Alert(AlertType.ERROR);
+                error.setTitle("adios");
+                error.showAndWait();
+            }else if(marcado == ButtonType.CANCEL){
+                Alert error = new Alert(AlertType.ERROR);
+                error.setTitle("hola");
+                error.showAndWait();
+            }
+
         }
     }
 
