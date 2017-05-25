@@ -15,6 +15,8 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -100,6 +102,7 @@ public class TrabajadorDAO {
     }
 
     public void cambiarContraseña(String usuario, String pass) {
+        
         try {
             PreparedStatement psTrabajadores;
             psTrabajadores = conexion.prepareStatement("CALL cambiarContraseña(?,?);");
@@ -107,8 +110,9 @@ public class TrabajadorDAO {
             psTrabajadores.setString(2, pass);
             psTrabajadores.executeUpdate();
         } catch (SQLException ex) {
-            System.out.println("Que cojones pasa");
+            Logger.getLogger(TrabajadorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
 
     }
 
