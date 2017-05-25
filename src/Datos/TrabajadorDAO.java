@@ -109,6 +109,7 @@ public class TrabajadorDAO {
             psTrabajadores.setString(1, usuario);
             psTrabajadores.setString(2, pass);
             psTrabajadores.executeUpdate();
+            
         } catch (SQLException ex) {
             Logger.getLogger(TrabajadorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
