@@ -49,7 +49,7 @@ public class ConexionBD {
 
     }
 
-    public boolean existe(String user, String pass) {
+    public boolean existe(String user, String pass) { // BORRAR
 
         PreparedStatement psExiste;
         ResultSet resultado;
@@ -105,6 +105,25 @@ public class ConexionBD {
         }
 
         return existe;
+    }
+    
+    public String contraseña(String user){
+        PreparedStatement psContraseña;
+        ResultSet resultado;
+        String contraseña = null;
+
+        try {
+            psContraseña = conexion.prepareStatement("SELECT contraseña(?) AS 'pass';");
+            psContraseña.setString(1, user);
+
+            resultado = psContraseña.executeQuery();
+            resultado.next();
+            contraseña = resultado.getString("pass");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return contraseña;
     }
 
     // * * * * * * * * * * GET AND SET * * * * * * * * * * 

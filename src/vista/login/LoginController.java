@@ -35,6 +35,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 public class LoginController implements Initializable {
 
@@ -107,14 +108,18 @@ public class LoginController implements Initializable {
     public void iniciarSesion() {
         user = tf_user.getText();
         String pass = pf_contraseña.getText();
+        StrongPasswordEncryptor passwordEncryptor;
+        String passEncriptada = null;
         Alert alerta;
         try {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
                 if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
-
-                    if (conexion.existe(user, pass)) {
+                     passwordEncryptor = new StrongPasswordEncryptor();
+                     passEncriptada = passwordEncryptor.encryptPassword(pass);
+                     
+                    if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
                         
                         switch (conexion.puesto(user)) {
                             case "Gerente":

@@ -38,6 +38,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import vista.Empleado.EmpleadoController;
 
 public class GerenteController implements Initializable {
@@ -176,8 +177,8 @@ public class GerenteController implements Initializable {
             darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
-        
-        try {            
+
+        try {
             listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
             tv_productos.setItems(listaProductos);
             tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
@@ -187,7 +188,7 @@ public class GerenteController implements Initializable {
             tb_precioCompra.setCellValueFactory(new PropertyValueFactory<>("precioCompra"));
             tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
             tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
-            
+
         } catch (SQLException ex) {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Error Carga Productos");
@@ -195,7 +196,7 @@ public class GerenteController implements Initializable {
             darleEstiloAlPanel(alerta);
             alerta.showAndWait();
         }
-        
+
         try {
             listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
             cb_tiendas.setItems(listaTiendas);
@@ -300,7 +301,8 @@ public class GerenteController implements Initializable {
 
     public void contratar() {
         Alert alerta;
-        String pass = null;
+        StrongPasswordEncryptor passwordEncryptor;
+        String passEncriptada = null;
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
@@ -339,8 +341,10 @@ public class GerenteController implements Initializable {
 
             if (nick.isEmpty()) {
                 camposVacios.add("Nick");
-            }else{
-                pass = dni;
+            } else {
+                passwordEncryptor = new StrongPasswordEncryptor();
+                passEncriptada = passwordEncryptor.encryptPassword(dni);
+
             }
 
             if (cb_tiendas.getSelectionModel().isEmpty()) {
@@ -369,7 +373,7 @@ public class GerenteController implements Initializable {
                 darleEstiloAlPanel(alerta);
                 alerta.showAndWait();
             } else {
-                Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, pass, horaEntrada, horaSalida, idTienda);
+                Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, passEncriptada, horaEntrada, horaSalida, idTienda);
                 this.trabajador.insertar(trabajador);
                 lb_id.setText(" " + this.trabajador.mostrarSiguienteID());
             }
@@ -448,8 +452,7 @@ public class GerenteController implements Initializable {
         tf_horaEntrada.clear();
         tf_horaSalida.clear();
     }
-    
-    
+
     private void darleEstiloAlPanel(Alert panel) {
         DialogPane dialogPane;
         Stage alertaStage;
