@@ -351,7 +351,7 @@ public class LoginController implements Initializable {
         Stage alertaStage;
 
         dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("css.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
          alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
