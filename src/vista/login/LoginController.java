@@ -115,10 +115,10 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
-                    System.out.println(passEncriptada);
+                   
 
                     if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
 
@@ -181,9 +181,9 @@ public class LoginController implements Initializable {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -193,7 +193,7 @@ public class LoginController implements Initializable {
         alerta.setHeaderText("Bienvenido a JustComerce " + user);
         alerta.setGraphic(null);
         darleEstiloAlPanel(alerta);
-        alerta.show();
+        alerta.showAndWait();
         try {
             Thread.sleep(1200);
         } catch (InterruptedException ex) {
@@ -354,8 +354,7 @@ public class LoginController implements Initializable {
         dialogPane.getStylesheets().add(getClass().getResource("css.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        // COGER LA RUTA DEL ICONO
-        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
+         alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
     }
 
 }

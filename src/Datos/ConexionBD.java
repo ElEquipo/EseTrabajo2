@@ -31,7 +31,7 @@ public class ConexionBD {
             this.mensajeErrorConexion = mensaje;
 
         } catch (SQLException ex) {
-            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         return conectado;
     }
