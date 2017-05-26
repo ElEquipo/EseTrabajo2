@@ -35,9 +35,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import jfxtras.scene.control.LocalTimePicker;
+import jfxtras.scene.control.LocalTimeTextField;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import vista.Empleado.EmpleadoController;
 
@@ -147,6 +150,10 @@ public class GerenteController implements Initializable {
     private TableColumn<Producto, Double> tb_precioVenta;
     @FXML
     private TableColumn<Producto, Double> tb_iva;
+    @FXML
+    private LocalTimeTextField dp_horaEntrada;
+    @FXML
+    private LocalTimePicker dp_horaSalida;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -287,11 +294,13 @@ public class GerenteController implements Initializable {
         if (evento == bt_contratarPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_contratar.setVisible(true);
+            dp_fecha.setValue(LocalDate.now());
         }
 
         if (evento == bt_atrasContratar) {
             pn_menuTrabajadores.setVisible(true);
             pn_contratar.setVisible(false);
+            limpiarCampos();
         }
 
         if (evento == bt_contratar) { // INSERTA EN LA BD
@@ -356,13 +365,13 @@ public class GerenteController implements Initializable {
             if (horaEntradaText.isEmpty()) {
                 camposVacios.add("Hora entrada");
             } else {
-                horaEntrada = LocalTime.parse(horaEntradaText);
+                horaEntrada = dp_horaEntrada.getLocalTime();
             }
 
             if (horaSalidatext.isEmpty()) {
                 camposVacios.add("Hora salida");
             } else {
-                horaSalida = LocalTime.parse(horaSalidatext);
+                horaSalida = dp_horaSalida.getLocalTime();
             }
 
             if (!camposVacios.isEmpty()) {
@@ -451,6 +460,8 @@ public class GerenteController implements Initializable {
         tf_nick.clear();
         tf_horaEntrada.clear();
         tf_horaSalida.clear();
+        dp_fecha.setValue(LocalDate.now());
+        
     }
 
     private void darleEstiloAlPanel(Alert panel) {
@@ -458,11 +469,10 @@ public class GerenteController implements Initializable {
         Stage alertaStage;
 
         dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("gerente.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        // COGER LA RUTA DEL ICONO
-        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
+        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
     }
 
 }

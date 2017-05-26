@@ -115,7 +115,7 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT")) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
                    
@@ -193,7 +193,7 @@ public class LoginController implements Initializable {
         alerta.setHeaderText("Bienvenido a JustComerce " + user);
         alerta.setGraphic(null);
         darleEstiloAlPanel(alerta);
-        alerta.showAndWait();
+        alerta.show();
         try {
             Thread.sleep(1200);
         } catch (InterruptedException ex) {
@@ -354,7 +354,7 @@ public class LoginController implements Initializable {
         dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-         alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
+        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
     }
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import jfxtras.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -98,6 +99,8 @@
                   <DatePicker fx:id="dp_fecha" layoutX="195.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0" />
                   <Label fx:id="lb_id" contentDisplay="CENTER" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="66.0" textAlignment="CENTER" />
                   <ComboBox fx:id="cb_tiendas" layoutX="31.0" layoutY="318.0" prefWidth="150.0" promptText="Tienda" />
+                  <LocalTimeTextField fx:id="dp_horaEntrada" layoutX="32.0" layoutY="394.0" prefHeight="25.0" prefWidth="149.0" />
+                  <LocalTimePicker fx:id="dp_horaSalida" layoutX="199.0" layoutY="391.0" />
                </children>
             </Pane>
          </children>

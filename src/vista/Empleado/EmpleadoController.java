@@ -31,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -237,12 +238,11 @@ public class EmpleadoController implements Initializable {
         Stage alertaStage;
 
         dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("empleado.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
         dialogPane.getStyleClass().add("dialog-pane");
         alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        // COGER LA RUTA DEL ICONO
-        // alertaStage.getIcons().add(new Image("file:/images/icon.png"));
-    }
+        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
+      }
 
 
 }
