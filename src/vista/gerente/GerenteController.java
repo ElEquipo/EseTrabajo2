@@ -4,6 +4,7 @@ import Datos.ConexionBD;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
+import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
@@ -40,7 +41,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jfxtras.scene.control.LocalTimePicker;
-import jfxtras.scene.control.LocalTimeTextField;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import vista.Empleado.EmpleadoController;
 
@@ -51,6 +51,7 @@ public class GerenteController implements Initializable {
     private ProductoDAO producto;
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Producto> listaProductos;
+    private Alerta estiloAlerta;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -160,31 +161,33 @@ public class GerenteController implements Initializable {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         producto = new ProductoDAO(ConexionBD.conexion);
+        estiloAlerta = new Alerta();
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
         dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
+        Alert errorCarga;
         try {
             lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
         } catch (SQLException ex) {
-            Alert alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error Id");
-            alerta.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(AlertType.ERROR);
+            errorCarga.setTitle("Error Id");
+            errorCarga.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
         try {
             listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
             cb_tiendas.setItems(listaTiendas);
 
         } catch (SQLException ex) {
-            Alert alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error Carga Tiendas");
-            alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Tiendas");
+            errorCarga.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -199,11 +202,11 @@ public class GerenteController implements Initializable {
             tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
 
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Productos");
-            alerta.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Productos");
+            errorCarga.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -211,11 +214,11 @@ public class GerenteController implements Initializable {
             cb_tiendas.setItems(listaTiendas);
 
         } catch (SQLException ex) {
-            Alert alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error Carga Tiendas");
-            alerta.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Tiendas");
+            errorCarga.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         cargarTooltips();
@@ -311,7 +314,7 @@ public class GerenteController implements Initializable {
     }
 
     public void contratar() {
-        Alert alerta;
+        Alert camposRestantes, errorIngresar;
         StrongPasswordEncryptor passwordEncryptor;
         String passEncriptada = null;
         List<String> camposVacios = new ArrayList<>();
@@ -364,45 +367,45 @@ public class GerenteController implements Initializable {
             }
 
             if (!camposVacios.isEmpty()) {
-                alerta = new Alert(AlertType.WARNING);
-                alerta.setTitle("Error Ingresar");
-                alerta.setHeaderText("Rellene los campos obligatorios (naranja).");
-                alerta.setContentText("Campos Vacios: " + camposVacios.toString());
-                darleEstiloAlPanel(alerta);
-                alerta.showAndWait();
-                
-            } else if(horaEntrada.equals(LocalTime.MIDNIGHT) || horaSalida.equals(LocalTime.MIDNIGHT)){
-                alerta = new Alert(AlertType.INFORMATION);
-                alerta.setTitle("Horarios");
-                alerta.setHeaderText("Recuerde revisar los horarios.");
-                darleEstiloAlPanel(alerta);
-                alerta.showAndWait();
-                
-            }else{
+                camposRestantes = new Alert(AlertType.WARNING);
+                camposRestantes.setTitle("Error Ingresar");
+                camposRestantes.setHeaderText("Rellene los campos obligatorios (naranja).");
+                camposRestantes.setContentText("Campos Vacios: " + camposVacios.toString());
+                estiloAlerta.darleEstiloAlPanel(camposRestantes);
+                camposRestantes.showAndWait();
+
+            } else if (horaEntrada.equals(LocalTime.MIDNIGHT) || horaSalida.equals(LocalTime.MIDNIGHT)) {
+                camposRestantes = new Alert(AlertType.INFORMATION);
+                camposRestantes.setTitle("Horarios");
+                camposRestantes.setHeaderText("Recuerde revisar los horarios.");
+                estiloAlerta.darleEstiloAlPanel(camposRestantes);
+                camposRestantes.showAndWait();
+
+            } else {
                 Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, passEncriptada, horaEntrada, horaSalida, idTienda);
                 this.trabajador.insertar(trabajador);
                 lb_id.setText(" " + this.trabajador.mostrarSiguienteID());
             }
 
         } catch (NumberFormatException | NullPointerException e) {
-            alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error Tipo dato");
-            alerta.setContentText(e.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorIngresar = new Alert(AlertType.ERROR);
+            errorIngresar.setTitle("Error Tipo dato");
+            errorIngresar.setContentText(e.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorIngresar);
+            errorIngresar.showAndWait();
 
         } catch (SQLException ex) {
-            alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error Introducir");
-            alerta.setContentText(ex.getMessage() + " " + ex.getErrorCode());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorIngresar = new Alert(AlertType.ERROR);
+            errorIngresar.setTitle("Error Introducir");
+            errorIngresar.setContentText(ex.getMessage() + " " + ex.getErrorCode());
+            estiloAlerta.darleEstiloAlPanel(errorIngresar);
+            errorIngresar.showAndWait();
         } catch (Exception e) {
-            alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error");
-            alerta.setContentText(e.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorIngresar = new Alert(AlertType.ERROR);
+            errorIngresar.setTitle("Error");
+            errorIngresar.setContentText(e.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorIngresar);
+            errorIngresar.showAndWait();
         }
     }
 
@@ -458,18 +461,7 @@ public class GerenteController implements Initializable {
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
         dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
         dp_fecha.setValue(LocalDate.now());
-        
-    }
 
-    private void darleEstiloAlPanel(Alert panel) {
-        DialogPane dialogPane;
-        Stage alertaStage;
-
-        dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
-        dialogPane.getStyleClass().add("dialog-pane");
-        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
     }
 
 }

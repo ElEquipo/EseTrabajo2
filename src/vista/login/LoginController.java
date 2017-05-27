@@ -1,5 +1,6 @@
 package vista.login;
 
+import Modelo.Alerta.Alerta;
 import Datos.ConexionBD;
 import Datos.TrabajadorDAO;
 import java.awt.event.ActionListener;
@@ -21,7 +22,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
@@ -33,7 +33,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -42,6 +41,7 @@ public class LoginController implements Initializable {
     private boolean mayusculasActivadas = false;
     private ConexionBD conexion;
     private TrabajadorDAO trabajadorDAO;
+    private Alerta estiloAlerta;
     private String user;
 
     /*ATRIBUTOS FXML*/
@@ -71,6 +71,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new ConexionBD();
+        estiloAlerta = new Alerta();
         FadeTransition transicion = new FadeTransition(Duration.millis(4000), pn_principalBienvenida);
         transicion.setAutoReverse(true);
         transicion.setFromValue(1.0);
@@ -110,7 +111,7 @@ public class LoginController implements Initializable {
         String pass = pf_contraseña.getText();
         StrongPasswordEncryptor passwordEncryptor;
         String passEncriptada = null;
-        Alert alerta;
+        Alert bienvenida;
         try {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
@@ -118,7 +119,6 @@ public class LoginController implements Initializable {
                 if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root")) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
-                   
 
                     if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
 
@@ -126,33 +126,33 @@ public class LoginController implements Initializable {
                             case "Gerente":
                                 if (conexion.cambiarContraseña(user)) {
                                     if (cambiarContraseña(user)) {
-                                        alerta = bienvenida();
+                                        bienvenida = bienvenida();
                                         AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                                         paneLogin.getChildren().setAll(pane);
-                                        cerrarBienvendia(alerta);
+                                        cerrarBienvendia(bienvenida);
                                     }
                                 } else {
-                                    alerta = bienvenida();
+                                    bienvenida = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
-                                    cerrarBienvendia(alerta);
+                                    cerrarBienvendia(bienvenida);
                                 }
                                 break;
 
                             case "Dependiente":
                                 if (conexion.cambiarContraseña(user)) {
                                     if (cambiarContraseña(user)) {
-                                        alerta = bienvenida();
+                                        bienvenida = bienvenida();
                                         AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                                         paneLogin.getChildren().setAll(pane);
-                                        cerrarBienvendia(alerta);
+                                        cerrarBienvendia(bienvenida);
                                     }
                                 } else {
 
-                                    alerta = bienvenida();
+                                    bienvenida = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
-                                    cerrarBienvendia(alerta);
+                                    cerrarBienvendia(bienvenida);
                                 }
                                 break;
                             default:
@@ -192,7 +192,8 @@ public class LoginController implements Initializable {
         alerta.setTitle("Bienvenido");
         alerta.setHeaderText("Bienvenido a JustComerce " + user);
         alerta.setGraphic(null);
-        darleEstiloAlPanel(alerta);
+        estiloAlerta.darleEstiloAlPanel(alerta);
+
         alerta.show();
         try {
             Thread.sleep(1200);
@@ -231,7 +232,7 @@ public class LoginController implements Initializable {
         grid.add(pass2, 1, 1);
         grid.add(lbl, 1, 2);
         alerta.getDialogPane().setContent(grid);
-        darleEstiloAlPanel(alerta);
+        estiloAlerta.darleEstiloAlPanel(alerta);
 
         do {
             Optional<ButtonType> resultado = alerta.showAndWait();
@@ -264,7 +265,7 @@ public class LoginController implements Initializable {
                 subAlerta.setContentText("Por concidiones de seguridad es "
                         + "obligatorio cambiar de contraseña la primera vez"
                         + " que se ingresa en el sistema.");
-                darleEstiloAlPanel(subAlerta);
+                estiloAlerta.darleEstiloAlPanel(subAlerta);
                 subAlerta.showAndWait();
             }
         } while (salir != true);
@@ -344,17 +345,6 @@ public class LoginController implements Initializable {
 //            mayusculasActivadas = false;
 //            tf_user.setText("7");
 //        }
-    }
-
-    private void darleEstiloAlPanel(Alert panel) {
-        DialogPane dialogPane;
-        Stage alertaStage;
-
-        dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
-        dialogPane.getStyleClass().add("dialog-pane");
-        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
     }
 
 }

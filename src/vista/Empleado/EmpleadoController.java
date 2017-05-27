@@ -4,12 +4,12 @@ import Datos.ConexionBD;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
+import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,27 +25,25 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 public class EmpleadoController implements Initializable {
 
-    TiendaDAO tienda;
-    ProductoDAO producto;
-    TrabajadorDAO trabajador;
+    private TiendaDAO tienda;
+    private ProductoDAO producto;
+    private TrabajadorDAO trabajador;
+    private Alerta estiloAlerta;
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Trabajador> listaTrabajadores;
-    LocalDateTime date = LocalDateTime.now();
-    String formato;
+    private LocalDateTime date = LocalDateTime.now();
+    private String formato;
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -110,22 +108,24 @@ public class EmpleadoController implements Initializable {
         producto = new ProductoDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
-        
+        Alert errorCarga;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
         formato = date.format(formatter);
-        
+
         tf_fechaVenta.setText(formato);
         try {
             lb_idVenta.setText(producto.mostrarSiguienteID());
             System.out.println(producto.mostrarSiguienteID());
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Id");
-            alerta.setHeaderText("Error al cargar el id de la venta \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Id");
+            errorCarga.setHeaderText("Error al cargar el id de la venta \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -140,11 +140,11 @@ public class EmpleadoController implements Initializable {
             tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
             tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Productos");
-            alerta.setHeaderText("Error al cargar la lista de productos");
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Productos");
+            errorCarga.setHeaderText("Error al cargar la lista de productos");
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -152,11 +152,11 @@ public class EmpleadoController implements Initializable {
             listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
             cb_tiendas.setItems(listaTiendas);
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Tiendas");
-            alerta.setHeaderText("Error al cargar la lista de tiendas");
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Tiendas");
+            errorCarga.setHeaderText("Error al cargar la lista de tiendas");
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -164,11 +164,11 @@ public class EmpleadoController implements Initializable {
             listaTrabajadores = FXCollections.observableArrayList(trabajador.cargarDatos());
             cb_trabajadores.setItems(listaTrabajadores);
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Trabajdores");
-            alerta.setHeaderText("Error al cargar la lista de trabajadores \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Trabajdores");
+            errorCarga.setHeaderText("Error al cargar la lista de trabajadores \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
         try {
@@ -176,11 +176,11 @@ public class EmpleadoController implements Initializable {
             listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
             cb_referencia.setItems(listaProductos);
         } catch (SQLException ex) {
-            Alert alerta = new Alert(Alert.AlertType.ERROR);
-            alerta.setTitle("Error Carga Productos");
-            alerta.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
-            darleEstiloAlPanel(alerta);
-            alerta.showAndWait();
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Productos");
+            errorCarga.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
         }
 
     }
@@ -232,17 +232,5 @@ public class EmpleadoController implements Initializable {
         }
 
     }
-    
-      private void darleEstiloAlPanel(Alert panel) {
-        DialogPane dialogPane;
-        Stage alertaStage;
-
-        dialogPane = panel.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/EstilosAlerta/estilosAlertas.css").toExternalForm());
-        dialogPane.getStyleClass().add("dialog-pane");
-        alertaStage = (Stage) panel.getDialogPane().getScene().getWindow();
-        alertaStage.getIcons().add(new Image("/vista/login/images/icon.png"));
-      }
-
 
 }
