@@ -204,7 +204,7 @@ public class LoginController implements Initializable {
     }
 
     public boolean cambiarContraseña(String user) throws SQLException {
-        trabajadorDAO = new TrabajadorDAO(ConexionBD.conexion);
+        trabajadorDAO = new TrabajadorDAO(ConexionBD.actualUser);
         Alert alerta, subAlerta;
         String password, comprobante;
         boolean cambiado = false, salir = false;

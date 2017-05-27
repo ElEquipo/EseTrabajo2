@@ -44,6 +44,7 @@ public class EmpleadoController implements Initializable {
     private ObservableList<Trabajador> listaTrabajadores;
     private LocalDateTime date = LocalDateTime.now();
     private String formato;
+    private Trabajador empleadoActual;
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -105,9 +106,10 @@ public class EmpleadoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        producto = new ProductoDAO(ConexionBD.conexion);
-        tienda = new TiendaDAO(ConexionBD.conexion);
-        trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        producto = new ProductoDAO(ConexionBD.actualUser);
+        tienda = new TiendaDAO(ConexionBD.actualUser);
+        trabajador = new TrabajadorDAO(ConexionBD.actualUser);
+        empleadoActual = ConexionBD.conectado;
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);

@@ -8,6 +8,7 @@ import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
+import Modelo.ValidadorDNI;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -49,6 +50,7 @@ public class GerenteController implements Initializable {
     private ObservableList<Producto> listaProductos;
     private Alerta estiloAlerta;
     private Trabajador gerenteActual;
+    private ValidadorDNI validadorDni;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -155,9 +157,10 @@ public class GerenteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        trabajador = new TrabajadorDAO(ConexionBD.conexion);
-        tienda = new TiendaDAO(ConexionBD.conexion);
-        producto = new ProductoDAO(ConexionBD.conexion);
+        trabajador = new TrabajadorDAO(ConexionBD.actualUser);
+        tienda = new TiendaDAO(ConexionBD.actualUser);
+        producto = new ProductoDAO(ConexionBD.actualUser);
+        validadorDni = new ValidadorDNI();
         gerenteActual = ConexionBD.conectado;
         estiloAlerta = new Alerta();
         pn_menuTrabajadores.setVisible(false);
@@ -302,7 +305,7 @@ public class GerenteController implements Initializable {
     }
 
     public void contratar() {
-        Alert camposRestantes, errorIngresar;
+        Alert camposRestantes, errorIngresar, contratoCorrecto, dniIncorrecto;
         StrongPasswordEncryptor passwordEncryptor;
         String passEncriptada = null;
         List<String> camposVacios = new ArrayList<>();
@@ -322,6 +325,7 @@ public class GerenteController implements Initializable {
 
             if (dni.isEmpty()) {
                 camposVacios.add("DNI");
+
             }
 
             if (puesto.isEmpty()) {
@@ -354,8 +358,6 @@ public class GerenteController implements Initializable {
             } else {
                 idTienda = cb_tiendas.getSelectionModel().getSelectedItem().getId();
             }*/
-            
-
             if (!camposVacios.isEmpty()) {
                 camposRestantes = new Alert(AlertType.WARNING);
                 camposRestantes.setTitle("Error Ingresar");
@@ -367,19 +369,59 @@ public class GerenteController implements Initializable {
             } else if (horaEntrada.equals(LocalTime.MIDNIGHT) || horaSalida.equals(LocalTime.MIDNIGHT)) {
                 camposRestantes = new Alert(AlertType.INFORMATION);
                 camposRestantes.setTitle("Horarios");
-                camposRestantes.setHeaderText("Recuerde revisar los horarios.");
+                camposRestantes.setHeaderText("Revise los horarios.");
+                camposRestantes.setContentText("No pueden estar a 00:00.");
                 estiloAlerta.darleEstiloAlPanel(camposRestantes);
                 camposRestantes.showAndWait();
 
+            } else if (!validadorDni.validar(dni)) {
+
+                dniIncorrecto = new Alert(AlertType.ERROR);
+                dniIncorrecto.setTitle("DNI ERRROR");
+                dniIncorrecto.setHeaderText("DNI incorrecto");
+                dniIncorrecto.setContentText("Por favor, introduzca un dni con "
+                        + "formato correcto, ej;(12345678P).\n"
+                        + "Además debe de ser un DNI válido.");
+                estiloAlerta.darleEstiloAlPanel(dniIncorrecto);
+                dniIncorrecto.showAndWait();
+
             } else {
-                Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, passEncriptada, horaEntrada, horaSalida, idTienda);
+                Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(),
+                        dni,
+                        nombre,
+                        apellido1,
+                        apellido2,
+                        puesto,
+                        salario,
+                        fecha,
+                        nick,
+                        passEncriptada,
+                        horaEntrada,
+                        horaSalida,
+                        idTienda);
                 this.trabajador.insertar(trabajador);
+                contratoCorrecto = new Alert(AlertType.INFORMATION);
+                contratoCorrecto.setTitle("Contratado");
+                contratoCorrecto.setHeaderText("Ingresado correctamente.");
+                contratoCorrecto.setContentText(trabajador.getNombre() + " " + trabajador.getApellido1() + " "
+                        + trabajador.getApellido2() + " ahora pertence a nuestra plantilla"
+                        + " desenpeñando el cargo de " + trabajador.getPuesto() + ".\n Le deseamos"
+                        + " suerte en su nueva etapa.");
+                estiloAlerta.darleEstiloAlPanel(contratoCorrecto);
+                contratoCorrecto.showAndWait();
                 lb_id.setText(" " + this.trabajador.mostrarSiguienteID());
             }
 
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException e) {
             errorIngresar = new Alert(AlertType.ERROR);
             errorIngresar.setTitle("Error Tipo dato");
+            errorIngresar.setContentText(e.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorIngresar);
+            errorIngresar.showAndWait();
+
+        } catch (NullPointerException e) {
+            errorIngresar = new Alert(AlertType.ERROR);
+            errorIngresar.setTitle("Vacio");
             errorIngresar.setContentText(e.getMessage());
             estiloAlerta.darleEstiloAlPanel(errorIngresar);
             errorIngresar.showAndWait();
@@ -413,7 +455,7 @@ public class GerenteController implements Initializable {
             pn_despedir.setVisible(false);
         }
 
-        if (evento == bt_despedir) { // INSERTA EN LA BD
+        if (evento == bt_despedir) { // ELIMINA EN LA BD
 
         }
 
