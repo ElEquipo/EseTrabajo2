@@ -95,10 +95,6 @@ public class GerenteController implements Initializable {
     @FXML
     private TextField tf_nick;
     @FXML
-    private TextField tf_horaEntrada;
-    @FXML
-    private TextField tf_horaSalida;
-    @FXML
     private TextField tf_dni;
     @FXML
     private Button bt_contratar;
@@ -151,7 +147,11 @@ public class GerenteController implements Initializable {
     @FXML
     private TableColumn<Producto, Double> tb_iva;
     @FXML
-    private LocalTimeTextField dp_horaEntrada;
+    private LocalTimePicker dp_horaEntrada;
+    @FXML
+    private Label lb_fondoHoraEntrada;
+    @FXML
+    private Label lb_fondoHoraSalida;
     @FXML
     private LocalTimePicker dp_horaSalida;
 
@@ -164,6 +164,8 @@ public class GerenteController implements Initializable {
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
+        dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
+        dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
         try {
             lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
         } catch (SQLException ex) {
@@ -315,12 +317,11 @@ public class GerenteController implements Initializable {
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
-                salariotext = tf_salario.getText(),
-                horaEntradaText = tf_horaEntrada.getText(), horaSalidatext = tf_horaSalida.getText();
+                salariotext = tf_salario.getText();
         Integer idTienda = null;
         Double salario = null;
         LocalDate fecha;
-        LocalTime horaEntrada = null, horaSalida = null;
+        LocalTime horaEntrada = dp_horaEntrada.getLocalTime(), horaSalida = dp_horaSalida.getLocalTime();
 
         try {
 
@@ -362,18 +363,6 @@ public class GerenteController implements Initializable {
                 idTienda = cb_tiendas.getSelectionModel().getSelectedItem().getId();
             }
 
-            if (horaEntradaText.isEmpty()) {
-                camposVacios.add("Hora entrada");
-            } else {
-                horaEntrada = dp_horaEntrada.getLocalTime();
-            }
-
-            if (horaSalidatext.isEmpty()) {
-                camposVacios.add("Hora salida");
-            } else {
-                horaSalida = dp_horaSalida.getLocalTime();
-            }
-
             if (!camposVacios.isEmpty()) {
                 alerta = new Alert(AlertType.WARNING);
                 alerta.setTitle("Error Ingresar");
@@ -381,7 +370,15 @@ public class GerenteController implements Initializable {
                 alerta.setContentText("Campos Vacios: " + camposVacios.toString());
                 darleEstiloAlPanel(alerta);
                 alerta.showAndWait();
-            } else {
+                
+            } else if(horaEntrada.equals(LocalTime.MIDNIGHT) || horaSalida.equals(LocalTime.MIDNIGHT)){
+                alerta = new Alert(AlertType.INFORMATION);
+                alerta.setTitle("Horarios");
+                alerta.setHeaderText("Recuerde revisar los horarios.");
+                darleEstiloAlPanel(alerta);
+                alerta.showAndWait();
+                
+            }else{
                 Trabajador trabajador = new Trabajador(this.trabajador.mostrarSiguienteID(), dni, nombre, apellido1, apellido2, puesto, salario, fecha, nick, passEncriptada, horaEntrada, horaSalida, idTienda);
                 this.trabajador.insertar(trabajador);
                 lb_id.setText(" " + this.trabajador.mostrarSiguienteID());
@@ -458,8 +455,8 @@ public class GerenteController implements Initializable {
         tf_puesto.clear();
         tf_salario.clear();
         tf_nick.clear();
-        tf_horaEntrada.clear();
-        tf_horaSalida.clear();
+        dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
+        dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
         dp_fecha.setValue(LocalDate.now());
         
     }
