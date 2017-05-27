@@ -27,19 +27,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import jfxtras.scene.control.LocalTimePicker;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import vista.Empleado.EmpleadoController;
@@ -52,6 +48,7 @@ public class GerenteController implements Initializable {
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Producto> listaProductos;
     private Alerta estiloAlerta;
+    private Trabajador gerenteActual;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -131,8 +128,8 @@ public class GerenteController implements Initializable {
     private DatePicker dp_fecha;
     @FXML
     private Label lb_id;
-    @FXML
-    private ComboBox<Tienda> cb_tiendas;
+    /*IDEAL PARA EL GERENTE DE VARIAS TIENDAS
+    private ComboBox<Tienda> cb_tiendas;*/
     @FXML
     private TableColumn<Producto, Integer> tb_referencia;
     @FXML
@@ -161,6 +158,7 @@ public class GerenteController implements Initializable {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         producto = new ProductoDAO(ConexionBD.conexion);
+        gerenteActual = ConexionBD.conectado;
         estiloAlerta = new Alerta();
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
@@ -178,7 +176,9 @@ public class GerenteController implements Initializable {
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }
+        /*
         try {
+            ESTO SERÍA IDEAL SI CONTEMPLASEMOS QUE UN GERENTE REGENTA VARIAS TIENDAS
             listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
             cb_tiendas.setItems(listaTiendas);
 
@@ -188,7 +188,7 @@ public class GerenteController implements Initializable {
             errorCarga.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
-        }
+        }*/
 
         try {
             listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
@@ -205,18 +205,6 @@ public class GerenteController implements Initializable {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Productos");
             errorCarga.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
-            estiloAlerta.darleEstiloAlPanel(errorCarga);
-            errorCarga.showAndWait();
-        }
-
-        try {
-            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
-            cb_tiendas.setItems(listaTiendas);
-
-        } catch (SQLException ex) {
-            errorCarga = new Alert(AlertType.ERROR);
-            errorCarga.setTitle("Error Carga Tiendas");
-            errorCarga.setHeaderText("Error al cargar la lista de tiendas \n" + ex.getMessage());
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }
@@ -321,7 +309,7 @@ public class GerenteController implements Initializable {
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
                 salariotext = tf_salario.getText();
-        Integer idTienda = null;
+        Integer idTienda = gerenteActual.getIdTienda();
         Double salario = null;
         LocalDate fecha;
         LocalTime horaEntrada = dp_horaEntrada.getLocalTime(), horaSalida = dp_horaSalida.getLocalTime();
@@ -360,11 +348,13 @@ public class GerenteController implements Initializable {
 
             }
 
+            /* IDEAL GERENTE VARIAS TIENDAS
             if (cb_tiendas.getSelectionModel().isEmpty()) {
                 camposVacios.add("Tienda");
             } else {
                 idTienda = cb_tiendas.getSelectionModel().getSelectedItem().getId();
-            }
+            }*/
+            
 
             if (!camposVacios.isEmpty()) {
                 camposRestantes = new Alert(AlertType.WARNING);

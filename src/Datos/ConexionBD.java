@@ -1,5 +1,6 @@
 package Datos;
 
+import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,22 +13,31 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 public class ConexionBD {
 
     public static Connection conexion;
+    public static Trabajador conectado;
     private String mensajeErrorConexion;
+    private TrabajadorDAO trabajadorDAO;
 
     public ConexionBD() {
     }
+    
+    public ConexionBD(Connection conn){
+        conexion = conn;
+    }
+    
 
-    public boolean conectar(String bd, String user, String pwd) {
+    public boolean conectar(String bd, String user, String pwd, String AppUser) {
         boolean conectado = false;
         String mensaje = "";
         try {
-
             conexion = DriverManager.getConnection(bd, user, pwd);
             if (conexion != null) {
                 conectado = true;
             }
+            trabajadorDAO = new TrabajadorDAO(conexion);
+            this.conectado =  trabajadorDAO.cargarTrabajador(AppUser);
+            
+            
             mensaje = "Conexión establecida con la Base de Datos " + bd;
-
             this.mensajeErrorConexion = mensaje;
 
         } catch (SQLException ex) {
@@ -141,4 +151,14 @@ public class ConexionBD {
     public Connection getConexion() {
         return conexion;
     }
+
+    public Trabajador getConectado() {
+        return conectado;
+    }
+
+    public void setConectado(Trabajador conectado) {
+        this.conectado = conectado;
+    }
+    
+    
 }

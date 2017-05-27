@@ -101,19 +101,44 @@ public class TrabajadorDAO {
         return listaTrabajadores;
     }
 
-    public void cambiarContraseña(String usuario, String pass) {
+    public Trabajador cargarTrabajador(String user) throws SQLException {
+        PreparedStatement psTrabajadores;
+        ResultSet rsTrabajadores;
+        Trabajador trabajador = null;
+        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE nick=?;");
+        psTrabajadores.setString(1, user);
+        rsTrabajadores = psTrabajadores.executeQuery();
+        rsTrabajadores.next();
         
+        trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
+                rsTrabajadores.getString("dni"),
+                rsTrabajadores.getString("nombre"),
+                rsTrabajadores.getString("apellido1"),
+                rsTrabajadores.getString("apellido2"),
+                rsTrabajadores.getString("puesto"),
+                rsTrabajadores.getDouble("salarioBrutoAnual"),
+                rsTrabajadores.getDate("fechaAlta").toLocalDate(),
+                rsTrabajadores.getString("nick"),
+                rsTrabajadores.getString("password"),
+                rsTrabajadores.getTime("horaEntrada").toLocalTime(),
+                rsTrabajadores.getTime("horaSalida").toLocalTime(),
+                rsTrabajadores.getInt("idTienda"));
+
+        return trabajador;
+    }
+
+    public void cambiarContraseña(String usuario, String pass) {
+
         try {
             PreparedStatement psTrabajadores;
             psTrabajadores = conexion.prepareStatement("CALL cambiarContraseña(?,?);");
             psTrabajadores.setString(1, usuario);
             psTrabajadores.setString(2, pass);
             psTrabajadores.executeUpdate();
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(TrabajadorDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 

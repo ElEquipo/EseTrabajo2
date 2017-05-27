@@ -135,14 +135,13 @@
                         <Cursor fx:constant="HAND" />
                      </cursor></DatePicker>
                   <Label fx:id="lb_id" contentDisplay="CENTER" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="66.0" textAlignment="CENTER" />
-                  <ComboBox fx:id="cb_tiendas" layoutX="31.0" layoutY="318.0" prefWidth="150.0" promptText="Tienda" />
-                  <Label fx:id="lb_fondoHoraEntrada" layoutX="32.0" layoutY="354.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@gerente.css" />
-                  <Label fx:id="lb_fondoHoraSalida" layoutX="195.0" layoutY="354.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@gerente.css" />
-                  <LocalTimePicker fx:id="dp_horaSalida" layoutX="199.0" layoutY="354.0" stylesheets="@gerente.css">
+                  <Label fx:id="lb_fondoHoraEntrada" layoutX="32.0" layoutY="315.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@gerente.css" />
+                  <Label fx:id="lb_fondoHoraSalida" layoutX="195.0" layoutY="315.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@gerente.css" />
+                  <LocalTimePicker fx:id="dp_horaSalida" layoutX="199.0" layoutY="315.0" stylesheets="@gerente.css">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></LocalTimePicker>
-                  <LocalTimePicker fx:id="dp_horaEntrada" layoutX="37.0" layoutY="354.0" stylesheets="@gerente.css">
+                  <LocalTimePicker fx:id="dp_horaEntrada" layoutX="37.0" layoutY="315.0" stylesheets="@gerente.css">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
