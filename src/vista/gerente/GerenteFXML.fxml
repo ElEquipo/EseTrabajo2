@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import impl.com.calendarfx.view.*?>
 <?import jfxtras.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -120,7 +121,6 @@
                   <TextField fx:id="tf_apellido2" layoutX="358.0" layoutY="115.0" prefHeight="25.0" prefWidth="164.0" promptText="apellido2" />
                   <TextField fx:id="tf_dni" layoutX="32.0" layoutY="152.0" prefHeight="25.0" prefWidth="118.0" promptText="dni" />
                   <TextField fx:id="tf_puesto" layoutX="32.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0" promptText="puesto" />
-                  <TextField fx:id="tf_salario" layoutX="358.0" layoutY="210.0" prefHeight="25.0" prefWidth="164.0" promptText="salario" />
                   <TextField fx:id="tf_nick" layoutX="32.0" layoutY="268.0" promptText="nick" />
                   <Button fx:id="bt_contratar" layoutX="411.0" layoutY="275.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="110.0" prefWidth="111.0">
                      <cursor>
@@ -146,6 +146,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </LocalTimePicker>
+                  <NumericTextField fx:id="nf_salario" layoutX="358.0" layoutY="210.0" prefHeight="25.0" prefWidth="164.0" promptText="salario" />
                </children>
             </Pane>
          </children>

@@ -9,6 +9,7 @@ import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import Modelo.ValidadorDNI;
+import impl.com.calendarfx.view.NumericTextField;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -91,8 +92,6 @@ public class GerenteController implements Initializable {
     @FXML
     private TextField tf_puesto;
     @FXML
-    private TextField tf_salario;
-    @FXML
     private TextField tf_nick;
     @FXML
     private TextField tf_dni;
@@ -154,6 +153,8 @@ public class GerenteController implements Initializable {
     private Label lb_fondoHoraSalida;
     @FXML
     private LocalTimePicker dp_horaSalida;
+    @FXML
+    private NumericTextField nf_salario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -311,7 +312,7 @@ public class GerenteController implements Initializable {
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
                 apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
-                salariotext = tf_salario.getText();
+                salariotext = nf_salario.getText();
         Integer idTienda = gerenteActual.getIdTienda();
         Double salario = null;
         LocalDate fecha;
@@ -488,7 +489,7 @@ public class GerenteController implements Initializable {
         tf_apellido1.clear();
         tf_apellido2.clear();
         tf_puesto.clear();
-        tf_salario.clear();
+        nf_salario.clear();
         tf_nick.clear();
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
         dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
