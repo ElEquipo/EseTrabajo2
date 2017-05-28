@@ -54,6 +54,7 @@ import vista.Empleado.EmpleadoController;
 public class GerenteController implements Initializable {
 
     private TrabajadorDAO trabajador;
+    
     private TiendaDAO tienda;
     private ProductoDAO producto;
     /*IDEAL PARA GERENTE DE VARIAS TIENDAS
