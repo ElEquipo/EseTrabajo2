@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -62,6 +64,7 @@ public class GerenteController implements Initializable {
     private Trabajador gerenteActual;
     private ValidadorDNI validadorDni;
     private String eleccion;
+    private boolean campoDespedirVacio;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -558,7 +561,7 @@ public class GerenteController implements Initializable {
     private void buscarDespedir() {
         Trabajador trabajador;
         String busqueda = "";
-        boolean vacio = false;
+        campoDespedirVacio = false;
         Alert campoVacio, errorBusqueda;
 
         try {
@@ -570,7 +573,7 @@ public class GerenteController implements Initializable {
                     ta_datosTrabajador.setVisible(true);
                     ta_datosTrabajador.setDisable(false);
                 } else {
-                    vacio = true;
+                    campoDespedirVacio = true;
                 }
             } else {
                 busqueda = tf_busquedaTexto.getText();
@@ -580,7 +583,7 @@ public class GerenteController implements Initializable {
                     ta_datosTrabajador.setVisible(true);
                     ta_datosTrabajador.setDisable(false);
                 } else {
-                    vacio = true;
+                    campoDespedirVacio = true;
                 }
             }
 
@@ -588,14 +591,15 @@ public class GerenteController implements Initializable {
             errorBusqueda = new Alert(Alert.AlertType.ERROR);
             errorBusqueda.setTitle("Busqueda");
             errorBusqueda.setHeaderText("Error en la busqueda");
-            errorBusqueda.setContentText("Error: " + e.getMessage());
+            errorBusqueda.setContentText("El trabajador con " + eleccion + ": "
+                    + busqueda + " no existe.");
             estiloAlerta.darleEstiloAlPanel(errorBusqueda);
             errorBusqueda.showAndWait();
             ta_datosTrabajador.setVisible(false);
             ta_datosTrabajador.setDisable(true);
         }
 
-        if (vacio) {
+        if (campoDespedirVacio) {
             campoVacio = new Alert(AlertType.ERROR);
             campoVacio.setTitle("Busqueda");
             campoVacio.setHeaderText("Error en la busqueda");
@@ -608,6 +612,61 @@ public class GerenteController implements Initializable {
     }
 
     private void despedir() {
+        Alert sinBuscar, errorDespedir, confirmacionBorrado, despedirCorrecto;
+        String buscando;
+        int modo;
+
+        if (eleccion.equalsIgnoreCase("ID")) {
+            buscando = nf_busquedaNumerica.getText();
+            modo = 0;
+        } else {
+            buscando = tf_busquedaTexto.getText();
+            modo = 1;
+        }
+
+        if (ta_datosTrabajador.isVisible()) {
+            try {
+                confirmacionBorrado = new Alert(AlertType.CONFIRMATION);
+                confirmacionBorrado.setTitle("Despedir");
+                confirmacionBorrado.setHeaderText("¿Esta seguro?");
+                confirmacionBorrado.setContentText("¿Quiere despedir al trabajor con "
+                        + eleccion + ": " + buscando + " y por consiguiente borrarlo"
+                        + " de la base de datos?");
+                estiloAlerta.darleEstiloAlPanel(confirmacionBorrado);
+                Optional<ButtonType> resultado = confirmacionBorrado.showAndWait();
+
+                if (resultado.get() == ButtonType.OK) {
+                    trabajador.despedir(buscando, modo);
+                    despedirCorrecto = new Alert(AlertType.INFORMATION);
+                    despedirCorrecto.setTitle("Despedir");
+                    despedirCorrecto.setHeaderText("Despido efectuado");
+                    despedirCorrecto.setContentText(null);
+                    estiloAlerta.darleEstiloAlPanel(despedirCorrecto);
+                    despedirCorrecto.showAndWait();
+                    limpiarCamposDespedir();
+
+                } else if (resultado.get() == ButtonType.CANCEL) {
+                    confirmacionBorrado.close();
+                }
+
+            } catch (SQLException ex) {
+                errorDespedir = new Alert(AlertType.ERROR);
+                errorDespedir.setTitle("Despedir");
+                errorDespedir.setHeaderText("Error al despedir");
+                errorDespedir.setContentText("No se ha podido borrar el trabajador de la "
+                        + "base de datos.\n"
+                        + "Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(errorDespedir);
+                errorDespedir.showAndWait();
+            }
+        } else {
+            sinBuscar = new Alert(AlertType.ERROR);
+            sinBuscar.setTitle("Busqueda");
+            sinBuscar.setHeaderText("Error en la busqueda");
+            sinBuscar.setContentText("Primero debe buscar el trabajador.");
+            estiloAlerta.darleEstiloAlPanel(sinBuscar);
+            sinBuscar.showAndWait();
+        }
 
     }
 
@@ -629,7 +688,9 @@ public class GerenteController implements Initializable {
         pn_contratar.setVisible(false);
         pn_menuTrabajadores.setVisible(false);
         pn_productos.setVisible(false);
+        pn_despedir.setVisible(false);
         limpiarCamposContratar();
+        limpiarCamposDespedir();
     }
 
     public void limpiarCamposContratar() {

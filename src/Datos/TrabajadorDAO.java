@@ -202,4 +202,24 @@ public class TrabajadorDAO {
         return resultado;
     }
 
+    public void despedir(String trabajador, int modo) throws SQLException {
+        PreparedStatement psTrabajadores;
+        
+        switch (modo) {
+            case 0:// BORRAR POR ID
+                psTrabajadores = conexion.prepareStatement("DELETE FROM trabajadores WHERE idTrabajador=?;");
+                psTrabajadores.setString(1, trabajador);
+                psTrabajadores.executeUpdate();
+                break;
+
+            case 1: //BORRAR POR DNI
+                psTrabajadores = conexion.prepareStatement("DELETE FROM trabajadores WHERE dni=?;");
+                psTrabajadores.setString(1, trabajador);
+                psTrabajadores.executeUpdate();
+                break;
+            default:
+                break;
+        }
+    }
+
 }
