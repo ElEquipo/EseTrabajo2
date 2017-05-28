@@ -55,5 +55,20 @@ public class ProductoDAO {
         resultado.next();
         return (" " + resultado.getInt("id"));
     }
+    
+      public int idProducto(String nombreProducto) throws SQLException {
+        int resultado = 0;
+
+        PreparedStatement psTrabajador;
+        ResultSet rsTrabajador;
+        psTrabajador = conexion.prepareStatement("SELECT referencia FROM productos WHERE nombre = ?;");
+        psTrabajador.setString(1, nombreProducto);
+        rsTrabajador = psTrabajador.executeQuery();
+        while (rsTrabajador.next()) {
+            resultado = rsTrabajador.getInt("referencia");
+        }
+
+        return resultado;
+    }
 
 }

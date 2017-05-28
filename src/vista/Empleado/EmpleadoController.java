@@ -4,15 +4,21 @@ import Datos.ConexionBD;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
+import Datos.VentaDAO;
 import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.io.IOException;
+import static java.lang.String.format;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +44,7 @@ public class EmpleadoController implements Initializable {
     private TiendaDAO tienda;
     private ProductoDAO producto;
     private TrabajadorDAO trabajador;
+    private VentaDAO venta;
     private Alerta estiloAlerta;
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
@@ -45,6 +52,7 @@ public class EmpleadoController implements Initializable {
     private LocalDateTime date = LocalDateTime.now();
     private String formato;
     private Trabajador empleadoActual;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -219,13 +227,22 @@ public class EmpleadoController implements Initializable {
     }
 
     @FXML
-    private void ventasAction(ActionEvent event) {
+    private void ventasAction(ActionEvent event) throws SQLException, ParseException {
 
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
 
         if (bt_regVenta.isFocused()) {
+            tienda.idTienda(cb_tiendas.getValue() + "");
+            trabajador.idTrabajador(cb_trabajadores.getValue() + "");
 
+            SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+            Date fecha = dt.parse(tf_fechaVenta.getText());
+
+
+            venta.insertarVenta(tienda.idTienda(cb_tiendas.getValue() + ""), trabajador.idTrabajador(cb_trabajadores.getValue() + ""), 
+                                fecha, producto.idProducto(cb_referencia.getValue() + ""), Integer.parseInt(tf_cantidad.getText()));
+            System.out.println(cb_tiendas.getId());
         }
 
         if (bt_atrasVentas.isFocused()) {

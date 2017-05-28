@@ -242,7 +242,7 @@ public class Trabajador {
 
     @Override
     public String toString() {
-        return id.get() + "-" +nombre.get();
+        return this.nombre.get();
     }
 
     

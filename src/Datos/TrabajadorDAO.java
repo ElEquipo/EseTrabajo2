@@ -109,7 +109,7 @@ public class TrabajadorDAO {
         psTrabajadores.setString(1, user);
         rsTrabajadores = psTrabajadores.executeQuery();
         rsTrabajadores.next();
-        
+
         trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
                 rsTrabajadores.getString("dni"),
                 rsTrabajadores.getString("nombre"),
@@ -141,5 +141,22 @@ public class TrabajadorDAO {
         }
 
     }
+
+    public int idTrabajador(String nombreTrabajador) throws SQLException {
+        int resultado = 0;
+
+        PreparedStatement psTrabajador;
+        ResultSet rsTrabajador;
+        psTrabajador = conexion.prepareStatement("SELECT idTrabajador FROM trabajadores WHERE nombre = ?;");
+        psTrabajador.setString(1, nombreTrabajador);
+        rsTrabajador = psTrabajador.executeQuery();
+        while (rsTrabajador.next()) {
+            resultado = rsTrabajador.getInt("idTrabajador");
+        }
+
+        return resultado;
+    }
+
+
 
 }

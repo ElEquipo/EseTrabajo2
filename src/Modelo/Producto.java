@@ -66,7 +66,7 @@ public class Producto {
 
     @Override
     public String toString() {
-        return referencia.get() + "-" + nombre.get();
+        return this.nombre.get();
     }
     
     

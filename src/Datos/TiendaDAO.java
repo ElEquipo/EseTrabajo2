@@ -44,4 +44,19 @@ public class TiendaDAO {
         return listaTiendas;
     }
 
-}
+    public int idTienda(String nombreTienda) throws SQLException {
+        int resultado = 0;
+        
+        PreparedStatement psTiendas;
+        ResultSet rsTiendas;
+        psTiendas = conexion.prepareStatement("SELECT idTienda FROM tiendas WHERE nombre = ?;");
+        psTiendas.setString(1, nombreTienda);
+        rsTiendas = psTiendas.executeQuery();
+        while (rsTiendas.next()) {
+            resultado = rsTiendas.getInt("idTienda");
+        }
+
+            return resultado;
+        }
+
+    }
