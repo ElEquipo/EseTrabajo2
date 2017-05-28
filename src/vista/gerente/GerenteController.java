@@ -29,13 +29,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import jfxtras.scene.control.LocalTimePicker;
@@ -47,11 +54,14 @@ public class GerenteController implements Initializable {
     private TrabajadorDAO trabajador;
     private TiendaDAO tienda;
     private ProductoDAO producto;
-    private ObservableList<Tienda> listaTiendas;
+    /*IDEAL PARA GERENTE DE VARIAS TIENDAS
+    private ObservableList<Tienda> listaTiendas;*/
+    private ObservableList<Trabajador> listaTrabajadores;
     private ObservableList<Producto> listaProductos;
     private Alerta estiloAlerta;
     private Trabajador gerenteActual;
     private ValidadorDNI validadorDni;
+    private String eleccion;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -116,16 +126,6 @@ public class GerenteController implements Initializable {
     @FXML
     private Button bt_despedir;
     @FXML
-    private TextField tf_apellido2Despedir;
-    @FXML
-    private TextField tf_apellido1Despedir;
-    @FXML
-    private TextField tf_nombreDespedir;
-    @FXML
-    private TextField tf_dniDespedir;
-    @FXML
-    private TextField tf_idDespedir;
-    @FXML
     private DatePicker dp_fecha;
     @FXML
     private Label lb_id;
@@ -155,9 +155,49 @@ public class GerenteController implements Initializable {
     private LocalTimePicker dp_horaSalida;
     @FXML
     private NumericTextField nf_salario;
+    @FXML
+    private TextField tf_busquedaTexto;
+    @FXML
+    private ComboBox<String> cb_busquedaDespedir;
+    @FXML
+    private Button bt_buscar;
+    @FXML
+    private TableView<Trabajador> tv_empleado;
+    @FXML
+    private TableColumn<Trabajador, Integer> tc_id;
+    @FXML
+    private TableColumn<Trabajador, String> tc_dni;
+    @FXML
+    private TableColumn<Trabajador, String> tc_nombre;
+    @FXML
+    private TableColumn<Trabajador, String> tc_apellido1;
+    @FXML
+    private TableColumn<Trabajador, String> tc_apellido2;
+    @FXML
+    private TableColumn<Trabajador, String> tc_puesto;
+    @FXML
+    private TableColumn<Trabajador, Double> tc_salario;
+    @FXML
+    private TableColumn<Trabajador, LocalDate> tc_fechaAlta;
+    @FXML
+    private TableColumn<Trabajador, String> tc_nick;
+    @FXML
+    private TableColumn<Trabajador, TableColumn> tc_horario;
+    @FXML
+    private TableColumn<Trabajador, LocalTime> tc_horaEntrada;
+    @FXML
+    private TableColumn<Trabajador, LocalTime> tc_horaSalida;
+    @FXML
+    private TableColumn<Trabajador, Integer> tc_idTienda;
+    @FXML
+    private TextArea ta_datosTrabajador;
+    @FXML
+    private NumericTextField nf_busquedaNumerica;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Alert errorCarga;
+        ObservableList<String> tiposBusqueda = FXCollections.observableArrayList("ID", "DNI");
         trabajador = new TrabajadorDAO(ConexionBD.actualUser);
         tienda = new TiendaDAO(ConexionBD.actualUser);
         producto = new ProductoDAO(ConexionBD.actualUser);
@@ -170,7 +210,9 @@ public class GerenteController implements Initializable {
         pn_despedir.setVisible(false);
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
         dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
-        Alert errorCarga;
+        cb_busquedaDespedir.setItems(tiposBusqueda);
+        ta_datosTrabajador.setVisible(false);
+        ta_datosTrabajador.setDisable(true);
         try {
             lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
         } catch (SQLException ex) {
@@ -212,6 +254,19 @@ public class GerenteController implements Initializable {
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }
+
+        tc_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        tc_dni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        tc_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        tc_apellido1.setCellValueFactory(new PropertyValueFactory<>("apellido1"));
+        tc_apellido2.setCellValueFactory(new PropertyValueFactory<>("apellido2"));
+        tc_puesto.setCellValueFactory(new PropertyValueFactory<>("puesto"));
+        tc_salario.setCellValueFactory(new PropertyValueFactory<>("salarioBrutoAnual"));
+        tc_fechaAlta.setCellValueFactory(new PropertyValueFactory<>("fechaAlta"));
+        tc_nick.setCellValueFactory(new PropertyValueFactory<>("nick"));
+        tc_horaEntrada.setCellValueFactory(new PropertyValueFactory<>("horaEntrada"));
+        tc_horaSalida.setCellValueFactory(new PropertyValueFactory<>("horaSalida"));
+        tc_idTienda.setCellValueFactory(new PropertyValueFactory<>("idTienda"));
 
         cargarTooltips();
     }
@@ -297,7 +352,7 @@ public class GerenteController implements Initializable {
         if (evento == bt_atrasContratar) {
             pn_menuTrabajadores.setVisible(true);
             pn_contratar.setVisible(false);
-            limpiarCampos();
+            limpiarCamposContratar();
         }
 
         if (evento == bt_contratar) { // INSERTA EN LA BD
@@ -449,16 +504,110 @@ public class GerenteController implements Initializable {
         if (evento == bt_despedirPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_despedir.setVisible(true);
+            cb_busquedaDespedir.setValue("ID");
+            elegirDespedir();
         }
 
         if (evento == bt_atrasDespedir) {
             pn_menuTrabajadores.setVisible(true);
             pn_despedir.setVisible(false);
+            limpiarCamposDespedir();
         }
 
         if (evento == bt_despedir) { // ELIMINA EN LA BD
-
+            despedir();
         }
+
+    }
+
+    @FXML
+    private void elegirDespedirAction(ActionEvent event) {
+        elegirDespedir();
+    }
+
+    public void elegirDespedir() {
+        /* PARECE QUE ESTE METODOD ESTA REPETIDO CON EL "BuscarDespedirAction"
+        , PERO ESTA HECHO ASÍ PORQUE ESTE QUIERO QUE SOLO SE USE AL ENTRAR EN EL 
+        MENU O AL CAMBIAR DE ELECCIÓN Y ASÍ HABLITAR O DESHABILITAR EL 
+        TEXTFIELD CORRESPONDIENTE*/
+        eleccion = cb_busquedaDespedir.getValue();
+
+        if (eleccion.equalsIgnoreCase("ID")) {
+            nf_busquedaNumerica.setVisible(true);
+            nf_busquedaNumerica.setDisable(false);
+            tf_busquedaTexto.setVisible(false);
+            tf_busquedaTexto.setDisable(true);
+            nf_busquedaNumerica.setPromptText(eleccion);
+            limpiarCamposDespedir();
+        } else {
+            nf_busquedaNumerica.setVisible(false);
+            nf_busquedaNumerica.setDisable(true);
+            tf_busquedaTexto.setVisible(true);
+            tf_busquedaTexto.setDisable(false);
+            tf_busquedaTexto.setPromptText(eleccion);
+            limpiarCamposDespedir();
+        }
+
+    }
+
+    @FXML
+    private void buscarDespedirAction(ActionEvent event) {
+        buscarDespedir();
+    }
+
+    private void buscarDespedir() {
+        Trabajador trabajador;
+        String busqueda = "";
+        boolean vacio = false;
+        Alert campoVacio, errorBusqueda;
+
+        try {
+            if (eleccion.equalsIgnoreCase("ID")) {
+                busqueda = nf_busquedaNumerica.getText();
+                if (!busqueda.isEmpty()) {
+                    trabajador = this.trabajador.cargarTrabajador(busqueda, 1);
+                    ta_datosTrabajador.setText(trabajador.verDatos());
+                    ta_datosTrabajador.setVisible(true);
+                    ta_datosTrabajador.setDisable(false);
+                } else {
+                    vacio = true;
+                }
+            } else {
+                busqueda = tf_busquedaTexto.getText();
+                if (!busqueda.isEmpty()) {
+                    trabajador = this.trabajador.cargarTrabajador(busqueda, 2);
+                    ta_datosTrabajador.setText(trabajador.verDatos());
+                    ta_datosTrabajador.setVisible(true);
+                    ta_datosTrabajador.setDisable(false);
+                } else {
+                    vacio = true;
+                }
+            }
+
+        } catch (SQLException e) {
+            errorBusqueda = new Alert(Alert.AlertType.ERROR);
+            errorBusqueda.setTitle("Busqueda");
+            errorBusqueda.setHeaderText("Error en la busqueda");
+            errorBusqueda.setContentText("Error: " + e.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorBusqueda);
+            errorBusqueda.showAndWait();
+            ta_datosTrabajador.setVisible(false);
+            ta_datosTrabajador.setDisable(true);
+        }
+
+        if (vacio) {
+            campoVacio = new Alert(AlertType.ERROR);
+            campoVacio.setTitle("Busqueda");
+            campoVacio.setHeaderText("Error en la busqueda");
+            campoVacio.setContentText("Por favor rellene el campo de busqueda.");
+            estiloAlerta.darleEstiloAlPanel(campoVacio);
+            campoVacio.showAndWait();
+            ta_datosTrabajador.setVisible(false);
+            ta_datosTrabajador.setDisable(true);
+        }
+    }
+
+    private void despedir() {
 
     }
 
@@ -480,10 +629,10 @@ public class GerenteController implements Initializable {
         pn_contratar.setVisible(false);
         pn_menuTrabajadores.setVisible(false);
         pn_productos.setVisible(false);
-        limpiarCampos();
+        limpiarCamposContratar();
     }
 
-    public void limpiarCampos() {
+    public void limpiarCamposContratar() {
         tf_dni.clear();
         tf_nombre.clear();
         tf_apellido1.clear();
@@ -497,4 +646,25 @@ public class GerenteController implements Initializable {
 
     }
 
+    public void limpiarCamposDespedir() {
+        tf_busquedaTexto.clear();
+        nf_busquedaNumerica.clear();
+        ta_datosTrabajador.setVisible(false);
+        ta_datosTrabajador.setDisable(true);
+    }
+
+    @FXML
+    private void teclaBuscarDespedirAction(KeyEvent event) {
+        String campo = tf_busquedaTexto.getText(), campoNumerico = nf_busquedaNumerica.getText();
+        if (event.getCode() == KeyCode.ENTER) {
+            buscarDespedir();
+        }
+
+        if (campo.isEmpty() && campoNumerico.isEmpty()) {
+            ta_datosTrabajador.setVisible(false);
+            ta_datosTrabajador.setDisable(true);
+
+        }
+
+    }
 }

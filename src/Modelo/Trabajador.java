@@ -244,6 +244,21 @@ public class Trabajador {
     public String toString() {
         return this.nombre.get();
     }
+    
+    public String verDatos(){
+        return ("ID: " + this.id.get()  + "\n" +
+                "DNI: " + this.nombre.get() + "\n" + 
+                "Nombre: " + this.nombre.get() + "\n" + 
+                "Apellido/s: " + this.apellido1.get() + " " + this.apellido2.get() + "\n" + 
+                "Puesto: " + this.puesto.get() + "\n" + 
+                "Salario: " + this.salarioBrutoAnual.get() + "\n" + 
+                "Fecha de alta: " + this.fechaAlta.get() + "\n" + 
+                "Nick: " + this.nick.get() + "\n" +
+                "Horarios :\n" +
+                "         └ Hora de entrada: " + this.horaEntrada.get() + "\n" +
+                "         └ Hora de salida: " + this.horaSalida.get() + "\n" +
+                "Id tienda: " + this.idTienda.get() + "\n") ;
+    }
 
     
     

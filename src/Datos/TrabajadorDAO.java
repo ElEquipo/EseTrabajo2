@@ -101,13 +101,58 @@ public class TrabajadorDAO {
         return listaTrabajadores;
     }
 
-    public Trabajador cargarTrabajador(String user) throws SQLException {
+//    public Trabajador cargarTrabajador(String user) throws SQLException {
+//        PreparedStatement psTrabajadores;
+//        ResultSet rsTrabajadores;
+//        Trabajador trabajador = null;
+//        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE nick=?;");
+//        psTrabajadores.setString(1, user);
+//        rsTrabajadores = psTrabajadores.executeQuery();
+//        rsTrabajadores.next();
+//
+//        trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
+//                rsTrabajadores.getString("dni"),
+//                rsTrabajadores.getString("nombre"),
+//                rsTrabajadores.getString("apellido1"),
+//                rsTrabajadores.getString("apellido2"),
+//                rsTrabajadores.getString("puesto"),
+//                rsTrabajadores.getDouble("salarioBrutoAnual"),
+//                rsTrabajadores.getDate("fechaAlta").toLocalDate(),
+//                rsTrabajadores.getString("nick"),
+//                rsTrabajadores.getString("password"),
+//                rsTrabajadores.getTime("horaEntrada").toLocalTime(),
+//                rsTrabajadores.getTime("horaSalida").toLocalTime(),
+//                rsTrabajadores.getInt("idTienda"));
+//
+//        return trabajador;
+//    }
+    public Trabajador cargarTrabajador(String buscando, int tipo) throws SQLException {
         PreparedStatement psTrabajadores;
-        ResultSet rsTrabajadores;
+        ResultSet rsTrabajadores = null;
         Trabajador trabajador = null;
-        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE nick=?;");
-        psTrabajadores.setString(1, user);
-        rsTrabajadores = psTrabajadores.executeQuery();
+
+        switch (tipo) {
+            case 0:// BUSQUEDA POR USER
+                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE nick=?;");
+                psTrabajadores.setString(1, buscando);
+                rsTrabajadores = psTrabajadores.executeQuery();
+                break;
+
+            case 1:// BUSQUEDA POR ID
+                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE idTrabajador=?;");
+                psTrabajadores.setString(1, buscando);
+                rsTrabajadores = psTrabajadores.executeQuery();
+                break;
+
+            case 2: //BUSQUEDA POR DNI
+                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE dni=?;");
+                psTrabajadores.setString(1, buscando);
+                rsTrabajadores = psTrabajadores.executeQuery();
+                break;
+            default:
+                break;
+        }
+
         rsTrabajadores.next();
 
         trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
@@ -156,7 +201,5 @@ public class TrabajadorDAO {
 
         return resultado;
     }
-
-
 
 }

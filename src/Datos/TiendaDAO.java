@@ -46,7 +46,7 @@ public class TiendaDAO {
 
     public int idTienda(String nombreTienda) throws SQLException {
         int resultado = 0;
-        
+
         PreparedStatement psTiendas;
         ResultSet rsTiendas;
         psTiendas = conexion.prepareStatement("SELECT idTienda FROM tiendas WHERE nombre = ?;");
@@ -56,7 +56,7 @@ public class TiendaDAO {
             resultado = rsTiendas.getInt("idTienda");
         }
 
-            return resultado;
-        }
-
+        return resultado;
     }
+
+}

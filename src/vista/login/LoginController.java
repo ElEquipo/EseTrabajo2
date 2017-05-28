@@ -119,7 +119,7 @@ public class LoginController implements Initializable {
                 if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root",user)) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
-                    System.out.println(passEncriptada);
+                    
                     if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
 
                         switch (conexion.puesto(user)) {
