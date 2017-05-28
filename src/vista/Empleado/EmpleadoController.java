@@ -129,7 +129,6 @@ public class EmpleadoController implements Initializable {
         tf_fechaVenta.setText(formato);
         try {
             lb_idVenta.setText(producto.mostrarSiguienteID());
-            System.out.println(producto.mostrarSiguienteID());
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Id");
@@ -228,7 +227,7 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void ventasAction(ActionEvent event) throws SQLException, ParseException {
-
+        venta = new VentaDAO(ConexionBD.actualUser);
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
 
@@ -236,13 +235,14 @@ public class EmpleadoController implements Initializable {
             tienda.idTienda(cb_tiendas.getValue() + "");
             trabajador.idTrabajador(cb_trabajadores.getValue() + "");
 
-            SimpleDateFormat dt = new SimpleDateFormat("yyyyy-mm-dd hh:mm:ss");
+            SimpleDateFormat dt = new SimpleDateFormat("y-M-d h:m:s");
             Date fecha = dt.parse(tf_fechaVenta.getText());
+            System.out.println(fecha);
+            
 
-
-            venta.insertarVenta(tienda.idTienda(cb_tiendas.getValue() + ""), trabajador.idTrabajador(cb_trabajadores.getValue() + ""), 
-                                fecha, producto.idProducto(cb_referencia.getValue() + ""), Integer.parseInt(tf_cantidad.getText()));
-            System.out.println(cb_tiendas.getId());
+            venta.insertarVenta(tienda.idTienda(cb_tiendas.getValue().getNombre()), trabajador.idTrabajador(cb_trabajadores.getValue().getNombre()), 
+                                fecha, producto.idProducto(cb_referencia.getValue().getNombre()), Integer.parseInt(tf_cantidad.getText()));
+            
         }
 
         if (bt_atrasVentas.isFocused()) {
