@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -948,6 +949,69 @@ public class GerenteController implements Initializable {
         pn_inicio.setVisible(true);
         pn_añadirProductos.setVisible(false);
         tf_nombreProducto.clear();
+    }
+
+    @FXML
+    private void controlNumericoAction(KeyEvent event) {
+        Object evento = event.getSource();
+        String texto = null;
+        Character caracter;
+        int tamaño, campo = 0, contador = 0;
+        boolean esDigito;
+
+        if (evento == tf_precioCompraProducto) {
+            texto = tf_precioCompraProducto.getText();
+            campo = 1;
+        } else if (evento == tf_precioVentaProducto) {
+            texto = tf_precioVentaProducto.getText();
+            campo = 2;
+        }
+
+        tamaño = texto.length();
+
+        if (!texto.isEmpty()) {
+            caracter = texto.charAt(tamaño - 1);
+            esDigito = Character.isDigit(caracter);
+
+            if (event.getCode().equals(KeyCode.PERIOD) && !texto.startsWith(".")) {
+                for (int i = 0; i < texto.length(); i++) {
+                    if (texto.charAt(i) == '.') {
+                        contador++;
+                    }
+                }
+
+                if (contador > 1) {
+                    switch (campo) {
+                        case 1:
+                            tf_precioCompraProducto.setText(texto.substring(0, tamaño - 1));
+                            tf_precioCompraProducto.positionCaret(tamaño);
+                            break;
+                        case 2:
+                            tf_precioVentaProducto.setText(texto.substring(0, tamaño - 1));
+                            tf_precioVentaProducto.positionCaret(tamaño);
+
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                }
+            } else if (esDigito != true) {
+                switch (campo) {
+                    case 1:
+                        tf_precioCompraProducto.setText(texto.substring(0, tamaño - 1));
+                        tf_precioCompraProducto.positionCaret(tamaño);
+                        break;
+                    case 2:
+                        tf_precioVentaProducto.setText(texto.substring(0, tamaño - 1));
+                        tf_precioVentaProducto.positionCaret(tamaño);
+
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+
+            }
+        }
     }
 
 }

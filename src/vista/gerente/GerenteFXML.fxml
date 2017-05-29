@@ -193,8 +193,8 @@
                   <Label fx:id="lb_referenciaProducto" layoutX="27.0" layoutY="71.0" prefHeight="17.0" prefWidth="58.0" />
                   <TextField fx:id="tf_nombreProducto" layoutX="27.0" layoutY="104.0" promptText="nombre" />
                   <TextArea fx:id="ta_descripcionProducto" layoutX="27.0" layoutY="183.0" prefHeight="32.0" prefWidth="150.0" promptText="Descripcion..." />
-                  <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="239.0" promptText="precioCompra" />
-                  <TextField fx:id="tf_precioVentaProducto" layoutX="26.0" layoutY="279.0" promptText="precioVenta" />
+                  <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="239.0" onKeyReleased="#controlNumericoAction" promptText="precioCompra" />
+                  <TextField fx:id="tf_precioVentaProducto" layoutX="26.0" layoutY="279.0" onKeyReleased="#controlNumericoAction" promptText="precioVenta" />
                   <TextField fx:id="tf_ivaProducto" layoutX="26.0" layoutY="320.0" promptText="IVA" />
                   <NumericTextField fx:id="nf_cantidad" layoutX="26.0" layoutY="358.0" promptText="cantidad" />
                   <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
