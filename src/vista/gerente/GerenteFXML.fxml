@@ -179,6 +179,25 @@
                      <cursor>
                        <Cursor fx:constant="HAND" />
                      </cursor></Button>
+                  <Button fx:id="bt_irPanelAñadirProducto" layoutX="72.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Productos" />
+               </children>
+            </Pane>
+            <Pane fx:id="pn_añadirProductos" layoutX="10.0" layoutY="124.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <Button fx:id="bt_añadirProducto" layoutX="475.0" layoutY="399.0" mnemonicParsing="false" onAction="#AñadirProductosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Prodcuto" />
+                  <Button id="bt_atras" fx:id="bt_atrasAñadirProductos" layoutX="331.0" layoutY="383.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Label fx:id="lb_referenciaProducto" layoutX="27.0" layoutY="71.0" prefHeight="17.0" prefWidth="58.0" />
+                  <TextField fx:id="tf_nombreProducto" layoutX="27.0" layoutY="104.0" promptText="nombre" />
+                  <TextField fx:id="tf_categoriaProducto" layoutX="27.0" layoutY="150.0" promptText="categoria" />
+                  <TextArea fx:id="ta_descripcionProducto" layoutX="27.0" layoutY="183.0" prefHeight="65.0" prefWidth="486.0" />
+                  <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="262.0" promptText="precioCompra" />
+                  <TextField fx:id="tf_precioVentaProducto" layoutX="27.0" layoutY="302.0" promptText="precioVenta" />
+                  <TextField fx:id="tf_ivaProducto" layoutX="27.0" layoutY="343.0" promptText="IVA" />
+                  <NumericTextField fx:id="nf_cantidad" layoutX="27.0" layoutY="381.0" promptText="cantidad" />
                </children>
             </Pane>
          </children>

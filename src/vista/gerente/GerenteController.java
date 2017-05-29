@@ -206,7 +206,31 @@ public class GerenteController implements Initializable {
     @FXML
     private ComboBox<String> cb_puesto;
     @FXML
-    private TableColumn<?, ?> tc_stock;
+    private TableColumn<Producto, Integer> tc_stock;
+    @FXML
+    private Button bt_irPanelAñadirProducto;
+    @FXML
+    private Pane pn_añadirProductos;
+    @FXML
+    private Button bt_añadirProducto;
+    @FXML
+    private Button bt_atrasAñadirProductos;
+    @FXML
+    private Label lb_referenciaProducto;
+    @FXML
+    private TextField tf_nombreProducto;
+    @FXML
+    private TextField tf_categoriaProducto;
+    @FXML
+    private TextArea ta_descripcionProducto;
+    @FXML
+    private TextField tf_precioCompraProducto;
+    @FXML
+    private TextField tf_precioVentaProducto;
+    @FXML
+    private TextField tf_ivaProducto;
+    @FXML
+    private NumericTextField nf_cantidad;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -233,7 +257,8 @@ public class GerenteController implements Initializable {
         cb_puesto.setItems(puestos);
         cb_puesto.setPromptText("Puesto");
         cb_puesto.setValue("Puesto");
-        
+        pn_añadirProductos.setVisible(false);
+
         /*
         try {
             ESTO SERÍA IDEAL SI CONTEMPLASEMOS QUE UN GERENTE REGENTA VARIAS TIENDAS
@@ -404,8 +429,8 @@ public class GerenteController implements Initializable {
             if (dni.isEmpty()) {
                 camposVacios.add("DNI");
             }
-            
-            if(puesto.equalsIgnoreCase("Puesto")){
+
+            if (puesto.equalsIgnoreCase("Puesto")) {
                 camposVacios.add("Puesto");
             }
 
@@ -693,7 +718,7 @@ public class GerenteController implements Initializable {
                 }
 
             } catch (SQLException ex) {
-                
+
                 errorDespedir = new Alert(AlertType.ERROR);
                 errorDespedir.setTitle("Despedir");
                 errorDespedir.setHeaderText("Error al despedir");
@@ -715,18 +740,6 @@ public class GerenteController implements Initializable {
     }
 
     @FXML
-    private void productosAction(ActionEvent event) {
-
-        pn_productos.setVisible(true);
-        pn_inicio.setVisible(false);
-
-        if (bt_atrasProductos.isFocused()) {
-            pn_productos.setVisible(false);
-            pn_inicio.setVisible(true);
-        }
-    }
-
-    @FXML
     private void inicioAction(ActionEvent event) { // VUELVE AL INICIO
         pn_inicio.setVisible(true);
         pn_contratar.setVisible(false);
@@ -736,6 +749,7 @@ public class GerenteController implements Initializable {
         limpiarCamposContratar();
         limpiarCamposDespedir();
         salirVerTrabajadores();
+        limpiarProductos();
     }
 
     public void limpiarCamposContratar() {
@@ -820,6 +834,45 @@ public class GerenteController implements Initializable {
         tv_empleado.setVisible(false);
         pn_inicio.setVisible(true);
         pn_tienda.setVisible(false);
+    }
+
+    @FXML
+    private void productosAction(ActionEvent event) {
+        Object evento = event.getSource();
+
+        if (evento == bt_productos) {
+            pn_productos.setVisible(true);
+            pn_inicio.setVisible(false);
+
+        }
+
+        if (evento == bt_irPanelAñadirProducto) {
+            pn_productos.setVisible(false);
+            pn_añadirProductos.setVisible(true);
+
+        }
+
+        if (evento == bt_atrasProductos) {
+            pn_productos.setVisible(false);
+            pn_inicio.setVisible(true);
+
+        } else if (evento == bt_atrasAñadirProductos) {
+            pn_añadirProductos.setVisible(false);
+            pn_productos.setVisible(true);
+
+        }
+    }
+
+    @FXML
+    private void AñadirProductosAction(ActionEvent event) {
+        Object evento = event.getSource();
+
+    }
+
+    public void limpiarProductos() {
+        pn_productos.setVisible(false);
+        pn_inicio.setVisible(true);
+        pn_añadirProductos.setVisible(false);
     }
 
 }
