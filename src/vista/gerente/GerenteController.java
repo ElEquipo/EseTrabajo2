@@ -61,6 +61,7 @@ public class GerenteController implements Initializable {
     private ObservableList<Tienda> listaTiendas;*/
     private ObservableList<Trabajador> listaObservableTrabajadores;
     private ObservableList<Producto> listaProductos;
+    private ObservableList<String> categorias;
     private Alerta estiloAlerta;
     private Trabajador gerenteActual;
     private ValidadorDNI validadorDni;
@@ -220,8 +221,6 @@ public class GerenteController implements Initializable {
     @FXML
     private TextField tf_nombreProducto;
     @FXML
-    private TextField tf_categoriaProducto;
-    @FXML
     private TextArea ta_descripcionProducto;
     @FXML
     private TextField tf_precioCompraProducto;
@@ -231,17 +230,21 @@ public class GerenteController implements Initializable {
     private TextField tf_ivaProducto;
     @FXML
     private NumericTextField nf_cantidad;
+    @FXML
+    private ComboBox<String> cb_categoriasExistentes;
+    @FXML
+    private Button bt_descripcion;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Alert errorCarga;
         ObservableList<String> tiposBusqueda = FXCollections.observableArrayList("ID", "DNI");
         ObservableList<String> puestos = FXCollections.observableArrayList("Gerente", "Dependiente");
-        trabajador = new TrabajadorDAO(ConexionBD.actualUser);
-        tienda = new TiendaDAO(ConexionBD.actualUser);
-        producto = new ProductoDAO(ConexionBD.actualUser);
+        trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        tienda = new TiendaDAO(ConexionBD.conexion);
+        producto = new ProductoDAO(ConexionBD.conexion);
         validadorDni = new ValidadorDNI();
-        gerenteActual = ConexionBD.conectado;
+        gerenteActual = ConexionBD.actualUser;
         estiloAlerta = new Alerta();
         pn_menuTrabajadores.setVisible(false);
         pn_contratar.setVisible(false);
@@ -750,6 +753,7 @@ public class GerenteController implements Initializable {
         limpiarCamposDespedir();
         salirVerTrabajadores();
         limpiarProductos();
+        salirProductos();
     }
 
     public void limpiarCamposContratar() {
@@ -839,40 +843,111 @@ public class GerenteController implements Initializable {
     @FXML
     private void productosAction(ActionEvent event) {
         Object evento = event.getSource();
+        Alert cargaReferencia, cargaCategorias;
+        String botonDescripcion = bt_descripcion.getText();
 
-        if (evento == bt_productos) {
+        if (evento == bt_productos) { // ACCEDE A VER LOS PRODUCTOS
             pn_productos.setVisible(true);
             pn_inicio.setVisible(false);
 
-        }
-
-        if (evento == bt_irPanelAñadirProducto) {
+        } else if (evento == bt_irPanelAñadirProducto) { // ACCEDE AL MENU DE AÑADIR PRODUCTOS
             pn_productos.setVisible(false);
             pn_añadirProductos.setVisible(true);
+            try {
+                lb_referenciaProducto.setText(String.valueOf(producto.mostrarSiguienteReferencia()));
+            } catch (SQLException ex) {
+                cargaReferencia = new Alert(AlertType.ERROR);
+                cargaReferencia.setTitle("Error Carga");
+                cargaReferencia.setHeaderText("Error al cargar la siguiente referencia.");
+                cargaReferencia.setContentText("Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(cargaReferencia);
+                cargaReferencia.showAndWait();
+            }
 
-        }
+            try {
+                categorias = FXCollections.observableArrayList(producto.categoriasExistentes());
+                cb_categoriasExistentes.setItems(categorias);
+                cb_categoriasExistentes.setValue("Categoria");
+            } catch (SQLException ex) {
+                cargaCategorias = new Alert(AlertType.ERROR);
+                cargaCategorias.setTitle("Error Carga");
+                cargaCategorias.setHeaderText("Error al cargar las categorias existentes.");
+                cargaCategorias.setContentText("Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(cargaCategorias);
+                cargaCategorias.showAndWait();
+            }
 
-        if (evento == bt_atrasProductos) {
+        } else if (evento == bt_descripcion && botonDescripcion.equalsIgnoreCase("+")) {
+            bt_descripcion.setLayoutX(522);
+            bt_descripcion.setText("-");
+            ta_descripcionProducto.setPrefWidth(486);
+            ta_descripcionProducto.setPrefHeight(65);
+            tf_precioCompraProducto.setLayoutY(252);
+            tf_precioVentaProducto.setLayoutY(292);
+            tf_ivaProducto.setLayoutY(333);
+            nf_cantidad.setLayoutY(371);
+
+        } else if (evento == bt_descripcion && botonDescripcion.equalsIgnoreCase("-")) {
+            bt_descripcion.setLayoutX(185);
+            bt_descripcion.setText("+");
+            ta_descripcionProducto.setPrefWidth(150);
+            ta_descripcionProducto.setPrefHeight(32);
+            tf_precioCompraProducto.setLayoutY(232);
+            tf_precioVentaProducto.setLayoutY(272);
+            tf_ivaProducto.setLayoutY(313);
+            nf_cantidad.setLayoutY(351);
+
+        } else if (evento == bt_atrasProductos) {
             pn_productos.setVisible(false);
             pn_inicio.setVisible(true);
+            limpiarProductos();
 
         } else if (evento == bt_atrasAñadirProductos) {
             pn_añadirProductos.setVisible(false);
             pn_productos.setVisible(true);
+            limpiarProductos();
 
         }
+
     }
 
     @FXML
     private void AñadirProductosAction(ActionEvent event) {
         Object evento = event.getSource();
+        List<String> camposVacios = new ArrayList<>();
+        String nombre = tf_nombreProducto.getText();
+        Alert faltaCampos;
+
+        if (nombre.isEmpty()) {
+            camposVacios.add("Nombre");
+        }
+
+        if (cb_categoriasExistentes.getValue().equalsIgnoreCase("Categoria")) {
+            camposVacios.add("Categoria");
+        }
+
+        if (camposVacios.isEmpty()) {
+
+        } else {
+            faltaCampos = new Alert(AlertType.ERROR);
+            faltaCampos.setTitle("Error Añadir");
+            faltaCampos.setHeaderText("Complete los campos obligatorios(en naranja).");
+            faltaCampos.setContentText("Campos vacios " + camposVacios.toString());
+            estiloAlerta.darleEstiloAlPanel(faltaCampos);
+            faltaCampos.showAndWait();
+        }
 
     }
 
     public void limpiarProductos() {
+        cb_categoriasExistentes.setValue("Categoria");
+    }
+
+    public void salirProductos() {
         pn_productos.setVisible(false);
         pn_inicio.setVisible(true);
         pn_añadirProductos.setVisible(false);
+        tf_nombreProducto.clear();
     }
 
 }

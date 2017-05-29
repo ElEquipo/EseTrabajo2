@@ -8,6 +8,7 @@ package Datos;
 import java.sql.Connection;
 import java.util.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -21,10 +22,10 @@ public class VentaDAO {
     public VentaDAO(Connection conexion) {
         this.conexion = conexion;
     }
-    
-    public void insertarVenta(Integer idTienda, Integer idTrabajador, Date fechaVenta, Integer referencia, Integer cantidad) throws SQLException{
+
+    public void insertarVenta(Integer idTienda, Integer idTrabajador, Date fechaVenta, Integer referencia, Integer cantidad) throws SQLException {
         java.sql.Date fechaSQL = new java.sql.Date(fechaVenta.getTime());
-                
+
         PreparedStatement psInsertar;
         psInsertar = conexion.prepareStatement("CALL insertarVenta(?,?,?,?,?);");
         psInsertar.setInt(1, idTienda);
@@ -32,9 +33,19 @@ public class VentaDAO {
         psInsertar.setDate(3, fechaSQL);
         psInsertar.setInt(4, referencia);
         psInsertar.setInt(5, cantidad);
-       
+
         psInsertar.executeQuery();
-                
+
+    }
+
+    public String mostrarSiguienteID() throws SQLException {
+        String respuesta = "";
+
+        PreparedStatement psMostrar;
+        psMostrar = conexion.prepareStatement("SELECT idSiguienteVenta() AS 'id';");
+        ResultSet resultado = psMostrar.executeQuery();
+        resultado.next();
+        return (" " + resultado.getInt("id"));
     }
 
 }

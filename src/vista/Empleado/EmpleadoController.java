@@ -38,6 +38,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
+import static java.lang.String.format;
 
 public class EmpleadoController implements Initializable {
 
@@ -114,10 +121,11 @@ public class EmpleadoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        producto = new ProductoDAO(ConexionBD.actualUser);
-        tienda = new TiendaDAO(ConexionBD.actualUser);
-        trabajador = new TrabajadorDAO(ConexionBD.actualUser);
-        empleadoActual = ConexionBD.conectado;
+        producto = new ProductoDAO(ConexionBD.conexion);
+        tienda = new TiendaDAO(ConexionBD.conexion);
+        venta = new VentaDAO(ConexionBD.conexion);
+        trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        empleadoActual = ConexionBD.actualUser;
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
@@ -128,7 +136,7 @@ public class EmpleadoController implements Initializable {
 
         tf_fechaVenta.setText(formato);
         try {
-            lb_idVenta.setText(producto.mostrarSiguienteID());
+            lb_idVenta.setText(venta.mostrarSiguienteID());
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Id");
@@ -227,7 +235,7 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void ventasAction(ActionEvent event) throws SQLException, ParseException {
-        venta = new VentaDAO(ConexionBD.actualUser);
+        venta = new VentaDAO(ConexionBD.conexion);
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
 

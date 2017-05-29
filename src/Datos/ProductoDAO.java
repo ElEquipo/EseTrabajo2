@@ -51,14 +51,27 @@ public class ProductoDAO {
 
     }
 
-    public String mostrarSiguienteID() throws SQLException {
+    public int mostrarSiguienteReferencia() throws SQLException {
         String respuesta = "";
 
         PreparedStatement psMostrar;
-        psMostrar = conexion.prepareStatement("SELECT idSiguienteVenta() AS 'id';");
+        psMostrar = conexion.prepareStatement("SELECT referenciaSiguienteProducto() AS 'referencia';");
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
-        return (" " + resultado.getInt("id"));
+        return (resultado.getInt("referencia") + 1);
+    }
+
+    public List<String> categoriasExistentes() throws SQLException {
+        String respuesta = "";
+        List<String> categorias = new ArrayList<>();
+
+        PreparedStatement psMostrar;
+        psMostrar = conexion.prepareStatement("SELECT distinct(categoria) FROM productos;");
+        ResultSet resultado = psMostrar.executeQuery();
+        while (resultado.next()) {
+            categorias.add(resultado.getString("categoria"));
+        }
+        return categorias;
     }
 
     public int idProducto(String nombreProducto) throws SQLException {

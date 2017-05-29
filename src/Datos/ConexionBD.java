@@ -12,8 +12,8 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 
 public class ConexionBD {
 
-    public static Connection actualUser;
-    public static Trabajador conectado;
+    public static Connection conexion;
+    public static Trabajador actualUser;
     private String mensajeErrorConexion;
     private TrabajadorDAO trabajadorDAO;
 
@@ -21,7 +21,7 @@ public class ConexionBD {
     }
     
     public ConexionBD(Connection conn){
-        actualUser = conn;
+        conexion = conn;
     }
     
 
@@ -29,12 +29,12 @@ public class ConexionBD {
         boolean conectado = false;
         String mensaje = "";
         try {
-            actualUser = DriverManager.getConnection(bd, user, pwd);
-            if (actualUser != null) {
+            conexion = DriverManager.getConnection(bd, user, pwd);
+            if (conexion != null) {
                 conectado = true;
             }
-            trabajadorDAO = new TrabajadorDAO(actualUser);
-            this.conectado =  trabajadorDAO.cargarTrabajador(AppUser,0,0);
+            trabajadorDAO = new TrabajadorDAO(conexion);
+            this.actualUser =  trabajadorDAO.cargarTrabajador(AppUser,0,0);
             
             
             mensaje = "Conexión establecida con la Base de Datos " + bd;
@@ -50,7 +50,7 @@ public class ConexionBD {
         boolean desconectado = false;
 
         try {
-            actualUser.close();
+            conexion.close();
             desconectado = true;
         } catch (SQLException ex) {
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
@@ -67,7 +67,7 @@ public class ConexionBD {
         boolean existe = false;
 
         try {
-            psExiste = actualUser.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
+            psExiste = conexion.prepareStatement("SELECT existeTrabajador(?,?) AS 'existe';");
             psExiste.setString(1, user);
             psExiste.setString(2, pass);
             resultado = psExiste.executeQuery();
@@ -86,7 +86,7 @@ public class ConexionBD {
         String puesto = null;
 
         try {
-            psPuesto = actualUser.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
+            psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
             psPuesto.setString(1, user);
 
             resultado = psPuesto.executeQuery();
@@ -108,7 +108,7 @@ public class ConexionBD {
         String  dni;
 
         try {
-            psExiste = actualUser.prepareStatement("SELECT dni FROM trabajadores WHERE nick=?;");
+            psExiste = conexion.prepareStatement("SELECT dni FROM trabajadores WHERE nick=?;");
             psExiste.setString(1, user);
             resultado = psExiste.executeQuery();
             resultado.next();
@@ -130,7 +130,7 @@ public class ConexionBD {
         String contraseña = null;
 
         try {
-            psContraseña = actualUser.prepareStatement("SELECT contraseña(?) AS 'pass';");
+            psContraseña = conexion.prepareStatement("SELECT contraseña(?) AS 'pass';");
             psContraseña.setString(1, user);
 
             resultado = psContraseña.executeQuery();
@@ -149,15 +149,15 @@ public class ConexionBD {
     }
 
     public Connection getConexion() {
-        return actualUser;
+        return conexion;
     }
 
     public Trabajador getConectado() {
-        return conectado;
+        return actualUser;
     }
 
     public void setConectado(Trabajador conectado) {
-        this.conectado = conectado;
+        this.actualUser = conectado;
     }
     
     
