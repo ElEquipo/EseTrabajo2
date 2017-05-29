@@ -227,15 +227,7 @@ public class GerenteController implements Initializable {
         ta_datosTrabajador.setVisible(false);
         ta_datosTrabajador.setDisable(true);
         ta_datosTrabajador.setVisible(false);
-        try {
-            lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
-        } catch (SQLException ex) {
-            errorCarga = new Alert(AlertType.ERROR);
-            errorCarga.setTitle("Error Id");
-            errorCarga.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
-            estiloAlerta.darleEstiloAlPanel(errorCarga);
-            errorCarga.showAndWait();
-        }
+
         /*
         try {
             ESTO SERÍA IDEAL SI CONTEMPLASEMOS QUE UN GERENTE REGENTA VARIAS TIENDAS
@@ -249,7 +241,6 @@ public class GerenteController implements Initializable {
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }*/
-
         try {
             listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
             tv_productos.setItems(listaProductos);
@@ -357,10 +348,20 @@ public class GerenteController implements Initializable {
     @FXML
     private void contratarAction(ActionEvent event) {
         Object evento = event.getSource();
+        Alert errorCarga;
         if (evento == bt_contratarPersonal) { // ACCEDE AL MENU DE INTRODUCCION DE DATOS
             pn_menuTrabajadores.setVisible(false);
             pn_contratar.setVisible(true);
             dp_fecha.setValue(LocalDate.now());
+            try {
+                lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
+            } catch (SQLException ex) {
+                errorCarga = new Alert(AlertType.ERROR);
+                errorCarga.setTitle("Error Id");
+                errorCarga.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(errorCarga);
+                errorCarga.showAndWait();
+            }
         }
 
         if (evento == bt_atrasContratar) {
@@ -643,10 +644,10 @@ public class GerenteController implements Initializable {
 
         if (eleccion.equalsIgnoreCase("ID")) {
             buscando = nf_busquedaNumerica.getText();
-            modo = 0;
+            modo = 1;
         } else {
             buscando = tf_busquedaTexto.getText();
-            modo = 1;
+            modo = 2;
         }
 
         if (ta_datosTrabajador.isVisible()) {
@@ -661,20 +662,30 @@ public class GerenteController implements Initializable {
                 Optional<ButtonType> resultado = confirmacionBorrado.showAndWait();
 
                 if (resultado.get() == ButtonType.OK) {
-                    trabajador.despedir(buscando, modo);
-                    despedirCorrecto = new Alert(AlertType.INFORMATION);
-                    despedirCorrecto.setTitle("Despedir");
-                    despedirCorrecto.setHeaderText("Despido efectuado");
-                    despedirCorrecto.setContentText(null);
-                    estiloAlerta.darleEstiloAlPanel(despedirCorrecto);
-                    despedirCorrecto.showAndWait();
-                    limpiarCamposDespedir();
+                    if (!trabajador.cargarTrabajador(buscando, modo, gerenteActual.getIdTienda()).getDni().equalsIgnoreCase(gerenteActual.getDni())) {
+                        trabajador.despedir(buscando, modo);
+                        despedirCorrecto = new Alert(AlertType.INFORMATION);
+                        despedirCorrecto.setTitle("Despedir");
+                        despedirCorrecto.setHeaderText("Despido efectuado");
+                        despedirCorrecto.setContentText(null);
+                        estiloAlerta.darleEstiloAlPanel(despedirCorrecto);
+                        despedirCorrecto.showAndWait();
+                        limpiarCamposDespedir();
+                    } else {
+                        errorDespedir = new Alert(AlertType.ERROR);
+                        errorDespedir.setTitle("Despedir");
+                        errorDespedir.setHeaderText("Error al despedir");
+                        errorDespedir.setContentText("No puedes despedirte a ti mismo.");
+                        estiloAlerta.darleEstiloAlPanel(errorDespedir);
+                        errorDespedir.showAndWait();
+                    }
 
                 } else if (resultado.get() == ButtonType.CANCEL) {
                     confirmacionBorrado.close();
                 }
 
             } catch (SQLException ex) {
+                
                 errorDespedir = new Alert(AlertType.ERROR);
                 errorDespedir.setTitle("Despedir");
                 errorDespedir.setHeaderText("Error al despedir");

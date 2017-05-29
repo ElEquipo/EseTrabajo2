@@ -116,7 +116,7 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "ROOT",user)) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root",user)) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
                     
