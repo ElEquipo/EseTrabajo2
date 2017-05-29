@@ -45,7 +45,7 @@
             </Pane>
             <Pane id="pn_FondoIconos" fx:id="pn_inicio" layoutY="114.0" prefHeight="464.0" prefWidth="744.0" stylesheets="@gerente.css">
                <children>
-                  <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
+                  <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
                      <cursor>
                       <Cursor fx:constant="HAND" /> 
                      </cursor></Button>
@@ -126,6 +126,27 @@
                   <Button fx:id="bt_irPaneDespedir" layoutX="51.0" layoutY="380.0" mnemonicParsing="false" onAction="#verTrabajadoresAction" text="Ir Despedir" />
                </children>
             </Pane>
+            <Pane fx:id="pn_productos" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <TableView fx:id="tv_productos" layoutX="9.0" layoutY="28.0" prefHeight="352.0" prefWidth="719.0">
+                     <columns>
+                        <TableColumn fx:id="tb_referencia" prefWidth="64.0" text="referencia" />
+                        <TableColumn fx:id="tb_nombre" prefWidth="93.0" text="nombre" />
+                        <TableColumn fx:id="tc_stock" prefWidth="75.0" text="stock" />
+                        <TableColumn fx:id="tb_categoria" prefWidth="119.0" text="categoría" />
+                        <TableColumn fx:id="tb_descripcion" prefWidth="147.0" text="descripción" />
+                        <TableColumn fx:id="tb_precioCompra" prefWidth="109.0" text="precio compra" />
+                        <TableColumn fx:id="tb_precioVenta" prefWidth="107.0" text="precio venta" />
+                        <TableColumn fx:id="tb_iva" prefWidth="77.0" text="IVA" />
+                     </columns>
+                  </TableView>
+                  <Button id="bt_atras" fx:id="bt_atrasProductos" layoutX="340.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
+                     <cursor>
+                       <Cursor fx:constant="HAND" />
+                     </cursor></Button>
+                  <Button fx:id="bt_irPanelAñadirProducto" layoutX="72.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Productos" />
+               </children>
+            </Pane>
             <Pane fx:id="pn_contratar" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
                <children>
                   <TextField fx:id="tf_nombre" layoutX="32.0" layoutY="115.0" prefHeight="25.0" prefWidth="149.0" promptText="nombre" />
@@ -161,28 +182,7 @@
                   <ComboBox fx:id="cb_puesto" layoutX="32.0" layoutY="210.0" prefWidth="150.0" />
                </children>
             </Pane>
-            <Pane fx:id="pn_productos" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
-               <children>
-                  <TableView fx:id="tv_productos" layoutX="9.0" layoutY="28.0" prefHeight="352.0" prefWidth="719.0">
-                     <columns>
-                        <TableColumn fx:id="tb_referencia" prefWidth="64.0" text="referencia" />
-                        <TableColumn fx:id="tb_nombre" prefWidth="93.0" text="nombre" />
-                        <TableColumn fx:id="tc_stock" prefWidth="75.0" text="stock" />
-                        <TableColumn fx:id="tb_categoria" prefWidth="119.0" text="categoría" />
-                        <TableColumn fx:id="tb_descripcion" prefWidth="147.0" text="descripción" />
-                        <TableColumn fx:id="tb_precioCompra" prefWidth="109.0" text="precio compra" />
-                        <TableColumn fx:id="tb_precioVenta" prefWidth="107.0" text="precio venta" />
-                        <TableColumn fx:id="tb_iva" prefWidth="77.0" text="IVA" />
-                     </columns>
-                  </TableView>
-                  <Button id="bt_atras" fx:id="bt_atrasProductos" layoutX="340.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
-                     <cursor>
-                       <Cursor fx:constant="HAND" />
-                     </cursor></Button>
-                  <Button fx:id="bt_irPanelAñadirProducto" layoutX="72.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Productos" />
-               </children>
-            </Pane>
-            <Pane fx:id="pn_añadirProductos" layoutX="10.0" layoutY="124.0" prefHeight="464.0" prefWidth="744.0">
+            <Pane fx:id="pn_añadirProductos" layoutY="124.0" prefHeight="464.0" prefWidth="744.0">
                <children>
                   <Button fx:id="bt_añadirProducto" layoutX="475.0" layoutY="399.0" mnemonicParsing="false" onAction="#AñadirProductosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Prodcuto" />
                   <Button id="bt_atras" fx:id="bt_atrasAñadirProductos" layoutX="331.0" layoutY="383.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
@@ -199,6 +199,25 @@
                   <NumericTextField fx:id="nf_cantidad" layoutX="26.0" layoutY="358.0" promptText="cantidad" />
                   <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
                   <Button fx:id="bt_descripcion" layoutX="185.0" layoutY="187.0" mnemonicParsing="false" onAction="#productosAction" text="+" />
+               </children>
+            </Pane>
+            <Pane fx:id="pn_incidencias" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <TableView layoutX="14.0" layoutY="32.0" prefHeight="295.0" prefWidth="710.0">
+                    <columns>
+                      <TableColumn fx:id="tv_incidencias" prefWidth="117.0" text="idIncidencia" />
+                      <TableColumn prefWidth="62.0" text="idTienda" />
+                        <TableColumn prefWidth="97.0" text="idTrabajador" />
+                        <TableColumn prefWidth="84.0" text="tipo" />
+                        <TableColumn prefWidth="93.0" text="fecha" />
+                        <TableColumn prefWidth="256.0" text="descripcion" />
+                    </columns>
+                  </TableView>
+                  <Button id="bt_atras" fx:id="bt_atrasIncidencias" layoutX="338.0" layoutY="394.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </Pane>
          </children>

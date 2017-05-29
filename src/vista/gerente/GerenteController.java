@@ -235,6 +235,12 @@ public class GerenteController implements Initializable {
     private ComboBox<String> cb_categoriasExistentes;
     @FXML
     private Button bt_descripcion;
+    @FXML
+    private Pane pn_incidencias;
+    @FXML
+    private TableColumn<?, ?> tv_incidencias;
+    @FXML
+    private Button bt_atrasIncidencias;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -262,6 +268,7 @@ public class GerenteController implements Initializable {
         cb_puesto.setPromptText("Puesto");
         cb_puesto.setValue("Puesto");
         pn_añadirProductos.setVisible(false);
+        pn_incidencias.setVisible(false);
 
         /*
         try {
@@ -750,7 +757,8 @@ public class GerenteController implements Initializable {
         pn_menuTrabajadores.setVisible(false);
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
-        limpiarCamposContratar();
+        pn_incidencias.setVisible(false);
+       limpiarCamposContratar();
         limpiarCamposDespedir();
         salirVerTrabajadores();
         limpiarProductos();
@@ -1012,6 +1020,21 @@ public class GerenteController implements Initializable {
 
             }
         }
+    }
+
+    @FXML
+    private void IncidenciasAction(ActionEvent event) {
+        
+        if (bt_incidencias.isFocused()) {
+            pn_inicio.setVisible(false);
+            pn_incidencias.setVisible(true);
+        }
+        
+        if (bt_atrasIncidencias.isFocused()) {
+            pn_incidencias.setVisible(false);
+            pn_inicio.setVisible(true);
+        }
+        
     }
 
 }
