@@ -54,12 +54,12 @@ import vista.Empleado.EmpleadoController;
 public class GerenteController implements Initializable {
 
     private TrabajadorDAO trabajador;
-    
+
     private TiendaDAO tienda;
     private ProductoDAO producto;
     /*IDEAL PARA GERENTE DE VARIAS TIENDAS
     private ObservableList<Tienda> listaTiendas;*/
-    private ObservableList<Trabajador> listaTrabajadores;
+    private ObservableList<Trabajador> listaObservableTrabajadores;
     private ObservableList<Producto> listaProductos;
     private Alerta estiloAlerta;
     private Trabajador gerenteActual;
@@ -197,6 +197,14 @@ public class GerenteController implements Initializable {
     private TextArea ta_datosTrabajador;
     @FXML
     private NumericTextField nf_busquedaNumerica;
+    @FXML
+    private Pane pn_tienda;
+    @FXML
+    private Button bt_atrasVerTrabajadores;
+    @FXML
+    private Button bt_irPaneDespedir;
+    @FXML
+    private Button bt_irVerTrabajadores;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -212,11 +220,13 @@ public class GerenteController implements Initializable {
         pn_contratar.setVisible(false);
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
+        pn_tienda.setVisible(false);
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);
         dp_horaSalida.setLocalTime(LocalTime.MIDNIGHT);
         cb_busquedaDespedir.setItems(tiposBusqueda);
         ta_datosTrabajador.setVisible(false);
         ta_datosTrabajador.setDisable(true);
+        ta_datosTrabajador.setVisible(false);
         try {
             lb_id.setText(" " + String.valueOf(trabajador.mostrarSiguienteID()));
         } catch (SQLException ex) {
@@ -293,7 +303,7 @@ public class GerenteController implements Initializable {
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_productos, tt_productos);
 
-        tt_tienda = new Tooltip("Tiendas");
+        tt_tienda = new Tooltip("Tienda");
         tt_tienda.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_tienda, tt_tienda);
@@ -435,7 +445,6 @@ public class GerenteController implements Initializable {
                 camposRestantes.showAndWait();
 
             } else if (!validadorDni.validar(dni)) {
-
                 dniIncorrecto = new Alert(AlertType.ERROR);
                 dniIncorrecto.setTitle("DNI ERRROR");
                 dniIncorrecto.setHeaderText("DNI incorrecto");
@@ -492,6 +501,7 @@ public class GerenteController implements Initializable {
             errorIngresar.setContentText(ex.getMessage() + " " + ex.getErrorCode());
             estiloAlerta.darleEstiloAlPanel(errorIngresar);
             errorIngresar.showAndWait();
+
         } catch (Exception e) {
             errorIngresar = new Alert(AlertType.ERROR);
             errorIngresar.setTitle("Error");
@@ -556,7 +566,16 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void buscarDespedirAction(ActionEvent event) {
-        buscarDespedir();
+        Object evento = event.getSource();
+        if (evento == bt_despedir) {
+            buscarDespedir();
+        }
+
+        if (evento == bt_irVerTrabajadores) {
+            pn_despedir.setVisible(false);
+            pn_tienda.setVisible(true);
+            verTrajadores();
+        }
     }
 
     private void buscarDespedir() {
@@ -692,6 +711,7 @@ public class GerenteController implements Initializable {
         pn_despedir.setVisible(false);
         limpiarCamposContratar();
         limpiarCamposDespedir();
+        salirVerTrabajadores();
     }
 
     public void limpiarCamposContratar() {
@@ -729,4 +749,52 @@ public class GerenteController implements Initializable {
         }
 
     }
+
+    @FXML
+    private void verTrabajadoresAction(ActionEvent event) {
+        Object evento = event.getSource();
+        verTrajadores();
+
+        if (evento == bt_atrasVerTrabajadores) {
+            salirVerTrabajadores();
+
+        }
+
+        if (evento == bt_tienda) {
+            pn_tienda.setVisible(true);
+            pn_inicio.setVisible(false);
+        }
+
+        if (evento == bt_irPaneDespedir) {
+            pn_tienda.setVisible(false);
+            pn_despedir.setVisible(true);
+        }
+
+    }
+
+    public void verTrajadores() {
+        List<Trabajador> listaTrabajadores;
+        Alert errorCarga;
+
+        try {
+            listaTrabajadores = trabajador.cargarTrabajadoresTienda(gerenteActual.getIdTienda());
+            listaObservableTrabajadores = FXCollections.observableArrayList(listaTrabajadores);
+            tv_empleado.setItems(listaObservableTrabajadores);
+            tv_empleado.setVisible(true);
+        } catch (SQLException ex) {
+            errorCarga = new Alert(AlertType.ERROR);
+            errorCarga.setTitle("Error Carga");
+            errorCarga.setHeaderText("Error en la carga de los trabajadores");
+            errorCarga.setContentText("Error: " + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
+        }
+    }
+
+    public void salirVerTrabajadores() {
+        tv_empleado.setVisible(false);
+        pn_inicio.setVisible(true);
+        pn_tienda.setVisible(false);
+    }
+
 }

@@ -100,32 +100,35 @@ public class TrabajadorDAO {
         }
         return listaTrabajadores;
     }
+    
+    public List<Trabajador> cargarTrabajadoresTienda(int tienda) throws SQLException {
+        PreparedStatement psTrabajadores;
+        ResultSet rsTrabajadores;
+        Trabajador trabajador;
+        List<Trabajador> listaTrabajadores = new ArrayList<>();
+        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE idTienda=?;");
+        psTrabajadores.setInt(1, tienda);
+        rsTrabajadores = psTrabajadores.executeQuery();
+        while (rsTrabajadores.next()) {
 
-//    public Trabajador cargarTrabajador(String user) throws SQLException {
-//        PreparedStatement psTrabajadores;
-//        ResultSet rsTrabajadores;
-//        Trabajador trabajador = null;
-//        psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE nick=?;");
-//        psTrabajadores.setString(1, user);
-//        rsTrabajadores = psTrabajadores.executeQuery();
-//        rsTrabajadores.next();
-//
-//        trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
-//                rsTrabajadores.getString("dni"),
-//                rsTrabajadores.getString("nombre"),
-//                rsTrabajadores.getString("apellido1"),
-//                rsTrabajadores.getString("apellido2"),
-//                rsTrabajadores.getString("puesto"),
-//                rsTrabajadores.getDouble("salarioBrutoAnual"),
-//                rsTrabajadores.getDate("fechaAlta").toLocalDate(),
-//                rsTrabajadores.getString("nick"),
-//                rsTrabajadores.getString("password"),
-//                rsTrabajadores.getTime("horaEntrada").toLocalTime(),
-//                rsTrabajadores.getTime("horaSalida").toLocalTime(),
-//                rsTrabajadores.getInt("idTienda"));
-//
-//        return trabajador;
-//    }
+            trabajador = new Trabajador(rsTrabajadores.getInt("idTrabajador"),
+                    rsTrabajadores.getString("dni"),
+                    rsTrabajadores.getString("nombre"),
+                    rsTrabajadores.getString("apellido1"),
+                    rsTrabajadores.getString("apellido2"),
+                    rsTrabajadores.getString("puesto"),
+                    rsTrabajadores.getDouble("salarioBrutoAnual"),
+                    rsTrabajadores.getDate("fechaAlta").toLocalDate(),
+                    rsTrabajadores.getString("nick"),
+                    rsTrabajadores.getString("password"),
+                    rsTrabajadores.getTime("horaEntrada").toLocalTime(),
+                    rsTrabajadores.getTime("horaSalida").toLocalTime(),
+                    rsTrabajadores.getInt("idTienda"));
+            listaTrabajadores.add(trabajador);
+        }
+        return listaTrabajadores;
+    }
+    
     public Trabajador cargarTrabajador(String buscando, int tipo) throws SQLException {
         PreparedStatement psTrabajadores;
         ResultSet rsTrabajadores = null;
