@@ -104,8 +104,6 @@ public class GerenteController implements Initializable {
     @FXML
     private TextField tf_apellido2;
     @FXML
-    private TextField tf_puesto;
-    @FXML
     private TextField tf_nick;
     @FXML
     private TextField tf_dni;
@@ -205,11 +203,16 @@ public class GerenteController implements Initializable {
     private Button bt_irPaneDespedir;
     @FXML
     private Button bt_irVerTrabajadores;
+    @FXML
+    private ComboBox<String> cb_puesto;
+    @FXML
+    private TableColumn<?, ?> tc_stock;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Alert errorCarga;
         ObservableList<String> tiposBusqueda = FXCollections.observableArrayList("ID", "DNI");
+        ObservableList<String> puestos = FXCollections.observableArrayList("Gerente", "Dependiente");
         trabajador = new TrabajadorDAO(ConexionBD.actualUser);
         tienda = new TiendaDAO(ConexionBD.actualUser);
         producto = new ProductoDAO(ConexionBD.actualUser);
@@ -227,7 +230,10 @@ public class GerenteController implements Initializable {
         ta_datosTrabajador.setVisible(false);
         ta_datosTrabajador.setDisable(true);
         ta_datosTrabajador.setVisible(false);
-
+        cb_puesto.setItems(puestos);
+        cb_puesto.setPromptText("Puesto");
+        cb_puesto.setValue("Puesto");
+        
         /*
         try {
             ESTO SERÍA IDEAL SI CONTEMPLASEMOS QUE UN GERENTE REGENTA VARIAS TIENDAS
@@ -242,7 +248,7 @@ public class GerenteController implements Initializable {
             errorCarga.showAndWait();
         }*/
         try {
-            listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
+            listaProductos = FXCollections.observableArrayList(producto.cargarProductos(gerenteActual.getIdTienda()));
             tv_productos.setItems(listaProductos);
             tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
             tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -251,6 +257,7 @@ public class GerenteController implements Initializable {
             tb_precioCompra.setCellValueFactory(new PropertyValueFactory<>("precioCompra"));
             tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
             tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
+            tc_stock.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
 
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
@@ -381,7 +388,7 @@ public class GerenteController implements Initializable {
         String passEncriptada = null;
         List<String> camposVacios = new ArrayList<>();
         String dni = tf_dni.getText(), nombre = tf_nombre.getText(), apellido1 = tf_apellido1.getText(),
-                apellido2 = tf_apellido2.getText(), puesto = tf_puesto.getText(), nick = tf_nick.getText(),
+                apellido2 = tf_apellido2.getText(), puesto = cb_puesto.getValue(), nick = tf_nick.getText(),
                 salariotext = nf_salario.getText();
         Integer idTienda = gerenteActual.getIdTienda();
         Double salario = null;
@@ -396,10 +403,9 @@ public class GerenteController implements Initializable {
 
             if (dni.isEmpty()) {
                 camposVacios.add("DNI");
-
             }
-
-            if (puesto.isEmpty()) {
+            
+            if(puesto.equalsIgnoreCase("Puesto")){
                 camposVacios.add("Puesto");
             }
 
@@ -675,7 +681,9 @@ public class GerenteController implements Initializable {
                         errorDespedir = new Alert(AlertType.ERROR);
                         errorDespedir.setTitle("Despedir");
                         errorDespedir.setHeaderText("Error al despedir");
-                        errorDespedir.setContentText("No puedes despedirte a ti mismo.");
+                        errorDespedir.setContentText("No puedes despedirte a ti mismo.\n"
+                                + "Sal de la aplicación y solicita que otro gerente de la misma tienda "
+                                + "te despida.");
                         estiloAlerta.darleEstiloAlPanel(errorDespedir);
                         errorDespedir.showAndWait();
                     }
@@ -735,7 +743,7 @@ public class GerenteController implements Initializable {
         tf_nombre.clear();
         tf_apellido1.clear();
         tf_apellido2.clear();
-        tf_puesto.clear();
+        cb_puesto.setValue("Puesto");
         nf_salario.clear();
         tf_nick.clear();
         dp_horaEntrada.setLocalTime(LocalTime.MIDNIGHT);

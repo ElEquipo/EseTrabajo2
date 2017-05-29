@@ -25,12 +25,16 @@ public class ProductoDAO {
         this.conexion = conexion;
     }
 
-    public List cargarProductos() throws SQLException {
+    public List cargarProductos(int idTienda) throws SQLException {
         Producto producto;
         PreparedStatement psProductos;
         ResultSet rsProductos;
         List<Producto> listaProductos = new ArrayList<>();
-        psProductos = conexion.prepareStatement("SELECT * FROM productos;");
+        psProductos = conexion.prepareStatement("SELECT * "
+                + "FROM productos p INNER JOIN tiendas_productos tp INNER JOIN tiendas t "
+                + "ON p.referencia=tp.idProducto AND tp.idTienda=t.idTienda "
+                + "WHERE t.idTienda =?;");
+        psProductos.setInt(1, idTienda);
         rsProductos = psProductos.executeQuery();
         while (rsProductos.next()) {
             producto = new Producto(rsProductos.getInt("referencia"),
@@ -39,7 +43,8 @@ public class ProductoDAO {
                     rsProductos.getString("descripcion"),
                     rsProductos.getDouble("precioCompra"),
                     rsProductos.getDouble("precioVenta"),
-                    rsProductos.getDouble("IVA"));
+                    rsProductos.getDouble("IVA"),
+                    rsProductos.getInt("stock"));
             listaProductos.add(producto);
         }
         return listaProductos;
@@ -55,8 +60,8 @@ public class ProductoDAO {
         resultado.next();
         return (" " + resultado.getInt("id"));
     }
-    
-      public int idProducto(String nombreProducto) throws SQLException {
+
+    public int idProducto(String nombreProducto) throws SQLException {
         int resultado = 0;
 
         PreparedStatement psTrabajador;

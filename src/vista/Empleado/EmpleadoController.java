@@ -139,7 +139,7 @@ public class EmpleadoController implements Initializable {
 
         try {
             /* TABLE VIEW PRODUCTOS */
-            listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
+            listaProductos = FXCollections.observableArrayList(producto.cargarProductos(empleadoActual.getIdTienda()));
             tv_productos.setItems(listaProductos);
             tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
             tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -182,7 +182,7 @@ public class EmpleadoController implements Initializable {
 
         try {
             /* COMBO BOX PRODUCTOS */
-            listaProductos = FXCollections.observableArrayList(producto.cargarProductos());
+            listaProductos = FXCollections.observableArrayList(producto.cargarProductos(empleadoActual.getIdTienda()));
             cb_referencia.setItems(listaProductos);
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
