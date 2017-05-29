@@ -567,8 +567,13 @@ public class GerenteController implements Initializable {
     @FXML
     private void buscarDespedirAction(ActionEvent event) {
         Object evento = event.getSource();
-        if (evento == bt_despedir) {
+
+        if (evento == bt_buscar) {
             buscarDespedir();
+        }
+
+        if (evento == bt_despedir) {
+            despedir();
         }
 
         if (evento == bt_irVerTrabajadores) {
@@ -588,7 +593,7 @@ public class GerenteController implements Initializable {
             if (eleccion.equalsIgnoreCase("ID")) {
                 busqueda = nf_busquedaNumerica.getText();
                 if (!busqueda.isEmpty()) {
-                    trabajador = this.trabajador.cargarTrabajador(busqueda, 1);
+                    trabajador = this.trabajador.cargarTrabajador(busqueda, 1, gerenteActual.getIdTienda());
                     ta_datosTrabajador.setText(trabajador.verDatos());
                     ta_datosTrabajador.setVisible(true);
                     ta_datosTrabajador.setDisable(false);
@@ -598,7 +603,7 @@ public class GerenteController implements Initializable {
             } else {
                 busqueda = tf_busquedaTexto.getText();
                 if (!busqueda.isEmpty()) {
-                    trabajador = this.trabajador.cargarTrabajador(busqueda, 2);
+                    trabajador = this.trabajador.cargarTrabajador(busqueda, 2, gerenteActual.getIdTienda());
                     ta_datosTrabajador.setText(trabajador.verDatos());
                     ta_datosTrabajador.setVisible(true);
                     ta_datosTrabajador.setDisable(false);
@@ -768,6 +773,7 @@ public class GerenteController implements Initializable {
         if (evento == bt_irPaneDespedir) {
             pn_tienda.setVisible(false);
             pn_despedir.setVisible(true);
+            cb_busquedaDespedir.setValue("ID");
         }
 
     }

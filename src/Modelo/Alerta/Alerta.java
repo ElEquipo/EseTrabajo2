@@ -6,6 +6,7 @@
 package Modelo.Alerta;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -18,7 +19,7 @@ public class Alerta {
 
     public Alerta() {
     }
-    
+
     public void darleEstiloAlPanel(Alert alerta) {
         DialogPane dialogPane;
         Stage alertaStage;

@@ -129,7 +129,7 @@ public class TrabajadorDAO {
         return listaTrabajadores;
     }
     
-    public Trabajador cargarTrabajador(String buscando, int tipo) throws SQLException {
+    public Trabajador cargarTrabajador(String buscando, int tipo, int idTienda) throws SQLException {
         PreparedStatement psTrabajadores;
         ResultSet rsTrabajadores = null;
         Trabajador trabajador = null;
@@ -142,14 +142,16 @@ public class TrabajadorDAO {
                 break;
 
             case 1:// BUSQUEDA POR ID
-                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE idTrabajador=?;");
+                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE idTrabajador=? AND idTienda=?;");
                 psTrabajadores.setString(1, buscando);
+                psTrabajadores.setInt(2, idTienda);
                 rsTrabajadores = psTrabajadores.executeQuery();
                 break;
 
             case 2: //BUSQUEDA POR DNI
-                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE dni=?;");
+                psTrabajadores = conexion.prepareStatement("SELECT * FROM trabajadores WHERE dni=?  AND idTienda=?;");
                 psTrabajadores.setString(1, buscando);
+                psTrabajadores.setInt(2, idTienda);
                 rsTrabajadores = psTrabajadores.executeQuery();
                 break;
             default:

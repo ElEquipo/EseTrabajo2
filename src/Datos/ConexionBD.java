@@ -34,7 +34,7 @@ public class ConexionBD {
                 conectado = true;
             }
             trabajadorDAO = new TrabajadorDAO(actualUser);
-            this.conectado =  trabajadorDAO.cargarTrabajador(AppUser,0);
+            this.conectado =  trabajadorDAO.cargarTrabajador(AppUser,0,0);
             
             
             mensaje = "Conexión establecida con la Base de Datos " + bd;
