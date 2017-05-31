@@ -1121,6 +1121,7 @@ public class GerenteController implements Initializable {
         try {
             incidencia.cambiarAleida(seleccionada);
             ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
+            ta_descripcionIncidencia.setWrapText(true);
         } catch (SQLException ex) {
             errorLeer = new Alert(Alert.AlertType.ERROR);
             errorLeer.setTitle("Error");
