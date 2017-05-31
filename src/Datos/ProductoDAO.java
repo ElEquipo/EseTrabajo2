@@ -45,6 +45,7 @@ public class ProductoDAO {
                     rsProductos.getDouble("precioVenta"),
                     rsProductos.getDouble("IVA"),
                     rsProductos.getInt("stock"));
+            
             listaProductos.add(producto);
         }
         return listaProductos;

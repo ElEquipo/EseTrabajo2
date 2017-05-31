@@ -1,5 +1,6 @@
 package Datos;
 
+import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,8 +15,10 @@ public class ConexionBD {
 
     public static Connection conexion;
     public static Trabajador actualUser;
+    public static Tienda actualShop;
     private String mensajeErrorConexion;
     private TrabajadorDAO trabajadorDAO;
+    private TiendaDAO tiendaDAO;
 
     public ConexionBD() {
     }
@@ -34,7 +37,9 @@ public class ConexionBD {
                 conectado = true;
             }
             trabajadorDAO = new TrabajadorDAO(conexion);
+            tiendaDAO = new TiendaDAO(conexion);
             this.actualUser =  trabajadorDAO.cargarTrabajador(AppUser,0,0);
+            this.actualShop = tiendaDAO.cargarTienda(actualUser);
             
             
             mensaje = "Conexión establecida con la Base de Datos " + bd;
@@ -105,7 +110,7 @@ public class ConexionBD {
         ResultSet resultado;
         boolean existe = false;
         StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-        String  dni;
+        String dni;
 
         try {
             psExiste = conexion.prepareStatement("SELECT dni FROM trabajadores WHERE nick=?;");
@@ -139,8 +144,8 @@ public class ConexionBD {
         } catch (SQLException ex) {
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return contraseña;
+        
     }
 
     // * * * * * * * * * * GET AND SET * * * * * * * * * * 

@@ -4,7 +4,7 @@
     -fx-background-image: url(../login/images/fondoLogin2.jpg);
 }
 
-#paneLogin{
+#paneLogin, #pn_Bienvenida{
     -fx-background-radius: 15px;
     -fx-background-color: rgba(89, 89, 89, 0.3);
 }

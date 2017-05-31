@@ -9,6 +9,7 @@ import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import java.io.IOException;
 import static java.lang.String.format;
 import java.net.URL;
@@ -45,6 +46,9 @@ import static java.lang.String.format;
 import static java.lang.String.format;
 import static java.lang.String.format;
 import static java.lang.String.format;
+import java.util.Optional;
+import javafx.scene.control.ButtonType;
+import javafx.scene.input.MouseEvent;
 
 public class EmpleadoController implements Initializable {
 
@@ -56,10 +60,13 @@ public class EmpleadoController implements Initializable {
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Trabajador> listaTrabajadores;
-    private LocalDateTime date = LocalDateTime.now();
+    private LocalDateTime date;
     private String formato;
     private Trabajador empleadoActual;
+    private Tienda tiendaActual;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
+    private boolean compraFin = true;
+    private boolean productoAnadido = false;
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -80,8 +87,6 @@ public class EmpleadoController implements Initializable {
     private TableView<Producto> tv_productos;
     @FXML
     private Button bt_atrasProductos;
-    @FXML
-    private Label lb_idVenta;
     @FXML
     private TextField tf_fechaVenta;
     @FXML
@@ -111,13 +116,19 @@ public class EmpleadoController implements Initializable {
     @FXML
     private TableColumn<Producto, Double> tb_iva;
     @FXML
+    private TableColumn<Producto, Integer> tb_stock;
+    @FXML
     private ComboBox<Producto> cb_referencia;
     @FXML
     private TextField tf_cantidad;
     @FXML
-    private ComboBox<Tienda> cb_tiendas;
+    private TextField tf_idVenta;
     @FXML
-    private ComboBox<Trabajador> cb_trabajadores;
+    private TextField tf_tienda;
+    @FXML
+    private TextField tf_trabajador;
+    @FXML
+    private Button bt_anadirProducto;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -126,17 +137,22 @@ public class EmpleadoController implements Initializable {
         venta = new VentaDAO(ConexionBD.conexion);
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
+        tiendaActual = ConexionBD.actualShop;
+        tf_tienda.setText(tiendaActual.getNombre());
+        tf_trabajador.setText(empleadoActual.getNombre());
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
+        tf_tienda.setEditable(false);
+        tf_trabajador.setEditable(false);
+        tf_fechaVenta.setEditable(false);
+        tf_idVenta.setEditable(false);
         Alert errorCarga;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
-        formato = date.format(formatter);
 
-        tf_fechaVenta.setText(formato);
         try {
-            lb_idVenta.setText(venta.mostrarSiguienteID());
+            tf_idVenta.setText(venta.mostrarSiguienteID());
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Id");
@@ -156,34 +172,11 @@ public class EmpleadoController implements Initializable {
             tb_precioCompra.setCellValueFactory(new PropertyValueFactory<>("precioCompra"));
             tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
             tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
+            tb_stock.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
         } catch (SQLException ex) {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Productos");
             errorCarga.setHeaderText("Error al cargar la lista de productos");
-            estiloAlerta.darleEstiloAlPanel(errorCarga);
-            errorCarga.showAndWait();
-        }
-
-        try {
-            /* COMBO BOX TIENDAS*/
-            listaTiendas = FXCollections.observableArrayList(tienda.cargarDatos());
-            cb_tiendas.setItems(listaTiendas);
-        } catch (SQLException ex) {
-            errorCarga = new Alert(Alert.AlertType.ERROR);
-            errorCarga.setTitle("Error Carga Tiendas");
-            errorCarga.setHeaderText("Error al cargar la lista de tiendas");
-            estiloAlerta.darleEstiloAlPanel(errorCarga);
-            errorCarga.showAndWait();
-        }
-
-        try {
-            /* COMBO BOX TRABAJADORES */
-            listaTrabajadores = FXCollections.observableArrayList(trabajador.cargarDatos());
-            cb_trabajadores.setItems(listaTrabajadores);
-        } catch (SQLException ex) {
-            errorCarga = new Alert(Alert.AlertType.ERROR);
-            errorCarga.setTitle("Error Carga Trabajdores");
-            errorCarga.setHeaderText("Error al cargar la lista de trabajadores \n" + ex.getMessage());
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }
@@ -203,10 +196,14 @@ public class EmpleadoController implements Initializable {
     }
 
     @FXML
-    private void CloseAction(ActionEvent event) {
+    private void CloseAction(ActionEvent event) throws SQLException {
         try {
-            AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/login/LoginFXML.fxml"));
-            ac_empleado.getChildren().setAll(pane);
+            if (pn_ventas.isVisible() && !compraFin) {
+                alertSalirVenta(venta.idActual());
+            } else {
+                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/login/LoginFXML.fxml"));
+                ac_empleado.getChildren().setAll(pane);
+            }
         } catch (IOException ex) {
             Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -214,10 +211,14 @@ public class EmpleadoController implements Initializable {
     }
 
     @FXML
-    private void inicioAction(ActionEvent event) {
-        pn_fondoIconos.setVisible(true);
-        pn_productos.setVisible(false);
-        pn_ventas.setVisible(false);
+    private void inicioAction(ActionEvent event) throws SQLException {
+        if (pn_ventas.isVisible() && !compraFin) {
+            alertSalirVenta(venta.idActual());
+        } else {
+            pn_fondoIconos.setVisible(true);
+            pn_productos.setVisible(false);
+            pn_ventas.setVisible(false);
+        }
     }
 
     @FXML
@@ -238,25 +239,166 @@ public class EmpleadoController implements Initializable {
         venta = new VentaDAO(ConexionBD.conexion);
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
+        Date fecha;
+        date = LocalDateTime.now();
+        formato = date.format(formatter);
+        productoAnadido = false;
 
-        if (bt_regVenta.isFocused()) {
-            tienda.idTienda(cb_tiendas.getValue() + "");
-            trabajador.idTrabajador(cb_trabajadores.getValue() + "");
+        SimpleDateFormat dt = new SimpleDateFormat("y-M-d h:m:s");
 
-            SimpleDateFormat dt = new SimpleDateFormat("y-M-d h:m:s");
-            Date fecha = dt.parse(tf_fechaVenta.getText());
-            System.out.println(fecha);
-            
-
-            venta.insertarVenta(tienda.idTienda(cb_tiendas.getValue().getNombre()), trabajador.idTrabajador(cb_trabajadores.getValue().getNombre()), 
-                                fecha, producto.idProducto(cb_referencia.getValue().getNombre()), Integer.parseInt(tf_cantidad.getText()));
-            
+        if (bt_ventas.isFocused()) {
+            /* ENTRAR EN VENTAS */
+            tf_fechaVenta.setText(formato);
+            tf_idVenta.setText(venta.mostrarSiguienteID());
         }
 
-        if (bt_atrasVentas.isFocused()) {
+        /* AÑADIR PRODUCTO */
+        if (bt_anadirProducto.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null) {
+            /* AÑADIR PRODUCTO A LA VENTA SI LOS CAMPOS ESTAN LLENOS */
+            fecha = dt.parse(tf_fechaVenta.getText());
+            if (anadirProducto(fecha)) {
+                compraFin = false;
+            }
+        } else if (bt_anadirProducto.isFocused() && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null)) {
+            /* ALERTA DE CAMPOS VACIOS AL AÑADIR PRODUCTO */
+            alertCamposVacios();
+        }
+
+        /* REGISRAR UNA VENTA */
+        if (bt_regVenta.isFocused()
+                && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null) && compraFin) {
+            /* ENTRA SI LOS CAMPOS ESTAN VACIOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA */
+
+            alertCamposVacios();
+        } else if (bt_regVenta.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null && compraFin) {
+            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/
+
+            fecha = dt.parse(tf_fechaVenta.getText());
+            anadirProducto(fecha);
+            siguienteCompra();
+            alertFinCompra();
+            compraFin = true;
+        } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null))) {
+            /* ENTRA SI LOS CAMPOS ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
+
+            siguienteCompra();
+            alertFinCompra();
+            compraFin = true;
+        } else if (bt_regVenta.isFocused() && productoAnadido && !compraFin) {
+            /* ENTRA SI SE HAN AÑADIDO PRODUCTOS, REGISTRA LA COMPRA. SIGUIENTE COMPRA */
+            
+            siguienteCompra();
+            alertFinCompra();
+            compraFin = true;
+        }
+
+        /* SALIR DE VENTAS */
+        if (bt_atrasVentas.isFocused() && compraFin) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
+            cb_referencia.setValue(null);
+            tf_cantidad.clear();
+
+        } else if (bt_atrasVentas.isFocused() && !compraFin) {
+            alertSalirVenta(venta.idActual());
         }
+
+    }
+
+    public void alertSalirVenta(int idVenta) throws SQLException {
+        Alert saliendo;
+        saliendo = new Alert(Alert.AlertType.CONFIRMATION);
+        saliendo.setTitle("Saliendo de ventas");
+        saliendo.setHeaderText("No ha terminado la compra.");
+        saliendo.setContentText("¿Seguro que desea salir?");
+        estiloAlerta.darleEstiloAlPanel(saliendo);
+
+        ButtonType botonCancelar = new ButtonType("Cancelar");
+        ButtonType botonAceptar = new ButtonType("Aceptar");
+
+        saliendo.getButtonTypes().setAll(botonCancelar, botonAceptar);
+
+        Optional<ButtonType> result = saliendo.showAndWait();
+
+        if (result.get() == botonAceptar) {
+            pn_fondoIconos.setVisible(true);
+            pn_ventas.setVisible(false);
+            cb_referencia.setValue(null);
+            tf_cantidad.clear();
+                        
+            if (!compraFin) {
+                venta.elimiarVenta(idVenta);
+            }
+            compraFin = true;
+        }
+
+    }
+
+    public void alertCamposVacios() {
+        Alert faltaCampos;
+        faltaCampos = new Alert(Alert.AlertType.ERROR);
+        faltaCampos.setTitle("Error Añadir");
+        faltaCampos.setHeaderText("Por favor rellene todos los campos.");
+        estiloAlerta.darleEstiloAlPanel(faltaCampos);
+        faltaCampos.showAndWait();
+
+    }
+
+    public void alertFinCompra() {
+        Alert finalizarCompra;
+        finalizarCompra = new Alert(Alert.AlertType.INFORMATION);
+        finalizarCompra.setTitle("Compra");
+        finalizarCompra.setHeaderText("¡Gracias por su compra!.");
+        estiloAlerta.darleEstiloAlPanel(finalizarCompra);
+        finalizarCompra.show();
+
+    }
+
+    public void alertFaltaStock() {
+        Alert faltaStock;
+        faltaStock = new Alert(Alert.AlertType.ERROR);
+        faltaStock.setTitle("Error Añadir");
+        faltaStock.setHeaderText("Error al añadir el producto");
+        faltaStock.setContentText("Lo sentimos, no quedan suficientes existencias de este producto.");
+        estiloAlerta.darleEstiloAlPanel(faltaStock);
+        faltaStock.showAndWait();
+    }
+
+    public void alertClaveDuplicada(SQLException sqlDuplicate) {
+        Alert claveDuplicada;
+
+        claveDuplicada = new Alert(Alert.AlertType.ERROR);
+        claveDuplicada.setTitle("Error Añadir");
+        claveDuplicada.setHeaderText("No se puede insertar el mismo producto otra vez.");
+        claveDuplicada.setContentText("Has intentado añadir el mismo producto en el mismo pedido" + sqlDuplicate.getMessage());
+        estiloAlerta.darleEstiloAlPanel(claveDuplicada);
+        claveDuplicada.showAndWait();
+    }
+
+    public boolean anadirProducto(Date fecha) throws SQLException {
+
+        try {
+            if (venta.insertarVenta(tienda.idTienda(tf_tienda.getText()), trabajador.idTrabajador(tf_trabajador.getText()), fecha,
+                    Integer.parseInt(tf_idVenta.getText()), producto.idProducto(cb_referencia.getValue().getNombre()),
+                    Integer.parseInt(tf_cantidad.getText())) == 1) {
+                productoAnadido = true;
+            } else {
+                alertFaltaStock();
+                productoAnadido = false;
+            }
+            cb_referencia.setValue(null);
+            tf_cantidad.clear();
+        } catch (SQLException sqlDuplicate) {
+            alertClaveDuplicada(sqlDuplicate);
+        }
+        return productoAnadido;
+    }
+
+    public void siguienteCompra() throws SQLException {
+        tf_idVenta.setText(venta.mostrarSiguienteID());
+        tf_fechaVenta.setText(formato);
+        cb_referencia.setValue(null);
+        tf_cantidad.clear();
 
     }
 

@@ -67,6 +67,10 @@ public class LoginController implements Initializable {
     private ImageView iv_bloqMayus;
     @FXML
     private AnchorPane paneLogin;
+    @FXML
+    private Pane pn_Bienvenida;
+    @FXML
+    private Label lb_user;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,6 +80,8 @@ public class LoginController implements Initializable {
         transicion.setAutoReverse(true);
         transicion.setFromValue(1.0);
         transicion.setToValue(0.0);
+        pn_inciarSesion.setVisible(false);
+        pn_Bienvenida.setVisible(true);
 
         Timer timer = new Timer(1000, new ActionListener() { // Genera el difuminación del panel principal
             @Override
@@ -116,43 +122,46 @@ public class LoginController implements Initializable {
 
             if (!user.isEmpty() && !pass.isEmpty()) {
 
-                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root",user)) {
+                if (conexion.conectar("jdbc:mysql://localhost:3306/justComerce", "root", "root", user)) {
                     passwordEncryptor = new StrongPasswordEncryptor();
                     passEncriptada = passwordEncryptor.encryptPassword(pass);
-                    
+
                     if (passwordEncryptor.checkPassword(pass, conexion.contraseña(user))) {
 
                         switch (conexion.puesto(user)) {
                             case "Gerente":
                                 if (conexion.cambiarContraseña(user)) {
                                     if (cambiarContraseña(user)) {
-                                        bienvenida = bienvenida();
+                                        bienvenida();
+//                                        bienvenida = bienvenida();
                                         AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                                         paneLogin.getChildren().setAll(pane);
-                                        cerrarBienvendia(bienvenida);
+//                                        cerrarBienvendia(bienvenida);
                                     }
                                 } else {
-                                    bienvenida = bienvenida();
+                                    bienvenida();
+//                                    bienvenida = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/gerente/GerenteFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
-                                    cerrarBienvendia(bienvenida);
+//                                    cerrarBienvendia(bienvenida);
                                 }
                                 break;
 
                             case "Dependiente":
                                 if (conexion.cambiarContraseña(user)) {
                                     if (cambiarContraseña(user)) {
-                                        bienvenida = bienvenida();
+                                        bienvenida();
+//                                        bienvenida = bienvenida();
                                         AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                                         paneLogin.getChildren().setAll(pane);
-                                        cerrarBienvendia(bienvenida);
+//                                        cerrarBienvendia(bienvenida);
                                     }
                                 } else {
-
-                                    bienvenida = bienvenida();
+                                    bienvenida();
+//                                    bienvenida = bienvenida();
                                     AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/Empleado/EmpleadoFXML.fxml"));
                                     paneLogin.getChildren().setAll(pane);
-                                    cerrarBienvendia(bienvenida);
+//                                    cerrarBienvendia(bienvenida);
                                 }
                                 break;
                             default:
@@ -187,20 +196,41 @@ public class LoginController implements Initializable {
         }
     }
 
-    public Alert bienvenida() {
-        Alert alerta = new Alert(AlertType.INFORMATION);
-        alerta.setTitle("Bienvenido");
-        alerta.setHeaderText("Bienvenido a JustComerce " + user);
-        alerta.setGraphic(null);
-        estiloAlerta.darleEstiloAlPanel(alerta);
+//    public Alert bienvenida() {
+//        Alert alerta = new Alert(AlertType.INFORMATION);
+//        alerta.setTitle("Bienvenido");
+//        alerta.setHeaderText("Bienvenido a JustComerce " + user);
+//        alerta.setGraphic(null);
+//        estiloAlerta.darleEstiloAlPanel(alerta);
+//
+//        alerta.show();
+//        try {
+//            Thread.sleep(1200);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return alerta;
+//    }
+    public void bienvenida() {
 
-        alerta.show();
-        try {
-            Thread.sleep(1200);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return alerta;
+//        pn_inciarSesion.setVisible(false);
+//        pn_Bienvenida.setVisible(true);
+//        Timer tiempoBienvenida = new Timer(5000, new ActionListener() { // Permite que podemaos interactuar con el segundo panel
+//            @Override
+//            public void actionPerformed(java.awt.event.ActionEvent ae) {
+//                pn_inciarSesion.setVisible(false);
+//                pn_Bienvenida.setVisible(true);
+//            }
+//        });
+//        tiempoBienvenida.setRepeats(false);
+//        tiempoBienvenida.start();
+
+//        try {
+//            Thread.sleep(1200);
+//            
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public boolean cambiarContraseña(String user) throws SQLException {

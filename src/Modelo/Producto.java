@@ -14,7 +14,7 @@ import javafx.beans.property.StringProperty;
 
 /**
  *
- * @author daw
+ * @author Rasul
  */
 public class Producto {
 
@@ -37,8 +37,8 @@ public class Producto {
         this.iva = new SimpleDoubleProperty(iva);
         this.cantidad = null;
     }
-    
-    public Producto(Integer referencia, String nombre, String categoria, String descripcion, Double precioCompra, Double precioVenta, Double iva, Integer cantidad) {
+
+    public Producto(Integer referencia, String nombre, String categoria, String descripcion, Double precioCompra, Double precioVenta, Double iva, Integer stock) {
         this.referencia = new SimpleIntegerProperty(referencia);
         this.nombre = new SimpleStringProperty(nombre);
         this.categoria = new SimpleStringProperty(categoria);
@@ -46,7 +46,7 @@ public class Producto {
         this.precioCompra = new SimpleDoubleProperty(precioCompra);
         this.precioVenta = new SimpleDoubleProperty(precioVenta);
         this.iva = new SimpleDoubleProperty(iva);
-        this.cantidad = new SimpleIntegerProperty(cantidad);
+        this.cantidad = new SimpleIntegerProperty(stock);
     }
 
     /*---------------------- GET AND SET ----------------------------*/
@@ -78,21 +78,17 @@ public class Producto {
         return referencia.get();
     }
 
+    public int getCantidad() {
+        return cantidad.get();
+    }
+
     @Override
     public String toString() {
         return this.nombre.get();
     }
 
-    public int getCantidad() {
-        return cantidad.get();
-    }
-
-    public void setCantidad(int value) {
-        cantidad.set(value);
-    }
-
-    public IntegerProperty cantidadProperty() {
-        return cantidad;
-    }
-
+//    @Override
+//    public String toString() {
+//        return "Producto{" + "referencia=" + referencia + ", nombre=" + nombre + ", categoria=" + categoria + ", descripcion=" + descripcion + ", precioCompra=" + precioCompra + ", precioVenta=" + precioVenta + ", iva=" + iva + ", stock=" + cantidad + '}' + "\n";
+//    }
 }

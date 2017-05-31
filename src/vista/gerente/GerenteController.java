@@ -935,9 +935,8 @@ public class GerenteController implements Initializable {
             camposVacios.add("Categoria");
         }
 
-        if (camposVacios.isEmpty()) {
-
-        } else {
+        if (!camposVacios.isEmpty()) {
+       
             faltaCampos = new Alert(AlertType.ERROR);
             faltaCampos.setTitle("Error Añadir");
             faltaCampos.setHeaderText("Complete los campos obligatorios(en naranja).");

@@ -39,7 +39,7 @@
     -fx-background-color: transparent;    
 }
 
-#bt_productos, #bt_ventas{
+#bt_productos, #bt_ventas, #bt_anadirProducto, #bt_regVenta{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
     -fx-background-size: cover;
@@ -53,13 +53,21 @@
     -fx-background-image: url(../Empleado/Images/ventas.jpg);    
 }
 
-#bt_productos:pressed, #bt_ventas:pressed{
+#bt_anadirProducto{
+    -fx-background-image: url(../Empleado/Images/insertarVenta.jpg);   
+}
+
+#bt_regVenta{
+    -fx-background-image: url(../Empleado/Images/facturaNueva.jpg);   
+}
+
+#bt_productos:pressed, #bt_ventas:pressed, #bt_anadirProducto:pressed, #bt_regVenta:pressed{
    -fx-translate-x: 5;
    -fx-translate-y: 5;
    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
 }
 
-#bt_productos:hover, #bt_ventas:hover{
+#bt_productos:hover, #bt_ventas:hover, #bt_anadirProducto:hover, #bt_regVenta:hover{
    -fx-border-color: orange;
 }
 

@@ -7,6 +7,7 @@ package Datos;
 
 import Modelo.Producto;
 import Modelo.Tienda;
+import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,6 +58,26 @@ public class TiendaDAO {
         }
 
         return resultado;
+    }
+
+    public Tienda cargarTienda(Trabajador trabajador) throws SQLException {
+        PreparedStatement psTienda;
+        ResultSet rsTienda = null;
+        Tienda tienda = null;
+        String nombreTrabajador = trabajador.getNombre();
+
+        psTienda = conexion.prepareStatement("SELECT * FROM tiendas WHERE idTienda = (SELECT idTienda FROM trabajadores WHERE nombre = ?);");
+        psTienda.setString(1, nombreTrabajador);
+        rsTienda = psTienda.executeQuery();
+
+        rsTienda.next();
+        
+        tienda = new Tienda(rsTienda.getInt("idTienda"),
+                rsTienda.getString("nombre"),
+                rsTienda.getString("direccion"),
+                rsTienda.getString("ciudad"));
+
+        return tienda;
     }
 
 }
