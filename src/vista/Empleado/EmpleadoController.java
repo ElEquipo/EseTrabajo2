@@ -9,9 +9,7 @@ import Modelo.Alerta.Alerta;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import java.io.IOException;
-import static java.lang.String.format;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -32,23 +30,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
 import java.util.Optional;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
 
 public class EmpleadoController implements Initializable {
 
@@ -67,6 +59,7 @@ public class EmpleadoController implements Initializable {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
     private boolean compraFin = true;
     private boolean productoAnadido = false;
+    private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -129,6 +122,22 @@ public class EmpleadoController implements Initializable {
     private TextField tf_trabajador;
     @FXML
     private Button bt_anadirProducto;
+    @FXML
+    private Button bt_incidencias;
+    @FXML
+    private Pane pn_incidencias;
+    @FXML
+    private Button bt_añadirIncidencia;
+    @FXML
+    private Button bt_atrasIncidencias;
+    @FXML
+    private ComboBox<String> cb_tipoIncidencia;
+    @FXML
+    private TextArea ta_descripcionIncidencia;
+    @FXML
+    private DatePicker dp_fechaInciendia;
+    @FXML
+    private TextField tf_especificarTipoIncidencia;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -143,10 +152,16 @@ public class EmpleadoController implements Initializable {
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
+        pn_incidencias.setVisible(false);
         tf_tienda.setEditable(false);
         tf_trabajador.setEditable(false);
         tf_fechaVenta.setEditable(false);
         tf_idVenta.setEditable(false);
+        cb_tipoIncidencia.setItems(tiposInciencias);
+        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
+        cb_tipoIncidencia.setValue("Tipos de Incidencia");
+        dp_fechaInciendia.setValue(LocalDate.now());
+        tf_especificarTipoIncidencia.setVisible(false);
         Alert errorCarga;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
@@ -212,12 +227,16 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void inicioAction(ActionEvent event) throws SQLException {
+
         if (pn_ventas.isVisible() && !compraFin) {
             alertSalirVenta(venta.idActual());
         } else {
             pn_fondoIconos.setVisible(true);
             pn_productos.setVisible(false);
             pn_ventas.setVisible(false);
+            pn_incidencias.setVisible(false);
+            limpiarIncidencias();
+
         }
     }
 
@@ -268,11 +287,11 @@ public class EmpleadoController implements Initializable {
         if (bt_regVenta.isFocused()
                 && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null) && compraFin) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA */
-            
+
             alertCamposVacios();
         } else if (bt_regVenta.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null && compraFin) {
-            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/  
-            
+            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/
+
             fecha = dt.parse(tf_fechaVenta.getText());
             anadirProducto(fecha);
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
@@ -281,7 +300,7 @@ public class EmpleadoController implements Initializable {
             compraFin = true;
         } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null))) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
-            
+
             fecha = dt.parse(tf_fechaVenta.getText());
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
@@ -289,7 +308,7 @@ public class EmpleadoController implements Initializable {
             compraFin = true;
         } else if (bt_regVenta.isFocused() && productoAnadido && !compraFin) {
             /* ENTRA SI SE HAN AÑADIDO PRODUCTOS, REGISTRA LA COMPRA. SIGUIENTE COMPRA */
-            
+
             fecha = dt.parse(tf_fechaVenta.getText());
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
@@ -330,7 +349,7 @@ public class EmpleadoController implements Initializable {
             pn_ventas.setVisible(false);
             cb_referencia.setValue(null);
             tf_cantidad.clear();
-                        
+
             if (!compraFin) {
                 venta.elimiarVenta(idVenta);
             }
@@ -405,6 +424,44 @@ public class EmpleadoController implements Initializable {
         cb_referencia.setValue(null);
         tf_cantidad.clear();
 
+    }
+
+    @FXML
+    private void IncidenciasAction(ActionEvent event) {
+        Object evento = event.getSource();
+
+        pn_fondoIconos.setVisible(false);
+        pn_incidencias.setVisible(true);
+
+        if (evento == bt_atrasIncidencias) {
+            pn_fondoIconos.setVisible(true);
+            pn_incidencias.setVisible(false);
+            limpiarIncidencias();
+        }
+    }
+
+    @FXML
+    private void añadirIncidenciaAction(ActionEvent event) {
+        String tipo = cb_tipoIncidencia.getValue();
+        Alert errorTipo;
+
+        if (tipo.equalsIgnoreCase("Tipos de Incidencia")) {
+            errorTipo = new Alert(AlertType.ERROR);
+            errorTipo.setTitle("Incidencias Error");
+            errorTipo.setHeaderText("Por favor, eliga el tipo de inciencia.");
+            estiloAlerta.darleEstiloAlPanel(errorTipo);
+            errorTipo.showAndWait();
+        } else if (tipo.equalsIgnoreCase("Otros")) {
+            
+        }
+
+    }
+
+    public void limpiarIncidencias() {
+        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
+        cb_tipoIncidencia.setValue("Tipos de Incidencia");
+        ta_descripcionIncidencia.clear();
+        dp_fechaInciendia.setValue(LocalDate.now());
     }
 
 }
