@@ -1,11 +1,13 @@
 package vista.Empleado;
 
 import Datos.ConexionBD;
+import Datos.IncidenciaDAO;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
 import Datos.VentaDAO;
 import Modelo.Alerta.Alerta;
+import Modelo.Incidencia;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
@@ -48,6 +50,7 @@ public class EmpleadoController implements Initializable {
     private ProductoDAO producto;
     private TrabajadorDAO trabajador;
     private VentaDAO venta;
+    private IncidenciaDAO incidencia;
     private Alerta estiloAlerta;
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
@@ -144,6 +147,7 @@ public class EmpleadoController implements Initializable {
         producto = new ProductoDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         venta = new VentaDAO(ConexionBD.conexion);
+        incidencia = new IncidenciaDAO(ConexionBD.conexion);
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
         tiendaActual = ConexionBD.actualShop;
@@ -442,8 +446,9 @@ public class EmpleadoController implements Initializable {
     @FXML
     private void añadirIncidenciaAction(ActionEvent event) {
         Object evento = event.getSource();
+        Incidencia incidencia;
         String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText();
-        Alert errorTipo;
+        Alert errorTipo, errorInsertar;
 
         if (tipo.equalsIgnoreCase("Otros")) {
             ta_descripcionIncidencia.setLayoutY(148);
@@ -465,17 +470,35 @@ public class EmpleadoController implements Initializable {
                 errorTipo.showAndWait();
 
             } else if (tipo.equalsIgnoreCase("Otros") && especifico.isEmpty()) {
-                
+
                 errorTipo = new Alert(AlertType.ERROR);
                 errorTipo.setTitle("Incidencias Error");
-                errorTipo.setHeaderText("Por favor, espedifique el tipo de "
+                errorTipo.setHeaderText("Por favor, especifique el tipo de "
                         + "incidencia ocurrido.");
                 errorTipo.setContentText("Normalmente con una o dos palabras basta");
                 estiloAlerta.darleEstiloAlPanel(errorTipo);
                 errorTipo.showAndWait();
-                
-            }else{
-                
+
+            } else {
+                /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
+                incidencia = new Incidencia(java.sql.Types.NULL,
+                        empleadoActual.getIdTienda(),
+                        empleadoActual.getId(),
+                        tipo,
+                        dp_fechaInciendia.getValue(),
+                        ta_descripcionIncidencia.getText(),
+                        "No leido");
+
+                try {
+                    this.incidencia.crearIncidencia(incidencia, empleadoActual);
+                } catch (SQLException ex) {
+                    errorInsertar = new Alert(AlertType.ERROR);
+                    errorInsertar.setTitle("Error Insertar");
+                    errorInsertar.setHeaderText("No se ha podido insertar la incidencia.");
+                    errorInsertar.setContentText("Error: " + ex.getMessage());
+                    estiloAlerta.darleEstiloAlPanel(errorInsertar);
+                    errorInsertar.showAndWait();
+                }
             }
         }
 
