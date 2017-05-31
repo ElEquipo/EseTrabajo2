@@ -236,7 +236,6 @@ public class EmpleadoController implements Initializable {
             pn_ventas.setVisible(false);
             pn_incidencias.setVisible(false);
             limpiarIncidencias();
-
         }
     }
 
@@ -442,26 +441,53 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void añadirIncidenciaAction(ActionEvent event) {
-        String tipo = cb_tipoIncidencia.getValue();
+        Object evento = event.getSource();
+        String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText();
         Alert errorTipo;
 
-        if (tipo.equalsIgnoreCase("Tipos de Incidencia")) {
-            errorTipo = new Alert(AlertType.ERROR);
-            errorTipo.setTitle("Incidencias Error");
-            errorTipo.setHeaderText("Por favor, eliga el tipo de inciencia.");
-            estiloAlerta.darleEstiloAlPanel(errorTipo);
-            errorTipo.showAndWait();
-        } else if (tipo.equalsIgnoreCase("Otros")) {
-            
+        if (tipo.equalsIgnoreCase("Otros")) {
+            ta_descripcionIncidencia.setLayoutY(148);
+            tf_especificarTipoIncidencia.setVisible(true);
+
+        } else if (!tipo.equalsIgnoreCase("Otros")) {
+            ta_descripcionIncidencia.setLayoutY(107);
+            tf_especificarTipoIncidencia.setVisible(false);
+        }
+
+        if (evento == bt_añadirIncidencia) {
+
+            if (tipo.equalsIgnoreCase("Tipos de Incidencia")) {
+
+                errorTipo = new Alert(AlertType.ERROR);
+                errorTipo.setTitle("Incidencias Error");
+                errorTipo.setHeaderText("Por favor, eliga el tipo de inciencia.");
+                estiloAlerta.darleEstiloAlPanel(errorTipo);
+                errorTipo.showAndWait();
+
+            } else if (tipo.equalsIgnoreCase("Otros") && especifico.isEmpty()) {
+                
+                errorTipo = new Alert(AlertType.ERROR);
+                errorTipo.setTitle("Incidencias Error");
+                errorTipo.setHeaderText("Por favor, espedifique el tipo de "
+                        + "incidencia ocurrido.");
+                errorTipo.setContentText("Normalmente con una o dos palabras basta");
+                estiloAlerta.darleEstiloAlPanel(errorTipo);
+                errorTipo.showAndWait();
+                
+            }else{
+                
+            }
         }
 
     }
 
     public void limpiarIncidencias() {
-        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
-        cb_tipoIncidencia.setValue("Tipos de Incidencia");
         ta_descripcionIncidencia.clear();
         dp_fechaInciendia.setValue(LocalDate.now());
+        ta_descripcionIncidencia.setLayoutY(107);
+        tf_especificarTipoIncidencia.setVisible(false);
+        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
+        cb_tipoIncidencia.setValue("Tipos de Incidencia");
     }
 
 }
