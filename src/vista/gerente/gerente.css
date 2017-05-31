@@ -39,7 +39,7 @@
     -fx-background-color: transparent;    
 }
 
-#bt_productos, #bt_incidencias, #bt_tienda, #bt_personal, #bt_contratarPersonal, 
+#bt_productos, #bt_incidencias, #bt_conIncidendias, #bt_tienda, #bt_personal, #bt_contratarPersonal, 
 #bt_despedirPersonal, #bt_atras, #bt_contratar, #bt_despedir{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
@@ -51,11 +51,20 @@
 }
 
 #bt_incidencias{
-    -fx-background-image: url(../gerente/images/incidencias.jpg);    
+    -fx-background-image: url(../gerente/images/incidencias.jpg);  
+    -fx-background-color: transparent;
 }
 
 #bt_conIncidendias{
     -fx-background-image: url(../gerente/images/conIncidencias.png);    
+}
+
+#lb_numIncidencias{
+    -fx-background-color: #f9ac25;
+    -fx-border-color:black;
+    -fx-border-radius: 80px;
+    -fx-border-width: 1px;
+    -fx-background-radius: 90px;
 }
 
 #bt_tienda{

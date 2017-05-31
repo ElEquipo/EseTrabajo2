@@ -35,14 +35,17 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import jfxtras.scene.control.LocalTimePicker;
@@ -240,17 +243,21 @@ public class GerenteController implements Initializable {
     @FXML
     private Button bt_atrasIncidencias;
     @FXML
-    private TableColumn<Incidencia, Integer> tc_idTiendaIncidencia;
-    @FXML
     private TableColumn<Incidencia, Integer> tc_idTrabajadorIncidencia;
     @FXML
     private TableColumn<Incidencia, String> tc_tipoIncidencia;
     @FXML
     private TableColumn<Incidencia, LocalDate> tc_fechaIncidencia;
     @FXML
-    private TableColumn<Incidencia, String> tc_descripcionIncidencia;
+    private Label lb_numIncidencias;
     @FXML
-    private Button bt_conIncidencias;
+    private TextArea ta_descripcionIncidencia;
+    @FXML
+    private RadioButton rb_leidas;
+    @FXML
+    private ToggleGroup incidencias;
+    @FXML
+    private RadioButton rb_noLeidas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -280,6 +287,10 @@ public class GerenteController implements Initializable {
         cb_puesto.setValue("Puesto");
         pn_añadirProductos.setVisible(false);
         pn_incidencias.setVisible(false);
+        lb_numIncidencias.setVisible(false);
+        rb_leidas.setUserData("Leidas");
+        rb_noLeidas.setUserData("No leidas");
+        rb_noLeidas.setSelected(true);
 
         /*
         try {
@@ -329,12 +340,9 @@ public class GerenteController implements Initializable {
 
         cargarTooltips();
 
-        tc_idTiendaIncidencia.setCellValueFactory(new PropertyValueFactory<>("idTienda"));
         tc_idTrabajadorIncidencia.setCellValueFactory(new PropertyValueFactory<>("idTrabajador"));
         tc_tipoIncidencia.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         tc_fechaIncidencia.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        tc_descripcionIncidencia.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-
         try {
             cargarIncidencias();
         } catch (SQLException ex) {
@@ -978,6 +986,12 @@ public class GerenteController implements Initializable {
         cb_categoriasExistentes.setValue("Categoria");
     }
 
+    public void limpiarIncidencias() {
+        lb_numIncidencias.setVisible(false);
+        ta_descripcionIncidencia.clear();
+        ta_descripcionIncidencia.setPromptText("Seleccione una incidencia para ver su descripcion.");
+    }
+
     public void salirProductos() {
         pn_productos.setVisible(false);
         pn_inicio.setVisible(true);
@@ -1059,18 +1073,35 @@ public class GerenteController implements Initializable {
         if (bt_atrasIncidencias.isFocused()) {
             pn_incidencias.setVisible(false);
             pn_inicio.setVisible(true);
+            limpiarIncidencias();
         }
 
     }
 
+    @FXML
     private void cargarIncidencias() throws SQLException {
-        List<Incidencia> listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda());
+        int modo;
+        if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
+            modo = 1;
+        } else {
+            modo = 0;
+        }
+        List<Incidencia> listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
         ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);
         tv_incidencias.setItems(listaIncidencias);
 
         if (!listaDeIncidencias.isEmpty()) {
-//            bt_incidencias.setStyle("-fx-background-image: url(../gerente/images/conIncidencias.png);");
+            lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
+            lb_numIncidencias.setVisible(true);
         }
+
+    }
+
+    @FXML
+    private void visualizandoIncidenciasAction(MouseEvent event) {
+        Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
+
+        ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
 
     }
 
