@@ -12,7 +12,6 @@
 
 <AnchorPane id="pantallaLogin" fx:id="paneLogin" prefHeight="576.0" prefWidth="1024.0" stylesheets="@css.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="vista.login.LoginController">
     <children>
-        <Pane id="paneFondo" fx:id="pn_principalBienvenida" layoutY="1.0" prefHeight="576.0" prefWidth="1024.0" stylesheets="@css.css" />
         <Pane id="paneLogin" fx:id="pn_inciarSesion" layoutX="338.0" layoutY="107.0" prefHeight="363.0" prefWidth="348.0" stylesheets="@css.css">
             <cursor>
             </cursor>
@@ -51,7 +50,7 @@
             </children>
         </Pane>
       <ImageView fx:id="iv_bloqMayus" fitHeight="71.0" fitWidth="253.0" layoutX="638.0" layoutY="253.0" pickOnBounds="true" preserveRatio="true" />
-      <Pane id="pn_inciarSesion" fx:id="pn_Bienvenida" layoutX="338.0" layoutY="107.0" prefHeight="363.0" prefWidth="348.0" stylesheets="@css.css">
+      <Pane fx:id="pn_Bienvenida" layoutX="338.0" layoutY="107.0" prefHeight="363.0" prefWidth="348.0" stylesheets="@css.css">
          <children>
             <Label layoutX="32.0" layoutY="114.0" text="¡Bienvenido a JustComerce" textFill="WHITE">
                <font>
@@ -63,8 +62,12 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label layoutX="147.0" layoutY="319.0" text="Alwais fair" textFill="WHITE" />
+            <Label layoutX="138.0" layoutY="324.0" text="Alwais fair" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
          </children></Pane>
+        <Pane id="paneFondo" fx:id="pn_principalBienvenida" layoutY="1.0" prefHeight="576.0" prefWidth="1024.0" stylesheets="@css.css" />
     </children>
     <cursor>
     </cursor>

@@ -235,7 +235,7 @@ public class EmpleadoController implements Initializable {
     }
 
     @FXML
-    private void ventasAction(ActionEvent event) throws SQLException, ParseException {
+    private void ventasAction(ActionEvent event) throws SQLException, ParseException, IOException {
         venta = new VentaDAO(ConexionBD.conexion);
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
@@ -268,25 +268,30 @@ public class EmpleadoController implements Initializable {
         if (bt_regVenta.isFocused()
                 && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null) && compraFin) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA */
-
+            
             alertCamposVacios();
         } else if (bt_regVenta.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null && compraFin) {
-            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/
-
+            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/  
+            
             fecha = dt.parse(tf_fechaVenta.getText());
             anadirProducto(fecha);
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
             alertFinCompra();
             compraFin = true;
         } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null))) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
-
+            
+            fecha = dt.parse(tf_fechaVenta.getText());
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
             alertFinCompra();
             compraFin = true;
         } else if (bt_regVenta.isFocused() && productoAnadido && !compraFin) {
             /* ENTRA SI SE HAN AÑADIDO PRODUCTOS, REGISTRA LA COMPRA. SIGUIENTE COMPRA */
             
+            fecha = dt.parse(tf_fechaVenta.getText());
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
             alertFinCompra();
             compraFin = true;

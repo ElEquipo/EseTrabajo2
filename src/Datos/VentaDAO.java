@@ -5,6 +5,13 @@
  */
 package Datos;
 
+import Modelo.Trabajador;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.util.Date;
 import java.sql.PreparedStatement;
@@ -73,6 +80,41 @@ public class VentaDAO {
         operacion = resultado.getInt("id");
 
         return operacion;
+    }
+
+    public void generarTicket(int idVenta, Date fecha) throws IOException, SQLException {
+        String texto = "";
+        PreparedStatement ps;
+        ResultSet rs;
+        int referencia, cantidad;
+        double precio, total = 0.0;
+        String nombre;
+
+        ps = conexion.prepareStatement("CALL listaProducto(?);");
+        System.out.println(idVenta);
+        ps.setInt(1, idVenta);
+        rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            referencia = rs.getInt("referencia");
+            nombre = rs.getString("nombre");
+            cantidad = rs.getInt("cantidad");
+            precio = rs.getDouble("precio");            
+            fecha = rs.getDate("fechaVenta");
+            texto = texto + "REFERENCIA: " + referencia + " NOMBRE: " + nombre + " CANTIDAD: " + cantidad + " PRECIO: " + precio + " FECHA VENTA " + fecha + "\n";
+            total = total + precio;
+        }
+
+        Path fichero = Paths.get("JustComerce-" + fecha + "-ticket.txt");
+        String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
+        Path directorio = Paths.get(destino);
+
+        try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
+
+            salida.write(texto + "----------------------\nPRECIO TOTAL: " + total + "€\n¡Gracias por su compra!");
+
+        }
+
     }
 
 }

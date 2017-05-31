@@ -1,0 +1,4 @@
+REFERENCIA: 3 NOMBRE: Hola3 CANTIDAD: 2 PRECIO: 48.4 FECHA VENTA 2017-05-31
+----------------------
+PRECIO TOTAL: 48.4€
+¡Gracias por su compra!
