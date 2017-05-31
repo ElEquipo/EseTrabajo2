@@ -5,7 +5,6 @@
  */
 package Datos;
 
-import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.sql.Connection;
@@ -21,7 +20,7 @@ import java.util.List;
  */
 public class TiendaDAO {
 
-    Connection conexion;
+    private Connection conexion;
 
     public TiendaDAO(Connection conexion) {
         this.conexion = conexion;
