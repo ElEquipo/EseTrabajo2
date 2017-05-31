@@ -447,8 +447,9 @@ public class EmpleadoController implements Initializable {
     private void añadirIncidenciaAction(ActionEvent event) {
         Object evento = event.getSource();
         Incidencia incidencia;
-        String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText();
-        Alert errorTipo, errorInsertar;
+        String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText(),
+                descripcion = ta_descripcionIncidencia.getText();
+        Alert errorTipo, errorInsertar, incidenciaCreada;
 
         if (tipo.equalsIgnoreCase("Otros")) {
             ta_descripcionIncidencia.setLayoutY(148);
@@ -481,16 +482,29 @@ public class EmpleadoController implements Initializable {
 
             } else {
                 /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
+                if (tf_especificarTipoIncidencia.isVisible()) {
+                    descripcion = especifico + ": " + descripcion;
+
+                }
+
                 incidencia = new Incidencia(java.sql.Types.NULL,
                         empleadoActual.getIdTienda(),
                         empleadoActual.getId(),
                         tipo,
                         dp_fechaInciendia.getValue(),
-                        ta_descripcionIncidencia.getText(),
+                        descripcion,
                         "No leido");
 
                 try {
                     this.incidencia.crearIncidencia(incidencia, empleadoActual);
+                    incidenciaCreada = new Alert(AlertType.INFORMATION);
+                    incidenciaCreada.setTitle("Incidencias");
+                    incidenciaCreada.setHeaderText("Incidencia creada con exito.");
+                    incidenciaCreada.setContentText(empleadoActual.getNombre() +
+                            " gracias por informar de la incidencia");
+                    estiloAlerta.darleEstiloAlPanel(incidenciaCreada);
+                    incidenciaCreada.showAndWait();
+
                 } catch (SQLException ex) {
                     errorInsertar = new Alert(AlertType.ERROR);
                     errorInsertar.setTitle("Error Insertar");
@@ -511,6 +525,7 @@ public class EmpleadoController implements Initializable {
         tf_especificarTipoIncidencia.setVisible(false);
         cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
         cb_tipoIncidencia.setValue("Tipos de Incidencia");
+        tf_especificarTipoIncidencia.clear();
     }
 
 }
