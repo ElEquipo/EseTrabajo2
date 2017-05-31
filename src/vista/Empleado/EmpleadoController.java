@@ -501,7 +501,7 @@ public class EmpleadoController implements Initializable {
                     incidenciaCreada.setTitle("Incidencias");
                     incidenciaCreada.setHeaderText("Incidencia creada con exito.");
                     incidenciaCreada.setContentText(empleadoActual.getNombre() +
-                            " gracias por informar de la incidencia");
+                            ", gracias por informar de la incidencia");
                     estiloAlerta.darleEstiloAlPanel(incidenciaCreada);
                     incidenciaCreada.showAndWait();
 

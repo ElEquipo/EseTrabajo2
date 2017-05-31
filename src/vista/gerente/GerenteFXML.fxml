@@ -43,25 +43,6 @@
                      </cursor></Button>
                </children>
             </Pane>
-            <Pane id="pn_FondoIconos" fx:id="pn_inicio" layoutY="114.0" prefHeight="464.0" prefWidth="744.0" stylesheets="@gerente.css">
-               <children>
-                  <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
-                     <cursor>
-                      <Cursor fx:constant="HAND" /> 
-                     </cursor></Button>
-                  <Button id="bt_productos" fx:id="bt_productos" layoutX="109.0" layoutY="287.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" /> 
-                     </cursor></Button>
-                  <Button id="bt_tienda" fx:id="bt_tienda" layoutX="508.0" layoutY="287.0" mnemonicParsing="false" onAction="#verTrabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></Button>
-                  <Button id="bt_personal" fx:id="bt_personal" layoutX="109.0" layoutY="67.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
-                     <cursor>
-                       <Cursor fx:constant="HAND" /> 
-                     </cursor></Button>
-               </children></Pane>
             <Pane fx:id="pn_menuTrabajadores" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
                <children>
                   <Button id="bt_despedirPersonal" fx:id="bt_despedirPersonal" layoutX="510.0" layoutY="96.0" mnemonicParsing="false" onAction="#despedirAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
@@ -203,14 +184,13 @@
             </Pane>
             <Pane fx:id="pn_incidencias" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
                <children>
-                  <TableView layoutX="14.0" layoutY="32.0" prefHeight="295.0" prefWidth="710.0">
+                  <TableView fx:id="tv_incidencias" layoutX="14.0" layoutY="32.0" prefHeight="295.0" prefWidth="710.0">
                     <columns>
-                      <TableColumn fx:id="tv_incidencias" prefWidth="117.0" text="idIncidencia" />
-                      <TableColumn prefWidth="62.0" text="idTienda" />
-                        <TableColumn prefWidth="97.0" text="idTrabajador" />
-                        <TableColumn prefWidth="84.0" text="tipo" />
-                        <TableColumn prefWidth="93.0" text="fecha" />
-                        <TableColumn prefWidth="256.0" text="descripcion" />
+                      <TableColumn fx:id="tc_idTiendaIncidencia" prefWidth="62.0" text="idTienda" />
+                        <TableColumn fx:id="tc_idTrabajadorIncidencia" prefWidth="113.0" text="idTrabajador" />
+                        <TableColumn fx:id="tc_tipoIncidencia" prefWidth="109.0" text="tipo" />
+                        <TableColumn fx:id="tc_fechaIncidencia" prefWidth="157.0" text="fecha" />
+                        <TableColumn fx:id="tc_descripcionIncidencia" prefWidth="268.0" text="descripcion" />
                     </columns>
                   </TableView>
                   <Button id="bt_atras" fx:id="bt_atrasIncidencias" layoutX="338.0" layoutY="394.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
@@ -220,6 +200,26 @@
                   </Button>
                </children>
             </Pane>
+            <Pane id="pn_FondoIconos" fx:id="pn_inicio" layoutY="114.0" prefHeight="464.0" prefWidth="744.0" stylesheets="@gerente.css">
+               <children>
+                  <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
+                     <cursor>
+                      <Cursor fx:constant="HAND" /> 
+                     </cursor></Button>
+                  <Button id="bt_productos" fx:id="bt_productos" layoutX="109.0" layoutY="287.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" /> 
+                     </cursor></Button>
+                  <Button id="bt_tienda" fx:id="bt_tienda" layoutX="508.0" layoutY="287.0" mnemonicParsing="false" onAction="#verTrabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
+                  <Button id="bt_personal" fx:id="bt_personal" layoutX="109.0" layoutY="67.0" mnemonicParsing="false" onAction="#trabajadoresAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
+                     <cursor>
+                       <Cursor fx:constant="HAND" /> 
+                     </cursor></Button>
+                  <Button id="bt_conIncidendias" fx:id="bt_conIncidencias" layoutX="603.0" layoutY="55.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="34.0" stylesheets="@gerente.css" />
+               </children></Pane>
          </children>
       </Pane>
    </children>

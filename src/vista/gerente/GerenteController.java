@@ -1,10 +1,12 @@
 package vista.gerente;
 
 import Datos.ConexionBD;
+import Datos.IncidenciaDAO;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
 import Modelo.Alerta.Alerta;
+import Modelo.Incidencia;
 import Modelo.Producto;
 import Modelo.Trabajador;
 import Modelo.ValidadorDNI;
@@ -53,6 +55,7 @@ public class GerenteController implements Initializable {
 
     private TiendaDAO tienda;
     private ProductoDAO producto;
+    private IncidenciaDAO incidencia;
     /*IDEAL PARA GERENTE DE VARIAS TIENDAS
     private ObservableList<Tienda> listaTiendas;*/
     private ObservableList<Trabajador> listaObservableTrabajadores;
@@ -233,9 +236,21 @@ public class GerenteController implements Initializable {
     @FXML
     private Pane pn_incidencias;
     @FXML
-    private TableColumn<?, ?> tv_incidencias;
+    private TableView<Incidencia> tv_incidencias; // RELLENAR LOS DATOS
     @FXML
     private Button bt_atrasIncidencias;
+    @FXML
+    private TableColumn<Incidencia, Integer> tc_idTiendaIncidencia;
+    @FXML
+    private TableColumn<Incidencia, Integer> tc_idTrabajadorIncidencia;
+    @FXML
+    private TableColumn<Incidencia, String> tc_tipoIncidencia;
+    @FXML
+    private TableColumn<Incidencia, LocalDate> tc_fechaIncidencia;
+    @FXML
+    private TableColumn<Incidencia, String> tc_descripcionIncidencia;
+    @FXML
+    private Button bt_conIncidencias;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -245,6 +260,7 @@ public class GerenteController implements Initializable {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         producto = new ProductoDAO(ConexionBD.conexion);
+        incidencia = new IncidenciaDAO(ConexionBD.conexion);
         validadorDni = new ValidadorDNI();
         gerenteActual = ConexionBD.actualUser;
         estiloAlerta = new Alerta();
@@ -312,6 +328,22 @@ public class GerenteController implements Initializable {
         tc_idTienda.setCellValueFactory(new PropertyValueFactory<>("idTienda"));
 
         cargarTooltips();
+
+        tc_idTiendaIncidencia.setCellValueFactory(new PropertyValueFactory<>("idTienda"));
+        tc_idTrabajadorIncidencia.setCellValueFactory(new PropertyValueFactory<>("idTrabajador"));
+        tc_tipoIncidencia.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        tc_fechaIncidencia.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        tc_descripcionIncidencia.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+
+        try {
+            cargarIncidencias();
+        } catch (SQLException ex) {
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Incidenicas");
+            errorCarga.setHeaderText("Error al cargar la lista de incidencias \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
+        }
     }
 
     public void cargarTooltips() {
@@ -753,7 +785,7 @@ public class GerenteController implements Initializable {
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
         pn_incidencias.setVisible(false);
-       limpiarCamposContratar();
+        limpiarCamposContratar();
         limpiarCamposDespedir();
         salirVerTrabajadores();
         limpiarProductos();
@@ -931,7 +963,7 @@ public class GerenteController implements Initializable {
         }
 
         if (!camposVacios.isEmpty()) {
-       
+
             faltaCampos = new Alert(AlertType.ERROR);
             faltaCampos.setTitle("Error Añadir");
             faltaCampos.setHeaderText("Complete los campos obligatorios(en naranja).");
@@ -1018,17 +1050,28 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void IncidenciasAction(ActionEvent event) {
-        
+
         if (bt_incidencias.isFocused()) {
             pn_inicio.setVisible(false);
             pn_incidencias.setVisible(true);
         }
-        
+
         if (bt_atrasIncidencias.isFocused()) {
             pn_incidencias.setVisible(false);
             pn_inicio.setVisible(true);
         }
-        
+
+    }
+
+    private void cargarIncidencias() throws SQLException {
+        List<Incidencia> listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda());
+        ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);
+        tv_incidencias.setItems(listaIncidencias);
+
+        if (!listaDeIncidencias.isEmpty()) {
+//            bt_incidencias.setStyle("-fx-background-image: url(../gerente/images/conIncidencias.png);");
+        }
+
     }
 
 }
