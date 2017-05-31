@@ -69,6 +69,7 @@ public class GerenteController implements Initializable {
     private ValidadorDNI validadorDni;
     private String eleccion;
     private boolean campoDespedirVacio;
+    private List<Incidencia> listaDeIncidencias;
     /*ATRIBUTOS FXML*/
     @FXML
     private AnchorPane ac_gerente;
@@ -798,6 +799,7 @@ public class GerenteController implements Initializable {
         salirVerTrabajadores();
         limpiarProductos();
         salirProductos();
+        limpiarIncidencias();
     }
 
     public void limpiarCamposContratar() {
@@ -987,9 +989,20 @@ public class GerenteController implements Initializable {
     }
 
     public void limpiarIncidencias() {
+        Alert errorCarga;
         lb_numIncidencias.setVisible(false);
         ta_descripcionIncidencia.clear();
         ta_descripcionIncidencia.setPromptText("Seleccione una incidencia para ver su descripcion.");
+        try {
+            cargarIncidencias();
+        } catch (SQLException ex) {
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Incidenicas");
+            errorCarga.setHeaderText("Error al cargar la lista de incidencias.");
+            errorCarga.setContentText("Error: " + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
+        }
     }
 
     public void salirProductos() {
@@ -1074,6 +1087,7 @@ public class GerenteController implements Initializable {
             pn_incidencias.setVisible(false);
             pn_inicio.setVisible(true);
             limpiarIncidencias();
+
         }
 
     }
@@ -1086,23 +1100,47 @@ public class GerenteController implements Initializable {
         } else {
             modo = 0;
         }
-        List<Incidencia> listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
+        listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
         ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);
         tv_incidencias.setItems(listaIncidencias);
 
         if (!listaDeIncidencias.isEmpty()) {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
             lb_numIncidencias.setVisible(true);
+        }else{
+             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
         }
 
     }
 
     @FXML
     private void visualizandoIncidenciasAction(MouseEvent event) {
+        Alert errorLeer, errorCarga;
         Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
 
-        ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
+        try {
+            incidencia.cambiarAleida(seleccionada);
+            ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
+        } catch (SQLException ex) {
+            errorLeer = new Alert(Alert.AlertType.ERROR);
+            errorLeer.setTitle("Error");
+            errorLeer.setHeaderText("Error al cambiar el estado de la incidencia.");
+            errorLeer.setContentText("Error: " + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorLeer);
+            errorLeer.showAndWait();
+        }
 
+//        try {
+//            cargarIncidencias();
+//
+//        } catch (SQLException ex) {
+//            errorCarga = new Alert(Alert.AlertType.ERROR);
+//            errorCarga.setTitle("Error Carga Incidenicas");
+//            errorCarga.setHeaderText("Error al cargar la lista de incidencias.");
+//            errorCarga.setContentText("Error: " + ex.getMessage());
+//            estiloAlerta.darleEstiloAlPanel(errorCarga);
+//            errorCarga.showAndWait();
+//        }
     }
 
 }

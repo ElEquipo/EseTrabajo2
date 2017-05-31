@@ -43,11 +43,11 @@ public class IncidenciaDAO {
 
         switch (modo) {
             case 0:
-                psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='Leido';");
+                psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='Leido' ORDER BY fecha asc;;");
                 psIncidencias.setInt(1, idTienda);
                 break;
             case 1:
-                psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='No leido';");
+                psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='No leido' ORDER BY fecha asc;;");
                 psIncidencias.setInt(1, idTienda);
                 break;
             default:
@@ -67,5 +67,14 @@ public class IncidenciaDAO {
             listaIncidencias.add(incidencia);
         }
         return listaIncidencias;
+    }
+
+    public void cambiarAleida(Incidencia incidencia) throws SQLException {
+        PreparedStatement psIncidencias;
+        psIncidencias = conexion.prepareStatement("UPDATE incidencias "
+                + "SET leido = 'Leido' "
+                + "WHERE idIncidencia = ?;");
+        psIncidencias.setInt(1, incidencia.getId());
+        psIncidencias.executeUpdate();
     }
 }
