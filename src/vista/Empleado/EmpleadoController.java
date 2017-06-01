@@ -12,6 +12,7 @@ import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
 import impl.com.calendarfx.view.NumericTextField;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
@@ -59,8 +61,6 @@ public class EmpleadoController implements Initializable {
     private String formato;
     private Trabajador empleadoActual;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
-    private boolean compraFin = true;
-    private boolean productoAnadido = false;
     private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
 
 
@@ -174,7 +174,12 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void CloseAction(ActionEvent event) throws SQLException {
-
+        try {
+            AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/login/LoginFXML.fxml"));
+            ac_empleado.getChildren().setAll(pane);
+        } catch (IOException ex) {
+            Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -418,15 +423,13 @@ public class EmpleadoController implements Initializable {
                 if (resultado.get() == ButtonType.OK) {
                     ta_ticketVenta.setText(seleccionado.getNombre()
                             + nf_cantidad.getText()
-                            + (seleccionado.getPrecioVenta() * Integer.valueOf(nf_cantidad.getText())) 
-                    + "\n");
-                    
-                    
-                    
+                            + (seleccionado.getPrecioVenta() * Integer.valueOf(nf_cantidad.getText()))
+                            + "\n");
+
                 }
-                
-                if(resultado.get() == ButtonType.CANCEL){
-                    
+
+                if (resultado.get() == ButtonType.CANCEL) {
+
                 }
             }
         }

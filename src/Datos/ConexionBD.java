@@ -1,6 +1,5 @@
 package Datos;
 
-import Modelo.Tienda;
 import Modelo.Trabajador;
 import java.sql.Connection;
 import java.sql.DriverManager;

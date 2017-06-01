@@ -5,7 +5,8 @@
  */
 package Datos;
 
-import Modelo.Trabajador;
+import Modelo.DetalleVenta;
+import Modelo.Venta;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,10 +14,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
-import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -26,40 +27,31 @@ import java.util.StringTokenizer;
 public class VentaDAO {
 
     Connection conexion;
-    private static int idTicket = 0;
 
     public VentaDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
-    public int insertarVenta(Integer idTienda, Integer idTrabajador, String fechaVenta, Integer idVenta, Integer referencia, Integer cantidad) throws SQLException {
-        
+    public void insertarVenta(Venta venta, List<DetalleVenta> listaDetalles) throws SQLException {
+
         PreparedStatement psInsertar;
-        ResultSet rs;
-        psInsertar = conexion.prepareStatement("SELECT insertarVenta(?,?,?,?,?,?) AS 'venta';");
-        psInsertar.setInt(1, idTienda);
-        psInsertar.setInt(2, idTrabajador);
-        psInsertar.setString(3, fechaVenta);
-        psInsertar.setInt(4, idVenta);
-        psInsertar.setInt(5, referencia);
-        psInsertar.setInt(6, cantidad);
-        rs = psInsertar.executeQuery();
-        rs.next();
-        return rs.getInt("venta");
+
+        psInsertar = conexion.prepareStatement("INSERT INTO ventas "
+                + "(idVenta,idTienda,idTrabajador,fechaVenta) "
+                + "VALUES(?,?,?,now());");
+        psInsertar.setInt(1, venta.getIdVenta());
+        psInsertar.setInt(2, venta.getIdTienda());
+        psInsertar.setInt(3, venta.getIdTrabajador());
+        psInsertar.executeUpdate();
 
     }
 
-    public String mostrarSiguienteID() throws SQLException {
-        int operacion = 0;
-
+    public int mostrarSiguienteID() throws SQLException {
         PreparedStatement psMostrar;
-        psMostrar = conexion.prepareStatement("SELECT idSiguienteVenta() AS 'id';");
+        psMostrar = conexion.prepareStatement("SELECT MAX(idVenta) AS 'siguienteVenta' FROM ventas;");
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
-
-        operacion = resultado.getInt("id") + 1;
-
-        return (operacion + "");
+        return resultado.getInt("siguienteVenta") + 1;
     }
 
     public void elimiarVenta(int idVenta) throws SQLException {
@@ -91,7 +83,7 @@ public class VentaDAO {
         double precio, total = 0.0, totalRound = 0.0;
         String nombre, dia = null, hora;
         String fecha = null;
-        idTicket++;
+//        idTicket++;
 
         ps = conexion.prepareStatement("CALL listaProducto(?);");
         ps.setInt(1, idVenta);
@@ -124,24 +116,24 @@ public class VentaDAO {
                 hora = st.nextToken();
             }
 
-                texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", dia);
+            texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", dia);
 
-                total = total + precio;
-                totalRound = Math.rint(total * 100) / 100;
-            }
-            texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
-            texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
+            total = total + precio;
+            totalRound = Math.rint(total * 100) / 100;
+        }
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
 
-            Path fichero = Paths.get(dia + "-" + idTicket + "-ticket.txt");
-            String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
-            Path directorio = Paths.get(destino);
+        Path fichero = Paths.get(dia + "-" + "numticket" + "-ticket.txt");
+        String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
+        Path directorio = Paths.get(destino);
 
-            try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
+        try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
 
-                salida.write(texto + "╚═══════════════════════════════════════════╝");
-
-            }
+            salida.write(texto + "╚═══════════════════════════════════════════╝");
 
         }
 
     }
+
+}
