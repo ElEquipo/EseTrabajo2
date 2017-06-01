@@ -1,5 +1,16 @@
-REFERENCIA: 3 NOMBRE: Hola3 CANTIDAD: 1 PRECIO: 24.2 FECHA VENTA 2017-05-31
-REFERENCIA: 6 NOMBRE: Hola6 CANTIDAD: 2 PRECIO: 48.4 FECHA VENTA 2017-05-31
-----------------------
-PRECIO TOTAL: 72.6€
-¡Gracias por su compra!
+╔═════════════════════════════════════════════════════════════════════╗ 
+║                                                                     ║
+║      JustComerce                                          		  ║
+║     ¯¯¯¯¯¯¯¯¯¯¯¯¯                                        			  ║
+║     c/ Colon 16                                                     ║
+║     46080 Valencia                                                  ║
+║     Valencia, España                                                ║
+║     Tel.: 962336111                                                 ║
+║     CIF: E-48250773                                                 ║
+║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ 
+║ REFERENCIA   |   NOMBRE   |   CANTIDAD   |   PRECIO   | FECHA VENTA ║
+║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ 
+║4             | Aguacate   | 2            | 4.24€      | 2017-05-31  ║
+║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ 
+║PRECIO TOTAL: 4.24€                                                  ║ 
+╚═══════════════════════¡Gracias por su compra!═══════════════════════╝

@@ -138,6 +138,11 @@ public class EmpleadoController implements Initializable {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
         tiendaActual = ConexionBD.actualShop;
+//        try {
+//            tf_tienda.setText(tienda.nombreTienda(empleadoActual.getIdTienda()));
+//        } catch (SQLException ex) {
+//            alertIdTienda(ex);
+//        }
         tf_tienda.setText(tiendaActual.getNombre());
         tf_trabajador.setText(empleadoActual.getNombre());
         estiloAlerta = new Alerta();
@@ -268,11 +273,11 @@ public class EmpleadoController implements Initializable {
         if (bt_regVenta.isFocused()
                 && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null) && compraFin) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA */
-            
+
             alertCamposVacios();
         } else if (bt_regVenta.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null && compraFin) {
-            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/  
-            
+            /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/
+
             fecha = dt.parse(tf_fechaVenta.getText());
             anadirProducto(fecha);
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
@@ -281,7 +286,7 @@ public class EmpleadoController implements Initializable {
             compraFin = true;
         } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null))) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
-            
+
             fecha = dt.parse(tf_fechaVenta.getText());
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
@@ -289,7 +294,7 @@ public class EmpleadoController implements Initializable {
             compraFin = true;
         } else if (bt_regVenta.isFocused() && productoAnadido && !compraFin) {
             /* ENTRA SI SE HAN AÑADIDO PRODUCTOS, REGISTRA LA COMPRA. SIGUIENTE COMPRA */
-            
+
             fecha = dt.parse(tf_fechaVenta.getText());
             venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
             siguienteCompra();
@@ -330,7 +335,7 @@ public class EmpleadoController implements Initializable {
             pn_ventas.setVisible(false);
             cb_referencia.setValue(null);
             tf_cantidad.clear();
-                        
+
             if (!compraFin) {
                 venta.elimiarVenta(idVenta);
             }
@@ -378,6 +383,17 @@ public class EmpleadoController implements Initializable {
         claveDuplicada.setContentText("Has intentado añadir el mismo producto en el mismo pedido" + sqlDuplicate.getMessage());
         estiloAlerta.darleEstiloAlPanel(claveDuplicada);
         claveDuplicada.showAndWait();
+    }
+
+    public void alertIdTienda(SQLException sqlDuplicate) {
+        Alert idTiendaNotFound;
+
+        idTiendaNotFound = new Alert(Alert.AlertType.ERROR);
+        idTiendaNotFound.setTitle("Error Añadir");
+        idTiendaNotFound.setHeaderText("No se encuentra el nombre de la tienda.");
+        idTiendaNotFound.setContentText("No se ha encontrado la tienda relacionada a este trabajador" + sqlDuplicate.getMessage());
+        estiloAlerta.darleEstiloAlPanel(idTiendaNotFound);
+        idTiendaNotFound.showAndWait();
     }
 
     public boolean anadirProducto(Date fecha) throws SQLException {

@@ -87,7 +87,7 @@ public class VentaDAO {
         PreparedStatement ps;
         ResultSet rs;
         int referencia, cantidad;
-        double precio, total = 0.0;
+        double precio, total = 0.0, totalRound = 0.0;
         String nombre;
 
         ps = conexion.prepareStatement("CALL listaProducto(?);");
@@ -95,15 +95,34 @@ public class VentaDAO {
         ps.setInt(1, idVenta);
         rs = ps.executeQuery();
         
+        texto += "╔═══════════════════════════════════════════╗ \n";
+        texto += "║                                                                      ║ \n";
+        texto += "║                            JustComerce                               ║ \n";
+        texto += "║                           ¯¯¯¯¯¯¯¯¯¯¯¯¯                              ║ \n";
+        texto += "║                                                    c/ Colon 16       ║ \n";
+        texto += "║                                                    46080 Valencia    ║ \n";
+        texto += "║                                                    Valencia, España  ║ \n";
+        texto += "║                                                    Tel.: 962336111   ║ \n";
+        texto += "║                                                    CIF: E-48250773   ║ \n";
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += "║  REFERENCIA   NOMBRE        CANTIDAD       PRECIO      FECHA VENTA   ║ \n";
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+
         while (rs.next()) {
             referencia = rs.getInt("referencia");
             nombre = rs.getString("nombre");
             cantidad = rs.getInt("cantidad");
             precio = rs.getDouble("precio");            
             fecha = rs.getDate("fechaVenta");
-            texto = texto + "REFERENCIA: " + referencia + " NOMBRE: " + nombre + " CANTIDAD: " + cantidad + " PRECIO: " + precio + " FECHA VENTA " + fecha + "\n";
+            
+            
+            texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", fecha);
+            
             total = total + precio;
+            totalRound = Math.rint(total*100)/100;
         }
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
 
         Path fichero = Paths.get("JustComerce-" + fecha + "-ticket.txt");
         String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
@@ -111,7 +130,7 @@ public class VentaDAO {
 
         try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
 
-            salida.write(texto + "----------------------\nPRECIO TOTAL: " + total + "€\n¡Gracias por su compra!");
+            salida.write(texto + "╚═══════════════════════════════════════════╝");
 
         }
 
