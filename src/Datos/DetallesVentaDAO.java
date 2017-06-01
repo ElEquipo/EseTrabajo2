@@ -1,6 +1,7 @@
 package Datos;
 
 import Modelo.DetalleVenta;
+import Modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -48,6 +49,19 @@ public class DetallesVentaDAO {
 
         }
 
+    }
+
+    public boolean contieneProducto(List<DetalleVenta> listaDetalle, Producto producto) {
+        boolean existe = false;
+
+        for (DetalleVenta detalle : listaDetalle) {
+
+            if (detalle.getReferencia() == producto.getReferencia()) {
+                existe = true;
+            }
+        }
+
+        return existe;
     }
 
 }

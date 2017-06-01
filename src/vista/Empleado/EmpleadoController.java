@@ -17,6 +17,7 @@ import Modelo.Venta;
 import impl.com.calendarfx.view.NumericTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +49,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -434,34 +436,70 @@ public class EmpleadoController implements Initializable {
         Object evento = event.getSource();
         Producto seleccionado = tv_productosVenta.getFocusModel().getFocusedItem();
         MouseButton click = event.getButton();
-        Alert elegirCantidad, errorCantidad;
+        Alert elegirCantidad, errorCantidad, errorSeleccion;
         DetalleVenta detalle;
-        int cantidad;
+        int cantidad, stock = 0;
         Double precioTotal;
+
+        try {
+            stock = producto.cantidad(empleadoActual.getIdTienda(), seleccionado);
+        } catch (SQLException ex) {
+            errorCantidad = new Alert(AlertType.ERROR);
+            errorCantidad.setTitle("Error");
+            errorCantidad.setHeaderText("No se ha podido comprobar las cantidades.");
+            errorCantidad.setContentText("Error: " + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCantidad);
+            errorCantidad.showAndWait();
+        }
 
         if (click.equals(MouseButton.PRIMARY)) {
             if (event.getClickCount() == 2) {
-                elegirCantidad = new Alert(AlertType.CONFIRMATION);
-                elegirCantidad.setTitle("Cantidad");
-                elegirCantidad.setHeaderText("Producto selecciondo : " + seleccionado.getNombre());
+                if (detallesVenta.contieneProducto(listaDetalles, seleccionado)) {
 
-                GridPane grid = new GridPane();
-                grid.setHgap(10);
-                grid.setVgap(10);
-                grid.setPadding(new Insets(20, 150, 10, 10));
+                    errorSeleccion = new Alert(AlertType.ERROR);
+                    errorSeleccion.setTitle("Error");
+                    errorSeleccion.setHeaderText("Este producto ya ha sido seleccionado");
+                    estiloAlerta.darleEstiloAlPanel(errorSeleccion);
+                    errorSeleccion.showAndWait();
 
-                NumericTextField nf_cantidad = new NumericTextField();
-                nf_cantidad.setPromptText("Cantidad");
-                grid.add(nf_cantidad, 1, 0);
-                elegirCantidad.getDialogPane().setContent(grid);
-                estiloAlerta.darleEstiloAlPanel(elegirCantidad);
-                Optional<ButtonType> resultado;
-                resultado = elegirCantidad.showAndWait();
+                } else if (stock == 0) {
+                    errorCantidad = new Alert(AlertType.CONFIRMATION);
+                    errorCantidad.setTitle("Cantidad");
+                    errorCantidad.setHeaderText("El articulo " + seleccionado.getNombre()
+                            + " no tiene stock disponible.");
+                    errorCantidad.setContentText(empleadoActual.getNombre()
+                            + ", diculpa las molestias.\n"
+                            + "¿Quiere notificar al gerente?");
+                    estiloAlerta.darleEstiloAlPanel(errorCantidad);
+                    Optional<ButtonType> resultado = errorCantidad.showAndWait();
 
-                if (resultado.get() == ButtonType.OK) {
-                    cantidad = Integer.valueOf(nf_cantidad.getText());
-                    try {
-                        if (cantidad <= producto.cantidad(empleadoActual.getIdTienda(), seleccionado)) {
+                    if (resultado.get() == ButtonType.OK) {
+                        solicitarStock();
+                    }
+
+                } else {
+
+                    elegirCantidad = new Alert(AlertType.CONFIRMATION);
+                    elegirCantidad.setTitle("Cantidad");
+                    elegirCantidad.setHeaderText("Producto selecciondo : " + seleccionado.getNombre());
+
+                    GridPane grid = new GridPane();
+                    grid.setHgap(10);
+                    grid.setVgap(10);
+                    grid.setPadding(new Insets(20, 150, 10, 10));
+
+                    NumericTextField nf_cantidad = new NumericTextField();
+                    nf_cantidad.setPromptText("Cantidad");
+                    grid.add(nf_cantidad, 1, 0);
+                    elegirCantidad.getDialogPane().setContent(grid);
+                    estiloAlerta.darleEstiloAlPanel(elegirCantidad);
+                    Optional<ButtonType> resultado;
+                    resultado = elegirCantidad.showAndWait();
+
+                    if (resultado.get() == ButtonType.OK) {
+                        cantidad = Integer.valueOf(nf_cantidad.getText());
+
+                        if (cantidad <= stock) {
 
                             precioTotal = seleccionado.getPrecioVenta() * cantidad;
 
@@ -478,6 +516,7 @@ public class EmpleadoController implements Initializable {
                                     (seleccionado.getPrecioVenta() * cantidad)) + "\n");
 
                             lb_TotalTicket.setText(String.valueOf(venta.calcularTotal(listaDetalles) + " €"));
+
                         } else {
                             errorCantidad = new Alert(AlertType.WARNING);
                             errorCantidad.setTitle("Cantidad");
@@ -488,22 +527,20 @@ public class EmpleadoController implements Initializable {
                             estiloAlerta.darleEstiloAlPanel(errorCantidad);
                             errorCantidad.showAndWait();
                         }
-                    } catch (SQLException ex) {
-                        errorCantidad = new Alert(AlertType.ERROR);
-                        errorCantidad.setTitle("Error");
-                        errorCantidad.setHeaderText("No se ha podido comprobar las cantidades.");
-                        errorCantidad.setContentText("Error: " + ex.getMessage());
-                        estiloAlerta.darleEstiloAlPanel(errorCantidad);
-                        errorCantidad.showAndWait();
+
                     }
 
-                }
+                    if (resultado.get() == ButtonType.CANCEL) {
 
-                if (resultado.get() == ButtonType.CANCEL) {
-
+                    }
                 }
             }
         }
+    }
+
+    public void solicitarStock() {
+
+        
     }
 
     public Integer siguienteIdVenta() {
@@ -528,6 +565,9 @@ public class EmpleadoController implements Initializable {
     private void generarVentaAction(ActionEvent event) {
         Alert sinProductos, errorVenta, ventaRealizada, errorGenerarTicket;
         Venta venta;
+//        TextArea textoTicket;
+//        GridPane contenidoExpansible;
+//        Path directorioTicket;
 
         if (!listaDetalles.isEmpty()) {
             /*(int idVenta, int idTienda, int idtrabajdor, LocalDate fecha, List<DetalleVenta> detalle)*/
@@ -540,16 +580,25 @@ public class EmpleadoController implements Initializable {
             try {
                 this.venta.insertarVenta(venta, listaDetalles);
                 detallesVenta.detallesVenta(listaDetalles, empleadoActual.getIdTienda());
-
                 this.venta.generarTicket(venta, listaDetalles);
-
                 ventaRealizada = new Alert(AlertType.INFORMATION);
                 ventaRealizada.setTitle("Venta");
                 ventaRealizada.setHeaderText("La venta con id: " + venta.getIdVenta()
                         + " se ha realizado con exito.");
+
+//                textoTicket = new TextArea(this.venta.leerTicket(directorioTicket));
+//
+//                textoTicket.setEditable(false);
+//                textoTicket.setWrapText(true);
+//                textoTicket.setMaxWidth(Double.MAX_VALUE);
+//                textoTicket.setMaxHeight(Double.MAX_VALUE);
+//                contenidoExpansible = new GridPane();
+//                contenidoExpansible.setMaxWidth(Double.MAX_VALUE);
+//                contenidoExpansible.add(textoTicket, 0, 1);
+//                contenidoExpansible.getStylesheets().add(getClass().getResource("empleado.css").toExternalForm());
+//                ventaRealizada.getDialogPane().setExpandableContent(contenidoExpansible);
                 estiloAlerta.darleEstiloAlPanel(ventaRealizada);
                 ventaRealizada.showAndWait();
-
             } catch (SQLException ex) {
                 errorVenta = new Alert(AlertType.ERROR);
                 errorVenta.setTitle("Error Venta");

@@ -9,6 +9,7 @@ import Modelo.DetalleVenta;
 import Modelo.Venta;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,8 +18,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Stream;
 
 /**
  *
@@ -70,13 +73,13 @@ public class VentaDAO {
         resultado.next();
         return resultado.getDouble("total");
     }
-    
-    public Double calcularTotal(List<DetalleVenta> listaDetalles){
+
+    public Double calcularTotal(List<DetalleVenta> listaDetalles) {
         Double precioTotal = 0.0;
-        for (DetalleVenta  detalle: listaDetalles) {
+        for (DetalleVenta detalle : listaDetalles) {
             precioTotal = precioTotal + detalle.getPrecio();
         }
-        
+
         return precioTotal;
     }
 
@@ -93,7 +96,7 @@ public class VentaDAO {
         return operacion;
     }
 
-    public void generarTicket(Venta venta, List<DetalleVenta> detalle) throws IOException, SQLException {
+    public Path generarTicket(Venta venta, List<DetalleVenta> detalle) throws IOException, SQLException {
         String texto = "";
         PreparedStatement ps;
         ResultSet rs;
@@ -101,7 +104,6 @@ public class VentaDAO {
         double precio, total = 0.0, totalRound = 0.0;
         String nombre, dia = null, hora;
         String fecha = null;
-//        idTicket++;
 
         ps = conexion.prepareStatement("CALL listaProducto(?);");
         ps.setInt(1, venta.getIdVenta());
@@ -145,13 +147,30 @@ public class VentaDAO {
         Path fichero = Paths.get(dia + "-" + venta.getIdVenta() + "-ticket.txt");
         String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
         Path directorio = Paths.get(destino);
-
+        
         try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
 
             salida.write(texto + "╚═════════════════════════════════════════════════════╝");
 
         }
-
+        
+        return directorio;
+        
     }
 
+    public String leerTicket(Path directorio) {
+        String resultado = "";
+        
+
+        try (Stream<String> datos = Files.lines(directorio, StandardCharsets.ISO_8859_1)) {
+            Iterator<String> it = datos.iterator();
+            while (it.hasNext()) {
+                resultado = resultado + it.next() + "\n";
+            }
+        } catch (Exception e) {
+            /*Ninguno de los StandartCharsets me permite visualizar el simbolo del euro*/
+        }
+        return resultado;
+    }
 }
+
