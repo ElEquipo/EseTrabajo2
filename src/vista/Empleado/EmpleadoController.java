@@ -46,6 +46,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -148,6 +150,10 @@ public class EmpleadoController implements Initializable {
     @FXML
     private TableColumn<Producto, Integer> tb_stockVenta;
     @FXML
+    private Label lb_total;
+    @FXML
+    private Label lb_TotalTicket;
+    @FXML
     private TextArea ta_ticketVenta;
 
     @Override
@@ -169,6 +175,7 @@ public class EmpleadoController implements Initializable {
         cb_tipoIncidencia.setValue("Tipos de Incidencia");
         dp_fechaInciendia.setValue(LocalDate.now());
         tf_especificarTipoIncidencia.setVisible(false);
+        ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
 
@@ -394,7 +401,8 @@ public class EmpleadoController implements Initializable {
     }
 
     public void limpiarVentas() {
-
+        listaDetalles.clear();
+        ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
     }
 
     @FXML
@@ -402,7 +410,7 @@ public class EmpleadoController implements Initializable {
         Object evento = event.getSource();
         Producto seleccionado = tv_productosVenta.getFocusModel().getFocusedItem();
         MouseButton click = event.getButton();
-        Alert elegirCantidad;
+        Alert elegirCantidad, errorCantidad;
         DetalleVenta detalle;
         int cantidad;
         Double precioTotal;
@@ -428,22 +436,40 @@ public class EmpleadoController implements Initializable {
 
                 if (resultado.get() == ButtonType.OK) {
                     cantidad = Integer.valueOf(nf_cantidad.getText());
-                    precioTotal = seleccionado.getPrecioVenta() * cantidad;
+                    try {
+                        if (cantidad <= producto.cantidad(empleadoActual.getIdTienda(), seleccionado)) {
 
-                    /*(int idVenta, int referencia, int cantidad, Double precio)*/
-                    detalle = new DetalleVenta(idSiguienteVenta,
-                            seleccionado.getReferencia(),
-                            cantidad,
-                            precioTotal);
-                    
+                            precioTotal = seleccionado.getPrecioVenta() * cantidad;
 
-                    listaDetalles.add(detalle);
-                    System.out.println(listaDetalles.toString());
+                            /*(int idVenta, int referencia, int cantidad, Double precio)*/
+                            detalle = new DetalleVenta(idSiguienteVenta,
+                                    seleccionado.getReferencia(),
+                                    cantidad,
+                                    precioTotal);
 
-                    ta_ticketVenta.setText(seleccionado.getNombre() + " "
-                            + nf_cantidad.getText() + " "
-                            + (seleccionado.getPrecioVenta() * cantidad)
-                            + "\n");
+                            listaDetalles.add(detalle);
+
+                            ta_ticketVenta.appendText(String.format("%-25s  %15s  %15s",
+                                    seleccionado.getNombre(), nf_cantidad.getText(),
+                                    (seleccionado.getPrecioVenta() * cantidad)) + "\n");
+                        } else {
+                            errorCantidad = new Alert(AlertType.WARNING);
+                            errorCantidad.setTitle("Cantidad");
+                            errorCantidad.setHeaderText("Cantidad mayor a la disponible"
+                                    + " en el almacen.");
+                            errorCantidad.setContentText(empleadoActual.getNombre()
+                                    + ", diculpa las molestias.");
+                            estiloAlerta.darleEstiloAlPanel(errorCantidad);
+                            errorCantidad.showAndWait();
+                        }
+                    } catch (SQLException ex) {
+                        errorCantidad = new Alert(AlertType.ERROR);
+                        errorCantidad.setTitle("Error");
+                        errorCantidad.setHeaderText("No se ha podido comprobar las cantidades.");
+                        errorCantidad.setContentText("Error: " + ex.getMessage());
+                        estiloAlerta.darleEstiloAlPanel(errorCantidad);
+                        errorCantidad.showAndWait();
+                    }
 
                 }
 
@@ -474,7 +500,7 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void generarVentaAction(ActionEvent event) {
-        Alert sinProductos, errorVenta;
+        Alert sinProductos, errorVenta, ventaRealizada;
         Venta venta;
 
         if (!listaDetalles.isEmpty()) {
@@ -488,6 +514,13 @@ public class EmpleadoController implements Initializable {
             try {
                 this.venta.insertarVenta(venta, listaDetalles);
                 detallesVenta.detallesVenta(listaDetalles);
+                ventaRealizada = new Alert(AlertType.INFORMATION);
+                ventaRealizada.setTitle("Venta");
+                ventaRealizada.setHeaderText("La venta con id: " + venta.getIdVenta()
+                        + " se ha realizado con exito.");
+                estiloAlerta.darleEstiloAlPanel(ventaRealizada);
+                ventaRealizada.showAndWait();
+
             } catch (SQLException ex) {
                 errorVenta = new Alert(AlertType.ERROR);
                 errorVenta.setTitle("Error Venta");

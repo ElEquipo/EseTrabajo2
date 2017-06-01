@@ -62,6 +62,15 @@ public class VentaDAO {
 
     }
 
+    public Double caluclarTotal(int idVenta) throws SQLException {
+        PreparedStatement psCalculo;
+        psCalculo = conexion.prepareStatement("SELECT calcularTotal(?) AS 'total';");
+        psCalculo.setInt(1, idVenta);
+        ResultSet resultado = psCalculo.executeQuery();
+        resultado.next();
+        return resultado.getDouble("total");
+    }
+
     public int idActual() throws SQLException {
         int operacion;
 

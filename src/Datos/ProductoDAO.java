@@ -45,7 +45,7 @@ public class ProductoDAO {
                     rsProductos.getDouble("precioVenta"),
                     rsProductos.getDouble("IVA"),
                     rsProductos.getInt("stock"));
-            
+
             listaProductos.add(producto);
         }
         return listaProductos;
@@ -88,6 +88,22 @@ public class ProductoDAO {
         }
 
         return resultado;
+    }
+
+    public int cantidad(int idTienda, Producto producto) throws SQLException {
+        PreparedStatement psCantidad;
+        ResultSet rsCantidad;
+        psCantidad = conexion.prepareStatement("SELECT tp.stock "
+                + "FROM productos p INNER JOIN tiendas_productos tp "
+                + "ON p.referencia=tp.idProducto "
+                + "WHERE tp.idTienda=? AND p.referencia=?;");
+        psCantidad.setInt(1, idTienda);
+        psCantidad.setInt(2, producto.getReferencia());
+        rsCantidad = psCantidad.executeQuery();
+        rsCantidad.next();
+        
+        return rsCantidad.getInt("stock");
+
     }
 
 }

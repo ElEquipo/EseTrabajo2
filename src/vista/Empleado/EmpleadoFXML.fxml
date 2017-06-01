@@ -98,12 +98,12 @@
             </Pane>
             <Pane fx:id="pn_ventas" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
                <children>
-                  <TableView fx:id="tv_productosVenta" onMouseClicked="#añadirProductoAction" prefHeight="261.0" prefWidth="368.0">
+                  <TableView fx:id="tv_productosVenta" onMouseClicked="#añadirProductoAction" prefHeight="261.0" prefWidth="415.0">
                      <columns>
-                        <TableColumn fx:id="tb_nombreVenta" prefWidth="82.0" text="nombre" />
-                        <TableColumn fx:id="tb_categoriaVenta" prefWidth="121.0" text="categoría" />
-                        <TableColumn fx:id="tb_precioVentaVenta" prefWidth="95.0" text="precio venta" />
-                        <TableColumn fx:id="tb_stockVenta" prefWidth="67.0" text="stock" />
+                        <TableColumn fx:id="tb_nombreVenta" prefWidth="127.0" text="nombre" />
+                        <TableColumn fx:id="tb_categoriaVenta" prefWidth="113.0" text="categoría" />
+                        <TableColumn fx:id="tb_precioVentaVenta" prefWidth="85.0" text="precio venta" />
+                        <TableColumn fx:id="tb_stockVenta" prefWidth="87.0" text="stock" />
                      </columns>
                      <cursor>
                         <Cursor fx:constant="DEFAULT" />
@@ -117,11 +117,14 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
-                  <Button fx:id="bt_anadirProducto" layoutX="388.0" layoutY="95.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="72.0" stylesheets="@empleado.css">
+                  <Button fx:id="bt_anadirProducto" layoutX="399.0" layoutY="364.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="72.0" stylesheets="@empleado.css">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
-                  <TextArea fx:id="ta_ticketVenta" layoutX="471.0" layoutY="14.0" prefHeight="271.0" prefWidth="241.0" />
+                  <Separator layoutX="447.0" layoutY="274.0" prefHeight="4.0" prefWidth="290.0" />
+                  <Label fx:id="lb_total" layoutX="592.0" layoutY="291.0" text="TOTAL:" textFill="WHITE" />
+                  <Label fx:id="lb_TotalTicket" layoutX="638.0" layoutY="291.0" prefHeight="17.0" prefWidth="90.0" textFill="WHITE" />
+                  <TextArea fx:id="ta_ticketVenta" layoutX="447.0" layoutY="14.0" prefHeight="250.0" prefWidth="284.0" />
                </children>
             </Pane>
          </children>
