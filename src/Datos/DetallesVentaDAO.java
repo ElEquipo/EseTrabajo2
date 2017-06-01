@@ -15,8 +15,8 @@ public class DetallesVentaDAO {
         this.conexion = conexion;
     }
 
-    public void detallesVenta(List<DetalleVenta> listaDetalles) throws SQLException {
-        PreparedStatement psDetalles;
+    public void detallesVenta(List<DetalleVenta> listaDetalles, int idTienda) throws SQLException {
+        PreparedStatement psDetalles, psRestarCantidad;
         DetalleVenta detalle;
         Double precioTotal;
         totalPrecioDetalles = 0.0;
@@ -24,6 +24,10 @@ public class DetallesVentaDAO {
         psDetalles = conexion.prepareStatement("INSERT INTO detallesventa "
                 + " (idVenta,referencia,cantidad,precio) "
                 + "VALUES(?,?,?,?);");
+
+        psRestarCantidad = conexion.prepareStatement("UPDATE tiendas_productos"
+                + "	SET stock = stock - ?"
+                + "    WHERE idTienda = ? AND idProducto = ?;");
 
         for (DetalleVenta listaDetalle : listaDetalles) {
             detalle = listaDetalle;
@@ -36,6 +40,12 @@ public class DetallesVentaDAO {
 
             totalPrecioDetalles = totalPrecioDetalles + precioTotal;
             psDetalles.executeUpdate();
+
+            psRestarCantidad.setInt(1, detalle.getCantidad());
+            psRestarCantidad.setInt(2, idTienda);
+            psRestarCantidad.setInt(3, detalle.getReferencia());
+            psRestarCantidad.executeUpdate();
+
         }
 
     }

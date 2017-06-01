@@ -513,7 +513,11 @@ public class EmpleadoController implements Initializable {
 
             try {
                 this.venta.insertarVenta(venta, listaDetalles);
-                detallesVenta.detallesVenta(listaDetalles);
+                detallesVenta.detallesVenta(listaDetalles,empleadoActual.getIdTienda());
+                
+                
+                
+                
                 ventaRealizada = new Alert(AlertType.INFORMATION);
                 ventaRealizada.setTitle("Venta");
                 ventaRealizada.setHeaderText("La venta con id: " + venta.getIdVenta()
