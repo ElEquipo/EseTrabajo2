@@ -1,16 +1,19 @@
 package vista.Empleado;
 
 import Datos.ConexionBD;
+import Datos.DetallesVentaDAO;
 import Datos.IncidenciaDAO;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
 import Datos.VentaDAO;
 import Modelo.Alerta.Alerta;
+import Modelo.DetalleVenta;
 import Modelo.Incidencia;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
+import Modelo.Venta;
 import impl.com.calendarfx.view.NumericTextField;
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +21,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -53,12 +58,15 @@ public class EmpleadoController implements Initializable {
     private TrabajadorDAO trabajador;
     private VentaDAO venta;
     private IncidenciaDAO incidencia;
+    private DetallesVentaDAO detallesVenta;
     private Alerta estiloAlerta;
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
     private ObservableList<Trabajador> listaTrabajadores;
+    private List<DetalleVenta> listaDetalles = new ArrayList<>();
     private LocalDateTime date;
     private String formato;
+    private Integer idSiguienteVenta = null;
     private Trabajador empleadoActual;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
     private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
@@ -149,6 +157,7 @@ public class EmpleadoController implements Initializable {
         venta = new VentaDAO(ConexionBD.conexion);
         incidencia = new IncidenciaDAO(ConexionBD.conexion);
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
+        detallesVenta = new DetallesVentaDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
 
         estiloAlerta = new Alerta();
@@ -240,14 +249,6 @@ public class EmpleadoController implements Initializable {
         faltaCampos.setHeaderText("Por favor rellene todos los campos.");
         estiloAlerta.darleEstiloAlPanel(faltaCampos);
         faltaCampos.showAndWait();
-
-    }
-
-    public void siguienteCompra() throws SQLException {
-
-    }
-
-    public void finalizarCompra() {
 
     }
 
@@ -363,6 +364,7 @@ public class EmpleadoController implements Initializable {
             pn_fondoIconos.setVisible(false);
             pn_ventas.setVisible(true);
             cargarProductosParaVenta();
+            idSiguienteVenta = siguienteIdVenta();
         } else if (evento == bt_atrasVentas) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
@@ -397,9 +399,13 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void añadirProductoAction(MouseEvent event) {
+        Object evento = event.getSource();
         Producto seleccionado = tv_productosVenta.getFocusModel().getFocusedItem();
         MouseButton click = event.getButton();
         Alert elegirCantidad;
+        DetalleVenta detalle;
+        int cantidad;
+        Double precioTotal;
 
         if (click.equals(MouseButton.PRIMARY)) {
             if (event.getClickCount() == 2) {
@@ -421,9 +427,22 @@ public class EmpleadoController implements Initializable {
                 resultado = elegirCantidad.showAndWait();
 
                 if (resultado.get() == ButtonType.OK) {
-                    ta_ticketVenta.setText(seleccionado.getNombre()
-                            + nf_cantidad.getText()
-                            + (seleccionado.getPrecioVenta() * Integer.valueOf(nf_cantidad.getText()))
+                    cantidad = Integer.valueOf(nf_cantidad.getText());
+                    precioTotal = seleccionado.getPrecioVenta() * cantidad;
+
+                    /*(int idVenta, int referencia, int cantidad, Double precio)*/
+                    detalle = new DetalleVenta(idSiguienteVenta,
+                            seleccionado.getReferencia(),
+                            cantidad,
+                            precioTotal);
+                    
+
+                    listaDetalles.add(detalle);
+                    System.out.println(listaDetalles.toString());
+
+                    ta_ticketVenta.setText(seleccionado.getNombre() + " "
+                            + nf_cantidad.getText() + " "
+                            + (seleccionado.getPrecioVenta() * cantidad)
                             + "\n");
 
                 }
@@ -433,6 +452,59 @@ public class EmpleadoController implements Initializable {
                 }
             }
         }
+    }
+
+    public Integer siguienteIdVenta() {
+        Alert errorCargaId;
+        Integer idVenta = null;
+
+        try {
+            idVenta = this.venta.mostrarSiguienteID();
+        } catch (SQLException ex) {
+            errorCargaId = new Alert(AlertType.ERROR);
+            errorCargaId.setTitle("Error");
+            errorCargaId.setHeaderText("No se ha podido cargar el id de la siguiente venta");
+            errorCargaId.setContentText("Error: " + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCargaId);
+            errorCargaId.showAndWait();
+        }
+
+        return idVenta;
+    }
+
+    @FXML
+    private void generarVentaAction(ActionEvent event) {
+        Alert sinProductos, errorVenta;
+        Venta venta;
+
+        if (!listaDetalles.isEmpty()) {
+            /*(int idVenta, int idTienda, int idtrabajdor, LocalDate fecha, List<DetalleVenta> detalle)*/
+            venta = new Venta(idSiguienteVenta,
+                    empleadoActual.getIdTienda(),
+                    empleadoActual.getId(),
+                    LocalDate.now(),
+                    listaDetalles);
+
+            try {
+                this.venta.insertarVenta(venta, listaDetalles);
+                detallesVenta.detallesVenta(listaDetalles);
+            } catch (SQLException ex) {
+                errorVenta = new Alert(AlertType.ERROR);
+                errorVenta.setTitle("Error Venta");
+                errorVenta.setHeaderText("No se ha podido generar la venta.");
+                errorVenta.setContentText("Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(errorVenta);
+                errorVenta.showAndWait();
+            }
+
+        } else {
+            sinProductos = new Alert(AlertType.ERROR);
+            sinProductos.setTitle("Error");
+            sinProductos.setHeaderText("Seleccione un producto antes.");
+            estiloAlerta.darleEstiloAlPanel(sinProductos);
+            sinProductos.showAndWait();
+        }
+
     }
 
 }

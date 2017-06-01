@@ -18,8 +18,8 @@ public class DetallesVentaDAO {
     public void detallesVenta(List<DetalleVenta> listaDetalles) throws SQLException {
         PreparedStatement psDetalles;
         DetalleVenta detalle;
-        Double precioTotal, precioProducto;
-        int cantidad;
+        Double precioTotal;
+        totalPrecioDetalles = 0.0;
 
         psDetalles = conexion.prepareStatement("INSERT INTO detallesventa "
                 + " (idVenta,referencia,cantidad,precio) "
@@ -27,18 +27,16 @@ public class DetallesVentaDAO {
 
         for (DetalleVenta listaDetalle : listaDetalles) {
             detalle = listaDetalle;
-            cantidad = detalle.getCantidad();
-            precioProducto = detalle.getPrecio();
-            precioTotal = precioProducto * cantidad;
+            precioTotal = detalle.getPrecio();
 
             psDetalles.setInt(1, detalle.getIdVenta());
             psDetalles.setInt(2, detalle.getReferencia());
-            psDetalles.setInt(3, cantidad);
+            psDetalles.setInt(3, detalle.getCantidad());
             psDetalles.setDouble(4, precioTotal);
 
             totalPrecioDetalles = totalPrecioDetalles + precioTotal;
+            psDetalles.executeUpdate();
         }
-        psDetalles.executeUpdate();
 
     }
 

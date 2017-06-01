@@ -109,7 +109,7 @@
                         <Cursor fx:constant="DEFAULT" />
                      </cursor>
                   </TableView>
-                  <Button fx:id="bt_regVenta" layoutX="577.0" layoutY="340.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
+                  <Button fx:id="bt_regVenta" layoutX="577.0" layoutY="340.0" mnemonicParsing="false" onAction="#generarVentaAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
@@ -117,7 +117,7 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
-                  <Button fx:id="bt_anadirProducto" layoutX="388.0" layoutY="95.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="72.0" prefWidth="72.0" stylesheets="@empleado.css">
+                  <Button fx:id="bt_anadirProducto" layoutX="388.0" layoutY="95.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="72.0" stylesheets="@empleado.css">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
