@@ -1107,8 +1107,8 @@ public class GerenteController implements Initializable {
         if (!listaDeIncidencias.isEmpty()) {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
             lb_numIncidencias.setVisible(true);
-        }else{
-             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
+        } else {
+            lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
         }
 
     }
@@ -1119,7 +1119,9 @@ public class GerenteController implements Initializable {
         Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
 
         try {
-            incidencia.cambiarAleida(seleccionada);
+            if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
+                incidencia.cambiarAleida(seleccionada);
+            }
             ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
             ta_descripcionIncidencia.setWrapText(true);
         } catch (SQLException ex) {

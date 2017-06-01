@@ -145,38 +145,6 @@ public class EmpleadoController implements Initializable {
     private DatePicker dp_fechaInciendia;
     @FXML
     private TextField tf_especificarTipoIncidencia;
-    @FXML
-    private Pane pn_perfil;
-    @FXML
-    private TextField tf_nombre;
-    @FXML
-    private TextField tf_apellido1;
-    @FXML
-    private TextField tf_apellido2;
-    @FXML
-    private TextField tf_dni;
-    @FXML
-    private TextField tf_nick;
-    @FXML
-    private Button bt_modificar;
-    @FXML
-    private Button bt_atrasContratar;
-    @FXML
-    private DatePicker dp_fecha;
-    @FXML
-    private Label lb_id;
-    @FXML
-    private Label lb_fondoHoraEntrada;
-    @FXML
-    private Label lb_fondoHoraSalida;
-    @FXML
-    private ComboBox<Trabajador> cb_puesto;
-    @FXML
-    private NumericTextField nf_salario;
-    @FXML
-    private LocalTimePicker dp_horaEntrada;
-    @FXML
-    private LocalTimePicker dp_horaSalida;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -198,7 +166,6 @@ public class EmpleadoController implements Initializable {
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
         pn_incidencias.setVisible(false);
-        pn_perfil.setVisible(false);
         tf_tienda.setEditable(false);
         tf_trabajador.setEditable(false);
         tf_fechaVenta.setEditable(false);
@@ -586,16 +553,10 @@ public class EmpleadoController implements Initializable {
         tf_especificarTipoIncidencia.clear();
     }
 
-    @FXML
-    private void contratarAction(ActionEvent event) {
-    }
 
     @FXML
     private void perfilAction(ActionEvent event) {
-        
-        pn_perfil.setVisible(true);
-        pn_fondoIconos.setVisible(false);
-        
+                
     }
 
 }
