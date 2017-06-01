@@ -1,17 +1,17 @@
 package vista.Empleado;
 
 import Datos.ConexionBD;
+import Datos.IncidenciaDAO;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
 import Datos.TrabajadorDAO;
 import Datos.VentaDAO;
 import Modelo.Alerta.Alerta;
+import Modelo.Incidencia;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import java.io.IOException;
-import static java.lang.String.format;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -32,23 +32,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
-import static java.lang.String.format;
 import java.util.Optional;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextArea;
 
 public class EmpleadoController implements Initializable {
 
@@ -56,6 +50,7 @@ public class EmpleadoController implements Initializable {
     private ProductoDAO producto;
     private TrabajadorDAO trabajador;
     private VentaDAO venta;
+    private IncidenciaDAO incidencia;
     private Alerta estiloAlerta;
     private ObservableList<Producto> listaProductos;
     private ObservableList<Tienda> listaTiendas;
@@ -67,6 +62,7 @@ public class EmpleadoController implements Initializable {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
     private boolean compraFin = true;
     private boolean productoAnadido = false;
+    private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -129,12 +125,29 @@ public class EmpleadoController implements Initializable {
     private TextField tf_trabajador;
     @FXML
     private Button bt_anadirProducto;
+    @FXML
+    private Button bt_incidencias;
+    @FXML
+    private Pane pn_incidencias;
+    @FXML
+    private Button bt_añadirIncidencia;
+    @FXML
+    private Button bt_atrasIncidencias;
+    @FXML
+    private ComboBox<String> cb_tipoIncidencia;
+    @FXML
+    private TextArea ta_descripcionIncidencia;
+    @FXML
+    private DatePicker dp_fechaInciendia;
+    @FXML
+    private TextField tf_especificarTipoIncidencia;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         producto = new ProductoDAO(ConexionBD.conexion);
         tienda = new TiendaDAO(ConexionBD.conexion);
         venta = new VentaDAO(ConexionBD.conexion);
+        incidencia = new IncidenciaDAO(ConexionBD.conexion);
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
         tiendaActual = ConexionBD.actualShop;
@@ -148,10 +161,16 @@ public class EmpleadoController implements Initializable {
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
+        pn_incidencias.setVisible(false);
         tf_tienda.setEditable(false);
         tf_trabajador.setEditable(false);
         tf_fechaVenta.setEditable(false);
         tf_idVenta.setEditable(false);
+        cb_tipoIncidencia.setItems(tiposInciencias);
+        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
+        cb_tipoIncidencia.setValue("Tipos de Incidencia");
+        dp_fechaInciendia.setValue(LocalDate.now());
+        tf_especificarTipoIncidencia.setVisible(false);
         Alert errorCarga;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
@@ -217,12 +236,15 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void inicioAction(ActionEvent event) throws SQLException {
+
         if (pn_ventas.isVisible() && !compraFin) {
             alertSalirVenta(venta.idActual());
         } else {
             pn_fondoIconos.setVisible(true);
             pn_productos.setVisible(false);
             pn_ventas.setVisible(false);
+            pn_incidencias.setVisible(false);
+            limpiarIncidencias();
         }
     }
 
@@ -421,6 +443,105 @@ public class EmpleadoController implements Initializable {
         cb_referencia.setValue(null);
         tf_cantidad.clear();
 
+    }
+
+    @FXML
+    private void IncidenciasAction(ActionEvent event) {
+        Object evento = event.getSource();
+
+        pn_fondoIconos.setVisible(false);
+        pn_incidencias.setVisible(true);
+
+        if (evento == bt_atrasIncidencias) {
+            pn_fondoIconos.setVisible(true);
+            pn_incidencias.setVisible(false);
+            limpiarIncidencias();
+        }
+    }
+
+    @FXML
+    private void añadirIncidenciaAction(ActionEvent event) {
+        Object evento = event.getSource();
+        Incidencia incidencia;
+        String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText(),
+                descripcion = ta_descripcionIncidencia.getText();
+        Alert errorTipo, errorInsertar, incidenciaCreada;
+
+        if (tipo.equalsIgnoreCase("Otros")) {
+            ta_descripcionIncidencia.setLayoutY(148);
+            tf_especificarTipoIncidencia.setVisible(true);
+
+        } else if (!tipo.equalsIgnoreCase("Otros")) {
+            ta_descripcionIncidencia.setLayoutY(107);
+            tf_especificarTipoIncidencia.setVisible(false);
+        }
+
+        if (evento == bt_añadirIncidencia) {
+
+            if (tipo.equalsIgnoreCase("Tipos de Incidencia")) {
+
+                errorTipo = new Alert(AlertType.ERROR);
+                errorTipo.setTitle("Incidencias Error");
+                errorTipo.setHeaderText("Por favor, eliga el tipo de inciencia.");
+                estiloAlerta.darleEstiloAlPanel(errorTipo);
+                errorTipo.showAndWait();
+
+            } else if (tipo.equalsIgnoreCase("Otros") && especifico.isEmpty()) {
+
+                errorTipo = new Alert(AlertType.ERROR);
+                errorTipo.setTitle("Incidencias Error");
+                errorTipo.setHeaderText("Por favor, especifique el tipo de "
+                        + "incidencia ocurrido.");
+                errorTipo.setContentText("Normalmente con una o dos palabras basta");
+                estiloAlerta.darleEstiloAlPanel(errorTipo);
+                errorTipo.showAndWait();
+
+            } else {
+                /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
+                if (tf_especificarTipoIncidencia.isVisible()) {
+                    descripcion = especifico + ": " + descripcion;
+
+                }
+
+                incidencia = new Incidencia(java.sql.Types.NULL,
+                        empleadoActual.getIdTienda(),
+                        empleadoActual.getId(),
+                        tipo,
+                        dp_fechaInciendia.getValue(),
+                        descripcion,
+                        "No leido");
+
+                try {
+                    this.incidencia.crearIncidencia(incidencia, empleadoActual);
+                    incidenciaCreada = new Alert(AlertType.INFORMATION);
+                    incidenciaCreada.setTitle("Incidencias");
+                    incidenciaCreada.setHeaderText("Incidencia creada con exito.");
+                    incidenciaCreada.setContentText(empleadoActual.getNombre() +
+                            ", gracias por informar de la incidencia");
+                    estiloAlerta.darleEstiloAlPanel(incidenciaCreada);
+                    incidenciaCreada.showAndWait();
+
+                } catch (SQLException ex) {
+                    errorInsertar = new Alert(AlertType.ERROR);
+                    errorInsertar.setTitle("Error Insertar");
+                    errorInsertar.setHeaderText("No se ha podido insertar la incidencia.");
+                    errorInsertar.setContentText("Error: " + ex.getMessage());
+                    estiloAlerta.darleEstiloAlPanel(errorInsertar);
+                    errorInsertar.showAndWait();
+                }
+            }
+        }
+
+    }
+
+    public void limpiarIncidencias() {
+        ta_descripcionIncidencia.clear();
+        dp_fechaInciendia.setValue(LocalDate.now());
+        ta_descripcionIncidencia.setLayoutY(107);
+        tf_especificarTipoIncidencia.setVisible(false);
+        cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
+        cb_tipoIncidencia.setValue("Tipos de Incidencia");
+        tf_especificarTipoIncidencia.clear();
     }
 
 }
