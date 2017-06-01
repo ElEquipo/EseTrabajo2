@@ -11,11 +11,13 @@ import Modelo.Incidencia;
 import Modelo.Producto;
 import Modelo.Tienda;
 import Modelo.Trabajador;
+import impl.com.calendarfx.view.NumericTextField;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -34,9 +37,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 public class EmpleadoController implements Initializable {
 
@@ -387,8 +393,43 @@ public class EmpleadoController implements Initializable {
     @FXML
     private void añadirProductoAction(MouseEvent event) {
         Producto seleccionado = tv_productosVenta.getFocusModel().getFocusedItem();
-        
-        
+        MouseButton click = event.getButton();
+        Alert elegirCantidad;
+
+        if (click.equals(MouseButton.PRIMARY)) {
+            if (event.getClickCount() == 2) {
+                elegirCantidad = new Alert(AlertType.CONFIRMATION);
+                elegirCantidad.setTitle("Cantidad");
+                elegirCantidad.setHeaderText("Producto selecciondo : " + seleccionado.getNombre());
+
+                GridPane grid = new GridPane();
+                grid.setHgap(10);
+                grid.setVgap(10);
+                grid.setPadding(new Insets(20, 150, 10, 10));
+
+                NumericTextField nf_cantidad = new NumericTextField();
+                nf_cantidad.setPromptText("Cantidad");
+                grid.add(nf_cantidad, 1, 0);
+                elegirCantidad.getDialogPane().setContent(grid);
+                estiloAlerta.darleEstiloAlPanel(elegirCantidad);
+                Optional<ButtonType> resultado;
+                resultado = elegirCantidad.showAndWait();
+
+                if (resultado.get() == ButtonType.OK) {
+                    ta_ticketVenta.setText(seleccionado.getNombre()
+                            + nf_cantidad.getText()
+                            + (seleccionado.getPrecioVenta() * Integer.valueOf(nf_cantidad.getText())) 
+                    + "\n");
+                    
+                    
+                    
+                }
+                
+                if(resultado.get() == ButtonType.CANCEL){
+                    
+                }
+            }
+        }
     }
 
 }

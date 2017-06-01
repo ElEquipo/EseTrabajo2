@@ -105,6 +105,9 @@
                         <TableColumn fx:id="tb_precioVentaVenta" prefWidth="95.0" text="precio venta" />
                         <TableColumn fx:id="tb_stockVenta" prefWidth="67.0" text="stock" />
                      </columns>
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor>
                   </TableView>
                   <Button fx:id="bt_regVenta" layoutX="577.0" layoutY="340.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
                      <cursor>
