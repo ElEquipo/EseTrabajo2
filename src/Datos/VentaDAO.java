@@ -70,6 +70,15 @@ public class VentaDAO {
         resultado.next();
         return resultado.getDouble("total");
     }
+    
+    public Double calcularTotal(List<DetalleVenta> listaDetalles){
+        Double precioTotal = 0.0;
+        for (DetalleVenta  detalle: listaDetalles) {
+            precioTotal = precioTotal + detalle.getPrecio();
+        }
+        
+        return precioTotal;
+    }
 
     public int idActual() throws SQLException {
         int operacion;
@@ -84,7 +93,7 @@ public class VentaDAO {
         return operacion;
     }
 
-    public void generarTicket(int idVenta) throws IOException, SQLException {
+    public void generarTicket(Venta venta, List<DetalleVenta> detalle) throws IOException, SQLException {
         String texto = "";
         PreparedStatement ps;
         ResultSet rs;
@@ -95,21 +104,21 @@ public class VentaDAO {
 //        idTicket++;
 
         ps = conexion.prepareStatement("CALL listaProducto(?);");
-        ps.setInt(1, idVenta);
+        ps.setInt(1, venta.getIdVenta());
         rs = ps.executeQuery();
 
-        texto += "╔═══════════════════════════════════════════╗ \n";
-        texto += "║                                                                      ║ \n";
-        texto += "║                            JustComerce                               ║ \n";
-        texto += "║                           ¯¯¯¯¯¯¯¯¯¯¯¯¯                              ║ \n";
-        texto += "║                                                    c/ Colon 16       ║ \n";
-        texto += "║                                                    46080 Valencia    ║ \n";
-        texto += "║                                                    Valencia, España  ║ \n";
-        texto += "║                                                    Tel.: 962336111   ║ \n";
-        texto += "║                                                    CIF: E-48250773   ║ \n";
-        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
-        texto += "║  REFERENCIA   NOMBRE        CANTIDAD       PRECIO      FECHA VENTA   ║ \n";
-        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += "╔═════════════════════════════════════════════════════╗ \n";
+        texto += "║                                                                                      ║ \n";
+        texto += "║                                     JustComerce                                      ║ \n";
+        texto += "║                                    ¯¯¯¯¯¯¯¯¯¯¯¯¯                                     ║ \n";
+        texto += "║                                                                    c/ Colon 16       ║ \n";
+        texto += "║                                                                    46080 Valencia    ║ \n";
+        texto += "║                                                                    Valencia, España  ║ \n";
+        texto += "║                                                                    Tel.: 962336111   ║ \n";
+        texto += "║                                                                    CIF: E-48250773   ║ \n";
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += "║  REFERENCIA        NOMBRE                  CANTIDAD        PRECIO      FECHA VENTA   ║ \n";
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
 
         while (rs.next()) {
             referencia = rs.getInt("referencia");
@@ -125,21 +134,21 @@ public class VentaDAO {
                 hora = st.nextToken();
             }
 
-            texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", dia);
+            texto += String.format("║%-13s | %-25s | %-12s | %-10s | %-11s   ║\n", referencia, nombre, cantidad, precio + "€", dia);
 
             total = total + precio;
             totalRound = Math.rint(total * 100) / 100;
         }
-        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
-        texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
+        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+        texto += String.format("║                                     TOTAL: %-25s                 ║ \n", totalRound + "€");
 
-        Path fichero = Paths.get(dia + "-" + "numticket" + "-ticket.txt");
+        Path fichero = Paths.get(dia + "-" + venta.getIdVenta() + "-ticket.txt");
         String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
         Path directorio = Paths.get(destino);
 
         try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
 
-            salida.write(texto + "╚═══════════════════════════════════════════╝");
+            salida.write(texto + "╚═════════════════════════════════════════════════════╝");
 
         }
 

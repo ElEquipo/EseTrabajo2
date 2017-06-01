@@ -201,11 +201,12 @@ public class EmpleadoController implements Initializable {
     @FXML
     private void inicioAction(ActionEvent event) throws SQLException {
 
-        pn_fondoIconos.setVisible(true);
-        pn_productos.setVisible(false);
-        pn_ventas.setVisible(false);
-        pn_incidencias.setVisible(false);
-        limpiarIncidencias();
+        if (limpiarVentas()) {
+            pn_fondoIconos.setVisible(true);
+            pn_productos.setVisible(false);
+            pn_ventas.setVisible(false);
+            pn_incidencias.setVisible(false);
+        }
 
     }
 
@@ -372,14 +373,12 @@ public class EmpleadoController implements Initializable {
             pn_ventas.setVisible(true);
             cargarProductosParaVenta();
             idSiguienteVenta = siguienteIdVenta();
-        } else if (evento == bt_atrasVentas) {
+        } else if (evento == bt_atrasVentas && limpiarVentas()) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
-            limpiarVentas();
-        } else if (evento == bt_Inicio) {
+        } else if (evento == bt_Inicio && limpiarVentas()) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
-            limpiarVentas();
         }
 
     }
@@ -400,9 +399,34 @@ public class EmpleadoController implements Initializable {
 
     }
 
-    public void limpiarVentas() {
-        listaDetalles.clear();
-        ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+    public boolean limpiarVentas() {
+        Alert ventaEnCurso;
+        boolean limpiar = false;
+
+        if (listaDetalles.isEmpty()) {
+            limpiar = true;
+            listaDetalles.clear();
+            ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+
+        } else {
+            ventaEnCurso = new Alert(AlertType.CONFIRMATION);
+            ventaEnCurso.setTitle("Venta");
+            ventaEnCurso.setHeaderText("Venta en curso.");
+            ventaEnCurso.setContentText(empleadoActual.getNombre()
+                    + ", hay una venta en curso, ¿está seguro de salir?.\n"
+                    + "Se cancelara la venta actual.");
+            estiloAlerta.darleEstiloAlPanel(ventaEnCurso);
+
+            Optional<ButtonType> resultado = ventaEnCurso.showAndWait();
+
+            if (resultado.get() == ButtonType.OK) {
+                limpiar = true;
+                listaDetalles.clear();
+                ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+            }
+        }
+
+        return limpiar;
     }
 
     @FXML
@@ -452,6 +476,8 @@ public class EmpleadoController implements Initializable {
                             ta_ticketVenta.appendText(String.format("%-25s  %15s  %15s",
                                     seleccionado.getNombre(), nf_cantidad.getText(),
                                     (seleccionado.getPrecioVenta() * cantidad)) + "\n");
+
+                            lb_TotalTicket.setText(String.valueOf(venta.calcularTotal(listaDetalles) + " €"));
                         } else {
                             errorCantidad = new Alert(AlertType.WARNING);
                             errorCantidad.setTitle("Cantidad");
@@ -500,7 +526,7 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void generarVentaAction(ActionEvent event) {
-        Alert sinProductos, errorVenta, ventaRealizada;
+        Alert sinProductos, errorVenta, ventaRealizada, errorGenerarTicket;
         Venta venta;
 
         if (!listaDetalles.isEmpty()) {
@@ -513,11 +539,10 @@ public class EmpleadoController implements Initializable {
 
             try {
                 this.venta.insertarVenta(venta, listaDetalles);
-                detallesVenta.detallesVenta(listaDetalles,empleadoActual.getIdTienda());
-                
-                
-                
-                
+                detallesVenta.detallesVenta(listaDetalles, empleadoActual.getIdTienda());
+
+                this.venta.generarTicket(venta, listaDetalles);
+
                 ventaRealizada = new Alert(AlertType.INFORMATION);
                 ventaRealizada.setTitle("Venta");
                 ventaRealizada.setHeaderText("La venta con id: " + venta.getIdVenta()
@@ -532,6 +557,14 @@ public class EmpleadoController implements Initializable {
                 errorVenta.setContentText("Error: " + ex.getMessage());
                 estiloAlerta.darleEstiloAlPanel(errorVenta);
                 errorVenta.showAndWait();
+
+            } catch (IOException ex) {
+                errorGenerarTicket = new Alert(AlertType.ERROR);
+                errorGenerarTicket.setTitle("Error Ticket");
+                errorGenerarTicket.setHeaderText("No se ha podido generar el ticket.");
+                errorGenerarTicket.setContentText("Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(errorGenerarTicket);
+                errorGenerarTicket.showAndWait();
             }
 
         } else {
