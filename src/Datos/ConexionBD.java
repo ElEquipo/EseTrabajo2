@@ -15,7 +15,6 @@ public class ConexionBD {
 
     public static Connection conexion;
     public static Trabajador actualUser;
-    public static Tienda actualShop;
     private String mensajeErrorConexion;
     private TrabajadorDAO trabajadorDAO;
     private TiendaDAO tiendaDAO;
@@ -38,13 +37,7 @@ public class ConexionBD {
             }
             trabajadorDAO = new TrabajadorDAO(conexion);
             tiendaDAO = new TiendaDAO(conexion);
-            this.actualUser =  trabajadorDAO.cargarTrabajador(AppUser,0,0);
-            /*Rasul el metodo de abajo no hace falta, si necesitas el idTienda
-            para eso cree el actualUser al que le haces un .getIdTienda();
-            Así puedes obtener cualquier dato del trabajador actual.
-            Por favor, modificalo conforme lo que te he dicho.*/
-            this.actualShop = tiendaDAO.cargarTienda(actualUser);
-            
+            this.actualUser =  trabajadorDAO.cargarTrabajador(AppUser,0,0);            
             
             mensaje = "Conexión establecida con la Base de Datos " + bd;
             this.mensajeErrorConexion = mensaje;
