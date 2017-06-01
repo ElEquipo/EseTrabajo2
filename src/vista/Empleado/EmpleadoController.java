@@ -73,7 +73,7 @@ public class EmpleadoController implements Initializable {
     private Integer idSiguienteVenta = null;
     private Trabajador empleadoActual;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
-    private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
+    private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Stock", "Otros");
 
 
     /*ATRIBUTOS FXML*/
@@ -465,16 +465,18 @@ public class EmpleadoController implements Initializable {
                 } else if (stock == 0) {
                     errorCantidad = new Alert(AlertType.CONFIRMATION);
                     errorCantidad.setTitle("Cantidad");
-                    errorCantidad.setHeaderText("El articulo " + seleccionado.getNombre()
-                            + " no tiene stock disponible.");
-                    errorCantidad.setContentText(empleadoActual.getNombre()
-                            + ", diculpa las molestias.\n"
-                            + "¿Quiere notificar al gerente?");
+                    errorCantidad.setHeaderText("Sin stock.");
+                    errorCantidad.setContentText("El articulo " + seleccionado.getNombre()
+                            + " no tiene stock disponible.\n "
+                            + empleadoActual.getNombre()
+                            + ", diculpa las molestias. "
+                            + "¿Quiere notificar al gerente?"
+                    );
                     estiloAlerta.darleEstiloAlPanel(errorCantidad);
                     Optional<ButtonType> resultado = errorCantidad.showAndWait();
 
                     if (resultado.get() == ButtonType.OK) {
-                        solicitarStock();
+                        solicitarStock(seleccionado);
                     }
 
                 } else {
@@ -538,9 +540,37 @@ public class EmpleadoController implements Initializable {
         }
     }
 
-    public void solicitarStock() {
+    public void solicitarStock(Producto producto) {
+        Alert aviso;
 
-        
+        Incidencia sinStock = new Incidencia(java.sql.Types.NULL,
+                empleadoActual.getIdTienda(),
+                empleadoActual.getId(),
+                "Stock",
+                dp_fechaInciendia.getValue(),
+                "El producto " + producto.getNombre() + " no tenia stock disponible"
+                + " a fecha de " + LocalDate.now().toString(),
+                "No leido");
+        try {
+            incidencia.crearIncidencia(sinStock, empleadoActual);
+            aviso = new Alert(AlertType.INFORMATION);
+            aviso.setTitle("Sin stock");
+            aviso.setHeaderText("Se ha avisado al gerente.");
+            aviso.setContentText(empleadoActual.getNombre()
+                    + ", en las próximas horas se repondrán las unidades.");
+            estiloAlerta.darleEstiloAlPanel(aviso);
+            aviso.showAndWait();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            aviso = new Alert(AlertType.ERROR);
+            aviso.setTitle("Error");
+            aviso.setHeaderText("No se ha podido avisar al gerente.");
+            aviso.setContentText(empleadoActual.getNombre()
+                    + ", diculpa las molestias.");
+            estiloAlerta.darleEstiloAlPanel(aviso);
+            aviso.showAndWait();
+        }
     }
 
     public Integer siguienteIdVenta() {
