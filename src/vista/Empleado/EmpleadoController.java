@@ -42,7 +42,10 @@ import java.util.Optional;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import impl.com.calendarfx.view.NumericTextField;
+import jfxtras.scene.control.LocalTimePicker;
 
 public class EmpleadoController implements Initializable {
 
@@ -63,6 +66,7 @@ public class EmpleadoController implements Initializable {
     private boolean compraFin = true;
     private boolean productoAnadido = false;
     private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Otros");
+
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -141,6 +145,38 @@ public class EmpleadoController implements Initializable {
     private DatePicker dp_fechaInciendia;
     @FXML
     private TextField tf_especificarTipoIncidencia;
+    @FXML
+    private Pane pn_perfil;
+    @FXML
+    private TextField tf_nombre;
+    @FXML
+    private TextField tf_apellido1;
+    @FXML
+    private TextField tf_apellido2;
+    @FXML
+    private TextField tf_dni;
+    @FXML
+    private TextField tf_nick;
+    @FXML
+    private Button bt_modificar;
+    @FXML
+    private Button bt_atrasContratar;
+    @FXML
+    private DatePicker dp_fecha;
+    @FXML
+    private Label lb_id;
+    @FXML
+    private Label lb_fondoHoraEntrada;
+    @FXML
+    private Label lb_fondoHoraSalida;
+    @FXML
+    private ComboBox<Trabajador> cb_puesto;
+    @FXML
+    private NumericTextField nf_salario;
+    @FXML
+    private LocalTimePicker dp_horaEntrada;
+    @FXML
+    private LocalTimePicker dp_horaSalida;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -162,6 +198,7 @@ public class EmpleadoController implements Initializable {
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
         pn_incidencias.setVisible(false);
+        pn_perfil.setVisible(false);
         tf_tienda.setEditable(false);
         tf_trabajador.setEditable(false);
         tf_fechaVenta.setEditable(false);
@@ -266,7 +303,6 @@ public class EmpleadoController implements Initializable {
         venta = new VentaDAO(ConexionBD.conexion);
         pn_fondoIconos.setVisible(false);
         pn_ventas.setVisible(true);
-        Date fecha;
         date = LocalDateTime.now();
         formato = date.format(formatter);
         productoAnadido = false;
@@ -282,8 +318,7 @@ public class EmpleadoController implements Initializable {
         /* AÑADIR PRODUCTO */
         if (bt_anadirProducto.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null) {
             /* AÑADIR PRODUCTO A LA VENTA SI LOS CAMPOS ESTAN LLENOS */
-            fecha = dt.parse(tf_fechaVenta.getText());
-            if (anadirProducto(fecha)) {
+            if (carrito(tf_fechaVenta.getText())) {
                 compraFin = false;
             }
         } else if (bt_anadirProducto.isFocused() && (tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null)) {
@@ -299,26 +334,29 @@ public class EmpleadoController implements Initializable {
             alertCamposVacios();
         } else if (bt_regVenta.isFocused() && tf_cantidad.getLength() != 0 && cb_referencia.getValue() != null && compraFin) {
             /* ENTRA SI LOS CAMPOS ESTAN LLENOS Y NO HEMOS AÑADIDO NINGUN PRODUCTO A LA VENTA*/
-
-            fecha = dt.parse(tf_fechaVenta.getText());
-            anadirProducto(fecha);
-            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
+                        
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()));
             siguienteCompra();
             alertFinCompra();
             compraFin = true;
         } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() == 0 || cb_referencia.getValue() == null))) {
             /* ENTRA SI LOS CAMPOS ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
-
-            fecha = dt.parse(tf_fechaVenta.getText());
-            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
+                        
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()));
             siguienteCompra();
             alertFinCompra();
             compraFin = true;
         } else if (bt_regVenta.isFocused() && productoAnadido && !compraFin) {
             /* ENTRA SI SE HAN AÑADIDO PRODUCTOS, REGISTRA LA COMPRA. SIGUIENTE COMPRA */
-
-            fecha = dt.parse(tf_fechaVenta.getText());
-            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()), fecha);
+            
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()));
+            siguienteCompra();
+            alertFinCompra();
+            compraFin = true;
+        } else if (bt_regVenta.isFocused() && !compraFin && ((tf_cantidad.getLength() != 0 || cb_referencia.getValue() != null))) {
+            /* ENTRA SI LOS CAMPOS NO ESTAN VACIOS PERO SE HAN INTRODUCIDO PRODUCTOS. REGISTRAR COMPRA. SIGUIENTE COMPRA */
+              
+            venta.generarTicket(Integer.parseInt(tf_idVenta.getText()));
             siguienteCompra();
             alertFinCompra();
             compraFin = true;
@@ -418,8 +456,8 @@ public class EmpleadoController implements Initializable {
         idTiendaNotFound.showAndWait();
     }
 
-    public boolean anadirProducto(Date fecha) throws SQLException {
-
+    public boolean carrito(String fecha) throws SQLException {
+       
         try {
             if (venta.insertarVenta(tienda.idTienda(tf_tienda.getText()), trabajador.idTrabajador(tf_trabajador.getText()), fecha,
                     Integer.parseInt(tf_idVenta.getText()), producto.idProducto(cb_referencia.getValue().getNombre()),
@@ -442,6 +480,10 @@ public class EmpleadoController implements Initializable {
         tf_fechaVenta.setText(formato);
         cb_referencia.setValue(null);
         tf_cantidad.clear();
+
+    }
+
+    public void finalizarCompra() {
 
     }
 
@@ -516,8 +558,8 @@ public class EmpleadoController implements Initializable {
                     incidenciaCreada = new Alert(AlertType.INFORMATION);
                     incidenciaCreada.setTitle("Incidencias");
                     incidenciaCreada.setHeaderText("Incidencia creada con exito.");
-                    incidenciaCreada.setContentText(empleadoActual.getNombre() +
-                            ", gracias por informar de la incidencia");
+                    incidenciaCreada.setContentText(empleadoActual.getNombre()
+                            + ", gracias por informar de la incidencia");
                     estiloAlerta.darleEstiloAlPanel(incidenciaCreada);
                     incidenciaCreada.showAndWait();
 
@@ -542,6 +584,18 @@ public class EmpleadoController implements Initializable {
         cb_tipoIncidencia.setPromptText("Tipos de Incidencia");
         cb_tipoIncidencia.setValue("Tipos de Incidencia");
         tf_especificarTipoIncidencia.clear();
+    }
+
+    @FXML
+    private void contratarAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void perfilAction(ActionEvent event) {
+        
+        pn_perfil.setVisible(true);
+        pn_fondoIconos.setVisible(false);
+        
     }
 
 }

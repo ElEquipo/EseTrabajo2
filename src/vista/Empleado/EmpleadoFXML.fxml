@@ -18,26 +18,26 @@
                         <Font name="Arial" size="21.0" />
                      </font>
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor>
                   </Button>
-                  <Button fx:id="bt_Perfil" layoutX="475.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@empleado.css" text="Perfil" textFill="WHITE">
+                  <Button fx:id="bt_Perfil" layoutX="475.0" mnemonicParsing="false" onAction="#perfilAction" prefHeight="72.0" prefWidth="100.0" stylesheets="@empleado.css" text="Perfil" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <Button fx:id="bt_Ayuda" layoutX="573.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@empleado.css" text="Ayuda" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <Button id="bt_LogOut" fx:id="bt_LogOut" layoutX="673.0" mnemonicParsing="false" onAction="#CloseAction" prefHeight="72.0" prefWidth="90.0" stylesheets="@empleado.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                </children>
             </Pane>
@@ -57,7 +57,7 @@
                   </TableView>
                   <Button id="bt_atras" fx:id="bt_atrasProductos" layoutX="340.0" layoutY="393.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@../gerente/gerente.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                </children>
             </Pane>
@@ -66,11 +66,11 @@
                   <TextField fx:id="tf_fechaVenta" layoutX="385.0" layoutY="137.0" prefHeight="25.0" prefWidth="129.0" promptText="fecha venta" />
                   <Button fx:id="bt_regVenta" layoutX="459.0" layoutY="192.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <Button id="bt_atras" fx:id="bt_atrasVentas" layoutX="45.0" layoutY="325.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="111.0" prefWidth="112.0" stylesheets="@../gerente/gerente.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <ComboBox fx:id="cb_referencia" layoutX="45.0" layoutY="192.0" prefWidth="150.0" promptText="Referencia" />
                   <TextField fx:id="tf_cantidad" layoutX="215.0" layoutY="192.0" prefHeight="25.0" prefWidth="90.0" promptText="cantidad" />
@@ -79,7 +79,7 @@
                   <TextField fx:id="tf_trabajador" layoutX="214.0" layoutY="137.0" />
                   <Button fx:id="bt_anadirProducto" layoutX="323.0" layoutY="192.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                </children>
             </Pane>
@@ -87,15 +87,15 @@
                <children>
                   <Button fx:id="bt_ventas" layoutX="317.0" layoutY="177.0" mnemonicParsing="false" onAction="#ventasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@empleado.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <Button fx:id="bt_productos" layoutX="66.0" layoutY="177.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="110.0" prefWidth="111.0">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor></Button>
                   <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="577.0" layoutY="177.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@../gerente/gerente.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor>
                   </Button>
                </children>
@@ -105,17 +105,56 @@
                   <Button fx:id="bt_añadirIncidencia" layoutX="544.0" layoutY="339.0" mnemonicParsing="false" onAction="#añadirIncidenciaAction" text="Añadir Incidencia" />
                   <Button id="bt_atras" fx:id="bt_atrasIncidencias" layoutX="35.0" layoutY="309.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="111.0" prefWidth="112.0" stylesheets="@../gerente/gerente.css">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor>
                   </Button>
                   <ComboBox fx:id="cb_tipoIncidencia" layoutX="99.0" layoutY="71.0" onAction="#añadirIncidenciaAction" prefWidth="150.0">
                      <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <!-- <Cursor fx:constant="HAND" /> -->
                      </cursor>
                   </ComboBox>
                   <TextArea fx:id="ta_descripcionIncidencia" layoutX="99.0" layoutY="107.0" prefHeight="148.0" prefWidth="547.0" promptText="Descripcion..." />
                   <DatePicker fx:id="dp_fechaInciendia" layoutX="263.0" layoutY="71.0" />
                   <TextField fx:id="tf_especificarTipoIncidencia" layoutX="100.0" layoutY="107.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="pn_perfil" layoutY="114.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <TextField fx:id="tf_nombre" layoutX="32.0" layoutY="115.0" prefHeight="25.0" prefWidth="149.0" promptText="nombre" />
+                  <TextField fx:id="tf_apellido1" layoutX="195.0" layoutY="115.0" promptText="apellido1" />
+                  <TextField fx:id="tf_apellido2" layoutX="358.0" layoutY="115.0" prefHeight="25.0" prefWidth="164.0" promptText="apellido2" />
+                  <TextField fx:id="tf_dni" layoutX="32.0" layoutY="152.0" prefHeight="25.0" prefWidth="118.0" promptText="dni" />
+                  <NumericTextField fx:id="nf_salario" layoutX="358.0" layoutY="210.0" prefHeight="25.0" prefWidth="164.0" promptText="salario" />
+                  <TextField fx:id="tf_nick" layoutX="32.0" layoutY="268.0" promptText="nick" />
+                  <Button fx:id="bt_modificar" layoutX="411.0" layoutY="275.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="110.0" prefWidth="111.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button id="bt_atras" fx:id="bt_atrasContratar" layoutX="573.0" layoutY="275.0" mnemonicParsing="false" onAction="#contratarAction" prefHeight="111.0" prefWidth="112.0" stylesheets="@../gerente/gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <DatePicker fx:id="dp_fecha" layoutX="195.0" layoutY="210.0" prefHeight="25.0" prefWidth="149.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </DatePicker>
+                  <Label fx:id="lb_id" contentDisplay="CENTER" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="66.0" textAlignment="CENTER" />
+                  <Label fx:id="lb_fondoHoraEntrada" layoutX="32.0" layoutY="315.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@../gerente/gerente.css" />
+                  <Label fx:id="lb_fondoHoraSalida" layoutX="195.0" layoutY="315.0" prefHeight="32.0" prefWidth="149.0" styleClass="fondoTimePiker" stylesheets="@../gerente/gerente.css" />
+                  <LocalTimePicker fx:id="dp_horaSalida" layoutX="199.0" layoutY="315.0" stylesheets="@../gerente/gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </LocalTimePicker>
+                  <LocalTimePicker fx:id="dp_horaEntrada" layoutX="37.0" layoutY="315.0" stylesheets="@../gerente/gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </LocalTimePicker>
+                  <ComboBox fx:id="cb_puesto" layoutX="32.0" layoutY="210.0" prefWidth="150.0" />
                </children>
             </Pane>
          </children>

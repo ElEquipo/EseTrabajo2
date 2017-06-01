@@ -17,6 +17,7 @@ import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -25,20 +26,20 @@ import java.sql.SQLException;
 public class VentaDAO {
 
     Connection conexion;
+    private static int idTicket = 0;
 
     public VentaDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
-    public int insertarVenta(Integer idTienda, Integer idTrabajador, Date fechaVenta, Integer idVenta, Integer referencia, Integer cantidad) throws SQLException {
-        java.sql.Date fechaSQL = new java.sql.Date(fechaVenta.getTime());
-
+    public int insertarVenta(Integer idTienda, Integer idTrabajador, String fechaVenta, Integer idVenta, Integer referencia, Integer cantidad) throws SQLException {
+        
         PreparedStatement psInsertar;
         ResultSet rs;
         psInsertar = conexion.prepareStatement("SELECT insertarVenta(?,?,?,?,?,?) AS 'venta';");
         psInsertar.setInt(1, idTienda);
         psInsertar.setInt(2, idTrabajador);
-        psInsertar.setDate(3, fechaSQL);
+        psInsertar.setString(3, fechaVenta);
         psInsertar.setInt(4, idVenta);
         psInsertar.setInt(5, referencia);
         psInsertar.setInt(6, cantidad);
@@ -82,19 +83,20 @@ public class VentaDAO {
         return operacion;
     }
 
-    public void generarTicket(int idVenta, Date fecha) throws IOException, SQLException {
+    public void generarTicket(int idVenta) throws IOException, SQLException {
         String texto = "";
         PreparedStatement ps;
         ResultSet rs;
         int referencia, cantidad;
         double precio, total = 0.0, totalRound = 0.0;
-        String nombre;
+        String nombre, dia = null, hora;
+        String fecha = null;
+        idTicket++;
 
         ps = conexion.prepareStatement("CALL listaProducto(?);");
-        System.out.println(idVenta);
         ps.setInt(1, idVenta);
         rs = ps.executeQuery();
-        
+
         texto += "╔═══════════════════════════════════════════╗ \n";
         texto += "║                                                                      ║ \n";
         texto += "║                            JustComerce                               ║ \n";
@@ -112,28 +114,34 @@ public class VentaDAO {
             referencia = rs.getInt("referencia");
             nombre = rs.getString("nombre");
             cantidad = rs.getInt("cantidad");
-            precio = rs.getDouble("precio");            
-            fecha = rs.getDate("fechaVenta");
-            
-            
-            texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", fecha);
-            
-            total = total + precio;
-            totalRound = Math.rint(total*100)/100;
-        }
-        texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
-        texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
+            precio = rs.getDouble("precio");
+            fecha = rs.getString("fechaVenta");
 
-        Path fichero = Paths.get("JustComerce-" + fecha + "-ticket.txt");
-        String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
-        Path directorio = Paths.get(destino);
+            StringTokenizer st = new StringTokenizer(fecha, " ");
 
-        try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
+            while (st.hasMoreTokens()) {
+                dia = st.nextToken();
+                hora = st.nextToken();
+            }
 
-            salida.write(texto + "╚═══════════════════════════════════════════╝");
+                texto += String.format("║%-13s | %-10s | %-12s | %-10s | %-11s  ║\n", referencia, nombre, cantidad, precio + "€", dia);
+
+                total = total + precio;
+                totalRound = Math.rint(total * 100) / 100;
+            }
+            texto += "║¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯║ \n";
+            texto += String.format("║                                     TOTAL: %-25s ║ \n", totalRound + "€");
+
+            Path fichero = Paths.get(dia + "-" + idTicket + "-ticket.txt");
+            String destino = ".\\src\\vista\\Empleado\\Tickets\\" + fichero;
+            Path directorio = Paths.get(destino);
+
+            try (BufferedWriter salida = Files.newBufferedWriter(directorio.toAbsolutePath(), StandardOpenOption.CREATE)) {
+
+                salida.write(texto + "╚═══════════════════════════════════════════╝");
+
+            }
 
         }
 
     }
-
-}
