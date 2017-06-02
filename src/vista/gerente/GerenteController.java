@@ -1,4 +1,5 @@
 package vista.gerente;
+ 
 
 import Datos.ConexionBD;
 import Datos.IncidenciaDAO;
