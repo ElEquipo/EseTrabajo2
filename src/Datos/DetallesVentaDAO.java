@@ -5,6 +5,7 @@ import Modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 
 public class DetallesVentaDAO {
@@ -62,6 +63,21 @@ public class DetallesVentaDAO {
         }
 
         return existe;
+    }
+
+    public List<DetalleVenta> borrarProducto(List<DetalleVenta> listaDetalles, Producto producto) {
+        boolean existe = false, siguiente = true;
+
+        Iterator<DetalleVenta> it = listaDetalles.iterator();
+        while (it.hasNext() && siguiente) {
+            DetalleVenta detalle = it.next();
+            if (detalle.getReferencia() == producto.getReferencia()) {
+                listaDetalles.remove(detalle);
+                siguiente = false;
+            }
+        }
+
+        return listaDetalles;
     }
 
 }
