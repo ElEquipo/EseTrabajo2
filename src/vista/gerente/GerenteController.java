@@ -798,12 +798,14 @@ public class GerenteController implements Initializable {
         pn_productos.setVisible(false);
         pn_despedir.setVisible(false);
         pn_incidencias.setVisible(false);
+        incidencias.selectToggle(rb_noLeidas);
         limpiarCamposContratar();
         limpiarCamposDespedir();
         salirVerTrabajadores();
         limpiarProductos();
         salirProductos();
         limpiarIncidencias();
+
     }
 
     public void limpiarCamposContratar() {
@@ -1109,8 +1111,8 @@ public class GerenteController implements Initializable {
         if (bt_atrasIncidencias.isFocused()) {
             pn_incidencias.setVisible(false);
             pn_inicio.setVisible(true);
+            incidencias.selectToggle(rb_noLeidas);
             limpiarIncidencias();
-            lb_numIncidencias.setVisible(false);
         }
 
     }
@@ -1119,11 +1121,13 @@ public class GerenteController implements Initializable {
     private void cargarIncidencias() throws SQLException {
         int modo;
         ta_descripcionIncidencia.clear();
-        if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
-            modo = 1;
-        } else {
-            modo = 0;
-        }
+
+            if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
+                modo = 1;
+            } else {
+                modo = 0;
+            }
+        
 
         listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
         ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);

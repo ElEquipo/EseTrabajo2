@@ -446,6 +446,9 @@ public class EmpleadoController implements Initializable {
         DetalleVenta detalle;
         int cantidad, stock = 0;
         Double precioTotal;
+        ButtonType marcado;
+        boolean modificarCantidad = false, cantidadDesbordada = false,
+                cambioCantidad = false;
 
         try {
             stock = producto.cantidad(empleadoActual.getIdTienda(), seleccionado);
@@ -468,76 +471,23 @@ public class EmpleadoController implements Initializable {
                     errorSeleccion.setContentText("¿Deseas modificar la cantidad o elminar el producto?");
                     ButtonType modificar = new ButtonType("Modificar");
                     ButtonType borrar = new ButtonType("Borrar");
-                    errorSeleccion.getButtonTypes().setAll(modificar, borrar);
+                    ButtonType cancelar = new ButtonType("Cancelar");
+                    errorSeleccion.getButtonTypes().setAll(modificar, borrar, cancelar);
                     estiloAlerta.darleEstiloAlPanel(errorSeleccion);
 
                     Optional<ButtonType> resultado = errorSeleccion.showAndWait();
+                    marcado = resultado.get();
+                    
+                    if (marcado == modificar) {
 
-                    if (resultado.get() == modificar) {
-                        cambiarCantidad = new Alert(AlertType.CONFIRMATION);
-                        cambiarCantidad.setTitle("Error");
-                        cambiarCantidad.setHeaderText("Este producto ya ha sido seleccionado");
-                        cambiarCantidad.setContentText("¿Deseas modificar la cantidad o elminar el producto?");
-                        estiloAlerta.darleEstiloAlPanel(cambiarCantidad);
+                        modificarCantidad = true;
+                        cambioCantidad = true;
+
+                    } else if (marcado == borrar) {
                         listaDetalles = detallesVenta.borrarProducto(listaDetalles, seleccionado);
 
-                        elegirCantidad = new Alert(AlertType.CONFIRMATION);
-                        elegirCantidad.setTitle("Cantidad");
-                        elegirCantidad.setHeaderText("Producto selecciondo : " + seleccionado.getNombre());
-
-                        GridPane grid = new GridPane();
-                        grid.setHgap(10);
-                        grid.setVgap(10);
-                        grid.setPadding(new Insets(20, 150, 10, 10));
-
-                        NumericTextField nf_cantidad = new NumericTextField();
-                        nf_cantidad.setPromptText("Cantidad");
-                        grid.add(nf_cantidad, 1, 0);
-                        elegirCantidad.getDialogPane().setContent(grid);
-                        estiloAlerta.darleEstiloAlPanel(elegirCantidad);
-                        Optional<ButtonType> resultadoCambiar = elegirCantidad.showAndWait();
-
-                        if (resultadoCambiar.get() == ButtonType.OK) {
-                            cantidad = Integer.valueOf(nf_cantidad.getText());
-
-                            if (cantidad <= stock) {
-
-                                precioTotal = seleccionado.getPrecioVenta() * cantidad;
-
-                                /*(int idVenta, int referencia, int cantidad, Double precio)*/
-                                detalle = new DetalleVenta(idSiguienteVenta,
-                                        seleccionado.getReferencia(),
-                                        cantidad,
-                                        precioTotal);
-
-                                listaDetalles.add(detalle);
-
-                                ta_ticketVenta.appendText(String.format("%-25s  %15s  %15s",
-                                        seleccionado.getNombre(), nf_cantidad.getText(),
-                                        (seleccionado.getPrecioVenta() * cantidad)) + "\n");
-
-                                lb_TotalTicket.setText(String.valueOf(venta.calcularTotal(listaDetalles) + " €"));
-
-                            } else {
-                                errorCantidad = new Alert(AlertType.WARNING);
-                                errorCantidad.setTitle("Cantidad");
-                                errorCantidad.setHeaderText("Cantidad mayor a la disponible"
-                                        + " en el almacen.");
-                                errorCantidad.setContentText(empleadoActual.getNombre()
-                                        + ", diculpa las molestias.");
-                                estiloAlerta.darleEstiloAlPanel(errorCantidad);
-                                errorCantidad.showAndWait();
-                            }
-
-                        }
-
-                        if (resultado.get() == ButtonType.CANCEL) {
-
-                        }
-
-                    } else if (resultado.get() == borrar) {
-                        listaDetalles = detallesVenta.borrarProducto(listaDetalles, seleccionado);
-
+                    } else if (marcado == cancelar) {
+                        errorSeleccion.close();
                     }
 
                 } else if (stock == 0) {
@@ -551,13 +501,17 @@ public class EmpleadoController implements Initializable {
                             + "¿Quiere notificar al gerente?"
                     );
                     estiloAlerta.darleEstiloAlPanel(errorCantidad);
-                    Optional<ButtonType> resultado = errorCantidad.showAndWait();
+                    Optional<ButtonType> subResultado = errorCantidad.showAndWait();
 
-                    if (resultado.get() == ButtonType.OK) {
+                    if (subResultado.get() == ButtonType.OK) {
                         solicitarStock(seleccionado);
                     }
 
                 } else {
+                    modificarCantidad = true;
+                }
+
+                if (modificarCantidad) {
 
                     elegirCantidad = new Alert(AlertType.CONFIRMATION);
                     elegirCantidad.setTitle("Cantidad");
@@ -580,6 +534,9 @@ public class EmpleadoController implements Initializable {
                         cantidad = Integer.valueOf(nf_cantidad.getText());
 
                         if (cantidad <= stock) {
+                            if (cambioCantidad) {
+                                listaDetalles = detallesVenta.borrarProducto(listaDetalles, seleccionado);
+                            }
 
                             precioTotal = seleccionado.getPrecioVenta() * cantidad;
 
@@ -607,13 +564,13 @@ public class EmpleadoController implements Initializable {
                             estiloAlerta.darleEstiloAlPanel(errorCantidad);
                             errorCantidad.showAndWait();
                         }
-
                     }
 
                     if (resultado.get() == ButtonType.CANCEL) {
 
                     }
                 }
+
             }
         }
     }
