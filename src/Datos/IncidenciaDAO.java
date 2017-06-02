@@ -36,35 +36,38 @@ public class IncidenciaDAO {
     }
 
     public List<Incidencia> cargarIncidencias(int idTienda, int modo) throws SQLException {
-        PreparedStatement psIncidencias;
+        PreparedStatement psIncidencias = null;
         ResultSet rsIncidencias;
         Incidencia incidencia;
         List<Incidencia> listaIncidencias = new ArrayList<>();
+        boolean elegido = false;
 
         switch (modo) {
             case 0:
                 psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='Leido' ORDER BY fecha asc;;");
                 psIncidencias.setInt(1, idTienda);
+                elegido = true;
                 break;
             case 1:
                 psIncidencias = conexion.prepareStatement("SELECT * FROM incidencias WHERE idTienda=? AND leido='No leido' ORDER BY fecha asc;;");
                 psIncidencias.setInt(1, idTienda);
+                elegido = true;
                 break;
-            default:
-                throw new AssertionError();
         }
 
-        rsIncidencias = psIncidencias.executeQuery();
-        while (rsIncidencias.next()) {
-            incidencia = new Incidencia(rsIncidencias.getInt("idIncidencia"),
-                    rsIncidencias.getInt("idTienda"),
-                    rsIncidencias.getInt("idTrabajador"),
-                    rsIncidencias.getString("tipo"),
-                    rsIncidencias.getDate("fecha").toLocalDate(),
-                    rsIncidencias.getString("descripcion"),
-                    rsIncidencias.getString("leido"));
+        if (elegido) {
+            rsIncidencias = psIncidencias.executeQuery();
+            while (rsIncidencias.next()) {
+                incidencia = new Incidencia(rsIncidencias.getInt("idIncidencia"),
+                        rsIncidencias.getInt("idTienda"),
+                        rsIncidencias.getInt("idTrabajador"),
+                        rsIncidencias.getString("tipo"),
+                        rsIncidencias.getDate("fecha").toLocalDate(),
+                        rsIncidencias.getString("descripcion"),
+                        rsIncidencias.getString("leido"));
 
-            listaIncidencias.add(incidencia);
+                listaIncidencias.add(incidencia);
+            }
         }
         return listaIncidencias;
     }

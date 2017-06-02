@@ -1087,7 +1087,7 @@ public class GerenteController implements Initializable {
             pn_incidencias.setVisible(false);
             pn_inicio.setVisible(true);
             limpiarIncidencias();
-
+            lb_numIncidencias.setVisible(false);
         }
 
     }
@@ -1095,11 +1095,13 @@ public class GerenteController implements Initializable {
     @FXML
     private void cargarIncidencias() throws SQLException {
         int modo;
+        ta_descripcionIncidencia.clear();
         if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
             modo = 1;
         } else {
             modo = 0;
         }
+
         listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
         ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);
         tv_incidencias.setItems(listaIncidencias);
@@ -1107,6 +1109,7 @@ public class GerenteController implements Initializable {
         if (!listaDeIncidencias.isEmpty()) {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
             lb_numIncidencias.setVisible(true);
+            
         } else {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
         }
@@ -1117,7 +1120,7 @@ public class GerenteController implements Initializable {
     private void visualizandoIncidenciasAction(MouseEvent event) {
         Alert errorLeer, errorCarga;
         Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
-
+        
         try {
             if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
                 incidencia.cambiarAleida(seleccionada);
