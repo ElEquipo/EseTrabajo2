@@ -203,7 +203,7 @@ public class EmpleadoController implements Initializable {
     @FXML
     private void inicioAction(ActionEvent event) throws SQLException {
 
-        if (limpiarVentas()) {
+        if (limpiarVentas(false)) {
             pn_fondoIconos.setVisible(true);
             pn_productos.setVisible(false);
             pn_ventas.setVisible(false);
@@ -375,10 +375,10 @@ public class EmpleadoController implements Initializable {
             pn_ventas.setVisible(true);
             cargarProductosParaVenta();
             idSiguienteVenta = siguienteIdVenta();
-        } else if (evento == bt_atrasVentas && limpiarVentas()) {
+        } else if (evento == bt_atrasVentas && limpiarVentas(false)) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
-        } else if (evento == bt_Inicio && limpiarVentas()) {
+        } else if (evento == bt_Inicio && limpiarVentas(false)) {
             pn_fondoIconos.setVisible(true);
             pn_ventas.setVisible(false);
         }
@@ -401,7 +401,7 @@ public class EmpleadoController implements Initializable {
 
     }
 
-    public boolean limpiarVentas() {
+    public boolean limpiarVentas(boolean creada) {
         Alert ventaEnCurso;
         boolean limpiar = false;
 
@@ -409,7 +409,13 @@ public class EmpleadoController implements Initializable {
             limpiar = true;
             listaDetalles.clear();
             ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
-
+            lb_TotalTicket.setText("");
+        } else if (creada) {
+            limpiar = true;
+            listaDetalles.clear();
+            ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+            lb_TotalTicket.setText("");
+            cargarProductosParaVenta();
         } else {
             ventaEnCurso = new Alert(AlertType.CONFIRMATION);
             ventaEnCurso.setTitle("Venta");
@@ -436,7 +442,7 @@ public class EmpleadoController implements Initializable {
         Object evento = event.getSource();
         Producto seleccionado = tv_productosVenta.getFocusModel().getFocusedItem();
         MouseButton click = event.getButton();
-        Alert elegirCantidad, errorCantidad, errorSeleccion;
+        Alert elegirCantidad, errorCantidad, errorSeleccion, cambiarCantidad;
         DetalleVenta detalle;
         int cantidad, stock = 0;
         Double precioTotal;
@@ -456,11 +462,83 @@ public class EmpleadoController implements Initializable {
             if (event.getClickCount() == 2) {
                 if (detallesVenta.contieneProducto(listaDetalles, seleccionado)) {
 
-                    errorSeleccion = new Alert(AlertType.ERROR);
+                    errorSeleccion = new Alert(AlertType.CONFIRMATION);
                     errorSeleccion.setTitle("Error");
                     errorSeleccion.setHeaderText("Este producto ya ha sido seleccionado");
+                    errorSeleccion.setContentText("¿Deseas modificar la cantidad o elminar el producto?");
+                    ButtonType modificar = new ButtonType("Modificar");
+                    ButtonType borrar = new ButtonType("Borrar");
+                    errorSeleccion.getButtonTypes().setAll(modificar, borrar);
                     estiloAlerta.darleEstiloAlPanel(errorSeleccion);
-                    errorSeleccion.showAndWait();
+
+                    Optional<ButtonType> resultado = errorSeleccion.showAndWait();
+
+                    if (resultado.get() == modificar) {
+                        cambiarCantidad = new Alert(AlertType.CONFIRMATION);
+                        cambiarCantidad.setTitle("Error");
+                        cambiarCantidad.setHeaderText("Este producto ya ha sido seleccionado");
+                        cambiarCantidad.setContentText("¿Deseas modificar la cantidad o elminar el producto?");
+                        estiloAlerta.darleEstiloAlPanel(cambiarCantidad);
+                        listaDetalles = detallesVenta.borrarProducto(listaDetalles, seleccionado);
+
+                        elegirCantidad = new Alert(AlertType.CONFIRMATION);
+                        elegirCantidad.setTitle("Cantidad");
+                        elegirCantidad.setHeaderText("Producto selecciondo : " + seleccionado.getNombre());
+
+                        GridPane grid = new GridPane();
+                        grid.setHgap(10);
+                        grid.setVgap(10);
+                        grid.setPadding(new Insets(20, 150, 10, 10));
+
+                        NumericTextField nf_cantidad = new NumericTextField();
+                        nf_cantidad.setPromptText("Cantidad");
+                        grid.add(nf_cantidad, 1, 0);
+                        elegirCantidad.getDialogPane().setContent(grid);
+                        estiloAlerta.darleEstiloAlPanel(elegirCantidad);
+                        Optional<ButtonType> resultadoCambiar = elegirCantidad.showAndWait();
+
+                        if (resultadoCambiar.get() == ButtonType.OK) {
+                            cantidad = Integer.valueOf(nf_cantidad.getText());
+
+                            if (cantidad <= stock) {
+
+                                precioTotal = seleccionado.getPrecioVenta() * cantidad;
+
+                                /*(int idVenta, int referencia, int cantidad, Double precio)*/
+                                detalle = new DetalleVenta(idSiguienteVenta,
+                                        seleccionado.getReferencia(),
+                                        cantidad,
+                                        precioTotal);
+
+                                listaDetalles.add(detalle);
+
+                                ta_ticketVenta.appendText(String.format("%-25s  %15s  %15s",
+                                        seleccionado.getNombre(), nf_cantidad.getText(),
+                                        (seleccionado.getPrecioVenta() * cantidad)) + "\n");
+
+                                lb_TotalTicket.setText(String.valueOf(venta.calcularTotal(listaDetalles) + " €"));
+
+                            } else {
+                                errorCantidad = new Alert(AlertType.WARNING);
+                                errorCantidad.setTitle("Cantidad");
+                                errorCantidad.setHeaderText("Cantidad mayor a la disponible"
+                                        + " en el almacen.");
+                                errorCantidad.setContentText(empleadoActual.getNombre()
+                                        + ", diculpa las molestias.");
+                                estiloAlerta.darleEstiloAlPanel(errorCantidad);
+                                errorCantidad.showAndWait();
+                            }
+
+                        }
+
+                        if (resultado.get() == ButtonType.CANCEL) {
+
+                        }
+
+                    } else if (resultado.get() == borrar) {
+                        listaDetalles = detallesVenta.borrarProducto(listaDetalles, seleccionado);
+
+                    }
 
                 } else if (stock == 0) {
                     errorCantidad = new Alert(AlertType.CONFIRMATION);
@@ -615,6 +693,7 @@ public class EmpleadoController implements Initializable {
                 ventaRealizada.setTitle("Venta");
                 ventaRealizada.setHeaderText("La venta con id: " + venta.getIdVenta()
                         + " se ha realizado con exito.");
+                limpiarVentas(true);
 
 //                textoTicket = new TextArea(this.venta.leerTicket(directorioTicket));
 //
