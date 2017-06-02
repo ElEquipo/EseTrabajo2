@@ -296,6 +296,8 @@ public class GerenteController implements Initializable {
         rb_leidas.setUserData("Leidas");
         rb_noLeidas.setUserData("No leidas");
         rb_noLeidas.setSelected(true);
+        ta_descripcionProducto.setWrapText(true);
+        ta_datosTrabajador.setWrapText(true);
 
         /*
         try {
@@ -441,7 +443,8 @@ public class GerenteController implements Initializable {
             } catch (SQLException ex) {
                 errorCarga = new Alert(AlertType.ERROR);
                 errorCarga.setTitle("Error Id");
-                errorCarga.setHeaderText("Error al cargar el siguiente id \n" + ex.getMessage());
+                errorCarga.setHeaderText("Error al cargar el siguiente id.");
+                errorCarga.setContentText("Error :" + ex.getMessage());
                 estiloAlerta.darleEstiloAlPanel(errorCarga);
                 errorCarga.showAndWait();
             }
@@ -964,47 +967,103 @@ public class GerenteController implements Initializable {
     }
 
     @FXML
-    private void AñadirProductosAction(ActionEvent event) throws SQLException {
+    private void AñadirProductosAction(ActionEvent event) {
         Object evento = event.getSource();
         List<String> camposVacios = new ArrayList<>();
-        String nombre = tf_nombreProducto.getText();
-        String cantidad = nf_cantidad.getText();
-        Alert faltaCampos;
+        String nombre = tf_nombreProducto.getText(),
+                precioCompraProducto = tf_precioCompraProducto.getText(),
+                precioVentaProducto = tf_precioVentaProducto.getText(),
+                ivaProducto = tf_ivaProducto.getText(),
+                cantidadProducto = nf_cantidad.getText(),
+                categoria = cb_categoriasExistentes.getValue(),
+                descripcion = ta_descripcionProducto.getText();
+        Double iva, precioCompra = null, precioVenta = null;
+        Integer cantidad = null;
+        Alert faltaCampos, errorCarga, errorInsertar;
         Producto producto;
-        int siguienteId = this.producto.mostrarSiguienteReferencia();
+        Integer siguienteId = null;
+
+        try {
+            siguienteId = this.producto.mostrarSiguienteReferencia();
+        } catch (SQLException ex) {
+            errorCarga = new Alert(AlertType.ERROR);
+            errorCarga.setTitle("Error Id");
+            errorCarga.setHeaderText("Error al cargar el siguiente id.");
+            errorCarga.setContentText("Error :" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
+        }
 
         if (nombre.isEmpty()) {
             camposVacios.add("Nombre");
         }
 
-        if (cb_categoriasExistentes.getValue().equalsIgnoreCase("Categoria")) {
+        if (categoria.equalsIgnoreCase("Categoria")) {
             camposVacios.add("Categoria");
         }
 
-        if (!camposVacios.isEmpty()) {
-
-            faltaCampos = new Alert(AlertType.ERROR);
-            faltaCampos.setTitle("Error Añadir");
-            faltaCampos.setHeaderText("Complete los campos obligatorios(en naranja).");
-            faltaCampos.setContentText("Campos vacios " + camposVacios.toString());
-            estiloAlerta.darleEstiloAlPanel(faltaCampos);
-            faltaCampos.showAndWait();
-        }
-        if (cantidad.isEmpty()) {
-            producto = new Producto(siguienteId, tf_nombre.getText(), cb_categoriasExistentes.getValue(),
-                    ta_descripcionIncidencia.getText(), Double.parseDouble(tf_precioCompraProducto.getText()),
-                    Double.parseDouble(tf_precioVentaProducto.getText()), Double.parseDouble(tf_ivaProducto.getText()));
-
-            this.producto.anadirProducto(producto);
-
+        if (precioCompraProducto.isEmpty()) {
+            camposVacios.add("Precio compra");
         } else {
+            precioCompra = Double.valueOf(precioCompraProducto);
+        }
 
-            producto = new Producto(siguienteId, tf_nombre.getText(), cb_categoriasExistentes.getValue(),
-                    ta_descripcionIncidencia.getText(), Double.parseDouble(tf_precioCompraProducto.getText()),
-                    Double.parseDouble(tf_precioVentaProducto.getText()), Double.parseDouble(tf_ivaProducto.getText()),
-                    Integer.parseInt(nf_cantidad.getText()));
+        if (precioVentaProducto.isEmpty()) {
+            camposVacios.add("precio venta");
+        } else {
+            precioVenta = Double.valueOf(precioVentaProducto);
+        }
 
-            this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(), producto, Integer.parseInt(nf_cantidad.getText()));
+        if (ivaProducto.isEmpty()) {
+            iva = 0.0;
+        } else {
+            iva = Double.valueOf(ivaProducto);
+        }
+        try {
+            if (!camposVacios.isEmpty()) {
+
+                faltaCampos = new Alert(AlertType.ERROR);
+                faltaCampos.setTitle("Error Añadir");
+                faltaCampos.setHeaderText("Complete los campos obligatorios(en naranja).");
+                faltaCampos.setContentText("Campos vacios " + camposVacios.toString());
+                estiloAlerta.darleEstiloAlPanel(faltaCampos);
+                faltaCampos.showAndWait();
+
+            } else if (cantidadProducto.isEmpty()) {
+
+                producto = new Producto(siguienteId,
+                        nombre,
+                        categoria,
+                        descripcion,
+                        precioCompra,
+                        precioVenta,
+                        iva);
+
+                this.producto.anadirProducto(producto);
+
+            } else if (!cantidadProducto.isEmpty()) {
+                cantidad = Integer.valueOf(cantidadProducto);
+
+                producto = new Producto(siguienteId,
+                        nombre,
+                        categoria,
+                        descripcion,
+                        precioCompra,
+                        precioVenta,
+                        iva,
+                        cantidad);
+
+                this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(),
+                        producto,
+                        cantidad);
+            }
+        } catch (SQLException ex) {
+            errorInsertar = new Alert(AlertType.ERROR);
+            errorInsertar.setTitle("Error");
+            errorInsertar.setHeaderText("No se ha podido insertar el producto.");
+            errorInsertar.setContentText("Error :" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorInsertar);
+            errorInsertar.showAndWait();
         }
 
     }
@@ -1122,12 +1181,11 @@ public class GerenteController implements Initializable {
         int modo;
         ta_descripcionIncidencia.clear();
 
-            if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
-                modo = 1;
-            } else {
-                modo = 0;
-            }
-        
+        if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
+            modo = 1;
+        } else {
+            modo = 0;
+        }
 
         listaDeIncidencias = incidencia.cargarIncidencias(gerenteActual.getIdTienda(), modo);
         ObservableList<Incidencia> listaIncidencias = FXCollections.observableArrayList(listaDeIncidencias);
