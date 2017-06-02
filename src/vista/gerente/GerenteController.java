@@ -4,10 +4,12 @@ import Datos.ConexionBD;
 import Datos.IncidenciaDAO;
 import Datos.ProductoDAO;
 import Datos.TiendaDAO;
+import Datos.TiendasProductosDAO;
 import Datos.TrabajadorDAO;
 import Modelo.Alerta.Alerta;
 import Modelo.Incidencia;
 import Modelo.Producto;
+import Modelo.TiendasProductos;
 import Modelo.Trabajador;
 import Modelo.ValidadorDNI;
 import impl.com.calendarfx.view.NumericTextField;
@@ -58,6 +60,7 @@ public class GerenteController implements Initializable {
 
     private TiendaDAO tienda;
     private ProductoDAO producto;
+    private TiendasProductosDAO tiendasProductos;
     private IncidenciaDAO incidencia;
     /*IDEAL PARA GERENTE DE VARIAS TIENDAS
     private ObservableList<Tienda> listaTiendas;*/
@@ -269,6 +272,7 @@ public class GerenteController implements Initializable {
         tienda = new TiendaDAO(ConexionBD.conexion);
         producto = new ProductoDAO(ConexionBD.conexion);
         incidencia = new IncidenciaDAO(ConexionBD.conexion);
+        tiendasProductos = new TiendasProductosDAO(ConexionBD.conexion);
         validadorDni = new ValidadorDNI();
         gerenteActual = ConexionBD.actualUser;
         estiloAlerta = new Alerta();
@@ -958,11 +962,14 @@ public class GerenteController implements Initializable {
     }
 
     @FXML
-    private void AñadirProductosAction(ActionEvent event) {
+    private void AñadirProductosAction(ActionEvent event) throws SQLException {
         Object evento = event.getSource();
         List<String> camposVacios = new ArrayList<>();
         String nombre = tf_nombreProducto.getText();
+        String cantidad = nf_cantidad.getText();
         Alert faltaCampos;
+        Producto producto;
+        int siguienteId = this.producto.mostrarSiguienteReferencia();
 
         if (nombre.isEmpty()) {
             camposVacios.add("Nombre");
@@ -980,6 +987,22 @@ public class GerenteController implements Initializable {
             faltaCampos.setContentText("Campos vacios " + camposVacios.toString());
             estiloAlerta.darleEstiloAlPanel(faltaCampos);
             faltaCampos.showAndWait();
+        }
+        if (cantidad.isEmpty()) {
+            producto = new Producto(siguienteId, tf_nombre.getText(), cb_categoriasExistentes.getValue(),
+                    ta_descripcionIncidencia.getText(), Double.parseDouble(tf_precioCompraProducto.getText()),
+                    Double.parseDouble(tf_precioVentaProducto.getText()), Double.parseDouble(tf_ivaProducto.getText()));
+
+            this.producto.anadirProducto(producto);
+
+        } else {
+
+            producto = new Producto(siguienteId, tf_nombre.getText(), cb_categoriasExistentes.getValue(),
+                    ta_descripcionIncidencia.getText(), Double.parseDouble(tf_precioCompraProducto.getText()),
+                    Double.parseDouble(tf_precioVentaProducto.getText()), Double.parseDouble(tf_ivaProducto.getText()),
+                    Integer.parseInt(nf_cantidad.getText()));
+
+            this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(), producto, Integer.parseInt(nf_cantidad.getText()));
         }
 
     }
@@ -1109,7 +1132,7 @@ public class GerenteController implements Initializable {
         if (!listaDeIncidencias.isEmpty()) {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
             lb_numIncidencias.setVisible(true);
-            
+
         } else {
             lb_numIncidencias.setText(String.valueOf(listaDeIncidencias.size()));
         }
@@ -1120,7 +1143,7 @@ public class GerenteController implements Initializable {
     private void visualizandoIncidenciasAction(MouseEvent event) {
         Alert errorLeer, errorCarga;
         Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
-        
+
         try {
             if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
                 incidencia.cambiarAleida(seleccionada);

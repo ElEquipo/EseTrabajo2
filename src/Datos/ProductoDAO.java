@@ -56,7 +56,7 @@ public class ProductoDAO {
         String respuesta = "";
 
         PreparedStatement psMostrar;
-        psMostrar = conexion.prepareStatement("SELECT referenciaSiguienteProducto() AS 'referencia';");
+        psMostrar = conexion.prepareStatement("SELECT MAX(referencia) AS 'referencia' FROM productos;");
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
         return (resultado.getInt("referencia") + 1);
@@ -103,7 +103,26 @@ public class ProductoDAO {
         rsCantidad.next();
         
         return rsCantidad.getInt("stock");
+    }
+    
+    public void anadirProducto(Producto producto) throws SQLException {
 
+        ResultSet rsProducto;
+        PreparedStatement psProducto;
+
+        psProducto = conexion.prepareStatement("INSERT INTO productos "
+                + "(referencia, nombre, categoria, descripcion, precioCompra, precioVenta, iva) "
+                + "VALUES(?,?,?,?,?,?,?);");
+        
+        psProducto.setInt(1, producto.getReferencia());
+        psProducto.setString(2, producto.getNombre());
+        psProducto.setString(3, producto.getCategoria());
+        psProducto.setString(4, producto.getDescripcion());
+        psProducto.setDouble(5, producto.getPrecioCompra());
+        psProducto.setDouble(6, producto.getPrecioVenta());
+        psProducto.setDouble(7, producto.getIva());
+        psProducto.executeUpdate();
+        
     }
 
 }

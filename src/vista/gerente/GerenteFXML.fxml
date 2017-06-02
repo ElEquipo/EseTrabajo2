@@ -163,25 +163,6 @@
                   <ComboBox fx:id="cb_puesto" layoutX="32.0" layoutY="210.0" prefWidth="150.0" />
                </children>
             </Pane>
-            <Pane fx:id="pn_añadirProductos" layoutY="124.0" prefHeight="464.0" prefWidth="744.0">
-               <children>
-                  <Button fx:id="bt_añadirProducto" layoutX="475.0" layoutY="399.0" mnemonicParsing="false" onAction="#AñadirProductosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Prodcuto" />
-                  <Button id="bt_atras" fx:id="bt_atrasAñadirProductos" layoutX="331.0" layoutY="383.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Label fx:id="lb_referenciaProducto" layoutX="27.0" layoutY="71.0" prefHeight="17.0" prefWidth="58.0" />
-                  <TextField fx:id="tf_nombreProducto" layoutX="27.0" layoutY="104.0" promptText="nombre" />
-                  <TextArea fx:id="ta_descripcionProducto" layoutX="27.0" layoutY="183.0" prefHeight="32.0" prefWidth="150.0" promptText="Descripcion..." />
-                  <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="239.0" onKeyReleased="#controlNumericoAction" promptText="precioCompra" />
-                  <TextField fx:id="tf_precioVentaProducto" layoutX="26.0" layoutY="279.0" onKeyReleased="#controlNumericoAction" promptText="precioVenta" />
-                  <TextField fx:id="tf_ivaProducto" layoutX="26.0" layoutY="320.0" promptText="IVA" />
-                  <NumericTextField fx:id="nf_cantidad" layoutX="26.0" layoutY="358.0" promptText="cantidad" />
-                  <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
-                  <Button fx:id="bt_descripcion" layoutX="185.0" layoutY="187.0" mnemonicParsing="false" onAction="#productosAction" text="+" />
-               </children>
-            </Pane>
             <Pane id="pn_FondoIconos" fx:id="pn_inicio" layoutY="114.0" prefHeight="464.0" prefWidth="744.0" stylesheets="@gerente.css">
                <children>
                   <Button id="bt_incidencias" fx:id="bt_incidencias" layoutX="508.0" layoutY="67.0" mnemonicParsing="false" onAction="#IncidenciasAction" prefHeight="110.0" prefWidth="111.0" stylesheets="@gerente.css">
@@ -227,6 +208,25 @@
                      </toggleGroup>
                   </RadioButton>
                   <RadioButton fx:id="rb_noLeidas" layoutX="102.0" layoutY="33.0" mnemonicParsing="false" onAction="#cargarIncidencias" text="No leidas" textFill="WHITE" toggleGroup="$incidencias" />
+               </children>
+            </Pane>
+            <Pane fx:id="pn_añadirProductos" layoutY="124.0" prefHeight="464.0" prefWidth="744.0">
+               <children>
+                  <Button fx:id="bt_añadirProducto" layoutX="475.0" layoutY="399.0" mnemonicParsing="false" onAction="#AñadirProductosAction" prefHeight="25.0" prefWidth="133.0" text="Añadir Prodcuto" />
+                  <Button id="bt_atras" fx:id="bt_atrasAñadirProductos" layoutX="331.0" layoutY="383.0" mnemonicParsing="false" onAction="#productosAction" prefHeight="57.0" prefWidth="58.0" stylesheets="@gerente.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Label fx:id="lb_referenciaProducto" layoutX="27.0" layoutY="71.0" prefHeight="17.0" prefWidth="58.0" />
+                  <TextField fx:id="tf_nombreProducto" layoutX="27.0" layoutY="104.0" promptText="nombre" />
+                  <TextArea fx:id="ta_descripcionProducto" layoutX="27.0" layoutY="183.0" prefHeight="32.0" prefWidth="150.0" promptText="Descripcion..." />
+                  <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="239.0" onKeyReleased="#controlNumericoAction" promptText="precioCompra" />
+                  <TextField fx:id="tf_precioVentaProducto" layoutX="26.0" layoutY="279.0" onKeyReleased="#controlNumericoAction" promptText="precioVenta" />
+                  <TextField fx:id="tf_ivaProducto" layoutX="26.0" layoutY="320.0" promptText="IVA" />
+                  <NumericTextField fx:id="nf_cantidad" layoutX="26.0" layoutY="358.0" promptText="cantidad" />
+                  <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
+                  <Button fx:id="bt_descripcion" layoutX="185.0" layoutY="187.0" mnemonicParsing="false" onAction="#productosAction" text="+" />
                </children>
             </Pane>
          </children>
