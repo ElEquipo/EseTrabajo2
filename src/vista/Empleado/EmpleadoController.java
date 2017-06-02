@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,7 +75,10 @@ public class EmpleadoController implements Initializable {
     private Trabajador empleadoActual;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
     private ObservableList<String> tiposInciencias = FXCollections.observableArrayList("Robo", "Cliente", "Stock", "Otros");
-
+    private List<String> listaNombre = new ArrayList<>();
+    private List<Integer> listaCantidad = new ArrayList<>();
+    private List<Double> listaPrecio = new ArrayList<>();
+    private DecimalFormat redondear = new DecimalFormat("##.00");
 
     /*ATRIBUTOS FXML*/
     @FXML
@@ -156,7 +160,7 @@ public class EmpleadoController implements Initializable {
     @FXML
     private Label lb_TotalTicket;
     @FXML
-    private TextArea ta_ticketVenta;
+    private ListView<DetalleVenta> lv_detalleVentas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -177,7 +181,8 @@ public class EmpleadoController implements Initializable {
         cb_tipoIncidencia.setValue("Tipos de Incidencia");
         dp_fechaInciendia.setValue(LocalDate.now());
         tf_especificarTipoIncidencia.setVisible(false);
-        ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+        actualizarTicketAtiempoReal(listaDetalles);
+        lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss");
 
@@ -408,12 +413,14 @@ public class EmpleadoController implements Initializable {
         if (listaDetalles.isEmpty()) {
             limpiar = true;
             listaDetalles.clear();
-            ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+            actualizarTicketAtiempoReal(listaDetalles);
+            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
         } else if (creada) {
             limpiar = true;
             listaDetalles.clear();
-            ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+            actualizarTicketAtiempoReal(listaDetalles);
+            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
             cargarProductosParaVenta();
         } else {
@@ -430,7 +437,8 @@ public class EmpleadoController implements Initializable {
             if (resultado.get() == ButtonType.OK) {
                 limpiar = true;
                 listaDetalles.clear();
-                ta_ticketVenta.setText("NOMBRE          CANTIDAD              PRECIO\n");
+                actualizarTicketAtiempoReal(listaDetalles);
+                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             }
         }
 
@@ -445,7 +453,7 @@ public class EmpleadoController implements Initializable {
         Alert elegirCantidad, errorCantidad, errorSeleccion, cambiarCantidad;
         DetalleVenta detalle;
         int cantidad, stock = 0;
-        Double precioTotal;
+        Double precioTotal, precioFormateado;
         ButtonType marcado;
         boolean modificarCantidad = false, cantidadDesbordada = false,
                 cambioCantidad = false;
@@ -477,7 +485,7 @@ public class EmpleadoController implements Initializable {
 
                     Optional<ButtonType> resultado = errorSeleccion.showAndWait();
                     marcado = resultado.get();
-                    
+
                     if (marcado == modificar) {
 
                         modificarCantidad = true;
@@ -539,20 +547,16 @@ public class EmpleadoController implements Initializable {
                             }
 
                             precioTotal = seleccionado.getPrecioVenta() * cantidad;
+                            precioFormateado = Math.round(precioTotal * 100.0) / 100.0;
+
 
                             /*(int idVenta, int referencia, int cantidad, Double precio)*/
                             detalle = new DetalleVenta(idSiguienteVenta,
                                     seleccionado.getReferencia(),
                                     cantidad,
-                                    precioTotal);
+                                    precioFormateado);
 
                             listaDetalles.add(detalle);
-
-                            ta_ticketVenta.appendText(String.format("%-25s  %15s  %15s",
-                                    seleccionado.getNombre(), nf_cantidad.getText(),
-                                    (seleccionado.getPrecioVenta() * cantidad)) + "\n");
-
-                            lb_TotalTicket.setText(String.valueOf(venta.calcularTotal(listaDetalles) + " €"));
 
                         } else {
                             errorCantidad = new Alert(AlertType.WARNING);
@@ -570,9 +574,16 @@ public class EmpleadoController implements Initializable {
 
                     }
                 }
-
+                actualizarTicketAtiempoReal(listaDetalles);
+                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             }
         }
+    }
+
+    public void actualizarTicketAtiempoReal(List<DetalleVenta> listaDetalle) {
+        ObservableList<DetalleVenta> detalle = FXCollections.observableArrayList(listaDetalle);
+        lv_detalleVentas.setItems(detalle);
+
     }
 
     public void solicitarStock(Producto producto) {

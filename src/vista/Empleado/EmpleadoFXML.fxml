@@ -117,14 +117,10 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
-                  <Button fx:id="bt_anadirProducto" layoutX="399.0" layoutY="364.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="72.0" stylesheets="@empleado.css">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></Button>
                   <Separator layoutX="447.0" layoutY="274.0" prefHeight="4.0" prefWidth="290.0" />
                   <Label fx:id="lb_total" layoutX="592.0" layoutY="291.0" text="TOTAL:" textFill="WHITE" />
                   <Label fx:id="lb_TotalTicket" layoutX="638.0" layoutY="291.0" prefHeight="17.0" prefWidth="90.0" textFill="WHITE" />
-                  <TextArea fx:id="ta_ticketVenta" layoutX="447.0" layoutY="14.0" prefHeight="250.0" prefWidth="284.0" />
+                  <ListView fx:id="lv_detalleVentas" layoutX="449.0" layoutY="20.0" prefHeight="221.0" prefWidth="257.0" />
                </children>
             </Pane>
          </children>

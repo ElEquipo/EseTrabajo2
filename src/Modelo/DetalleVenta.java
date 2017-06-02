@@ -1,5 +1,10 @@
 package Modelo;
 
+import Datos.ConexionBD;
+import Datos.ProductoDAO;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -11,12 +16,14 @@ public class DetalleVenta {
     private final IntegerProperty referencia;
     private final IntegerProperty cantidad;
     private final DoubleProperty precio;
+    private ProductoDAO producto;
 
     public DetalleVenta(int idVenta, int referencia, int cantidad, Double precio) {
         this.idVenta = new SimpleIntegerProperty(idVenta);
         this.referencia = new SimpleIntegerProperty(referencia);
         this.cantidad = new SimpleIntegerProperty(cantidad);
         this.precio = new SimpleDoubleProperty(precio);
+        this.producto = new ProductoDAO(ConexionBD.conexion);
     }
 
     /*--------------------------- GET AND SET ----------------------------- */
@@ -67,11 +74,17 @@ public class DetalleVenta {
     public IntegerProperty idVentaProperty() {
         return idVenta;
     }
-    
+
     @Override
-    public String toString(){
-        return this.idVenta.get() + " " + this.referencia.get() + " " 
-                + this.cantidad.get() + " " + this.precio.get() + "\n" ;
+    public String toString() {
+        String texto = "Error al visualizar";
+        try {
+            texto = String.format("%-20s  %-20s  %-20s", producto.nombreProducto(this.referencia.get()), this.cantidad.get(), this.precio.get());
+        } catch (SQLException ex) {
+            Logger.getLogger(DetalleVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return texto;
     }
 
 }

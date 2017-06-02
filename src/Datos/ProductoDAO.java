@@ -78,16 +78,30 @@ public class ProductoDAO {
     public int idProducto(String nombreProducto) throws SQLException {
         int resultado = 0;
 
-        PreparedStatement psTrabajador;
-        ResultSet rsTrabajador;
-        psTrabajador = conexion.prepareStatement("SELECT referencia FROM productos WHERE nombre = ?;");
-        psTrabajador.setString(1, nombreProducto);
-        rsTrabajador = psTrabajador.executeQuery();
-        while (rsTrabajador.next()) {
-            resultado = rsTrabajador.getInt("referencia");
+        PreparedStatement psProducto;
+        ResultSet rsProducto;
+        psProducto = conexion.prepareStatement("SELECT referencia FROM productos WHERE nombre = ?;");
+        psProducto.setString(1, nombreProducto);
+        rsProducto = psProducto.executeQuery();
+        while (rsProducto.next()) {
+            resultado = rsProducto.getInt("referencia");
         }
 
         return resultado;
+    }
+
+    public String nombreProducto(int referencia) throws SQLException {
+
+        PreparedStatement psProducto;
+        ResultSet rsProducto;
+        psProducto = conexion.prepareStatement("SELECT nombre "
+                + "FROM productos "
+                + "WHERE referencia = ?;");
+        psProducto.setInt(1, referencia);
+        rsProducto = psProducto.executeQuery();
+        rsProducto.next();
+
+        return rsProducto.getString("nombre");
     }
 
     public int cantidad(int idTienda, Producto producto) throws SQLException {
@@ -101,10 +115,10 @@ public class ProductoDAO {
         psCantidad.setInt(2, producto.getReferencia());
         rsCantidad = psCantidad.executeQuery();
         rsCantidad.next();
-        
+
         return rsCantidad.getInt("stock");
     }
-    
+
     public void anadirProducto(Producto producto) throws SQLException {
 
         ResultSet rsProducto;
@@ -113,7 +127,7 @@ public class ProductoDAO {
         psProducto = conexion.prepareStatement("INSERT INTO productos "
                 + "(referencia, nombre, categoria, descripcion, precioCompra, precioVenta, iva) "
                 + "VALUES(?,?,?,?,?,?,?);");
-        
+
         psProducto.setInt(1, producto.getReferencia());
         psProducto.setString(2, producto.getNombre());
         psProducto.setString(3, producto.getCategoria());
@@ -122,7 +136,7 @@ public class ProductoDAO {
         psProducto.setDouble(6, producto.getPrecioVenta());
         psProducto.setDouble(7, producto.getIva());
         psProducto.executeUpdate();
-        
+
     }
 
 }
