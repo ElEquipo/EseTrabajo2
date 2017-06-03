@@ -1368,7 +1368,7 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void nuevaCategoriaAction(ActionEvent event) {
-        Alert nuevaCategoria, errorBusqueda, existe, creada;
+        Alert nuevaCategoria, errorBusqueda, existe, creada, vacia;
         String categoriaBuscada;
 
         nuevaCategoria = new Alert(AlertType.CONFIRMATION);
@@ -1390,23 +1390,31 @@ public class GerenteController implements Initializable {
         if (resultado.get() == ButtonType.OK) {
             categoriaBuscada = tf_categoria.getText();
             try {
-                if (!this.producto.existeCategoria(categoriaBuscada)) {
-                    categorias.add(categoriaBuscada);
-                    cb_categoriasExistentes.setItems(categorias);
-                    creada = new Alert(Alert.AlertType.INFORMATION);
-                    creada.setTitle("Creada");
-                    creada.setHeaderText("La categoria " + categoriaBuscada
-                            + " ha sido creada.");
-                    creada.setContentText("Seleccione la categoria en el desplegable.");
-                    estiloAlerta.darleEstiloAlPanel(creada);
-                    creada.showAndWait();
+                if (!categoriaBuscada.isEmpty()) {
+                    if (!this.producto.existeCategoria(categoriaBuscada)) {
+                        categorias.add(categoriaBuscada);
+                        cb_categoriasExistentes.setItems(categorias);
+                        cb_categoriasExistentes.setValue(categoriaBuscada);
+                        creada = new Alert(Alert.AlertType.INFORMATION);
+                        creada.setTitle("Creada");
+                        creada.setHeaderText("La categoria " + categoriaBuscada
+                                + " ha sido creada.");
+                        estiloAlerta.darleEstiloAlPanel(creada);
+                        creada.showAndWait();
+                    } else {
+                        existe = new Alert(Alert.AlertType.ERROR);
+                        existe.setTitle("Existe");
+                        existe.setHeaderText("La categoria " + categoriaBuscada
+                                + " ya existe.");
+                        estiloAlerta.darleEstiloAlPanel(existe);
+                        existe.showAndWait();
+                    }
                 } else {
-                    existe = new Alert(Alert.AlertType.ERROR);
-                    existe.setTitle("Existe");
-                    existe.setHeaderText("La categoria " + categoriaBuscada
-                            + " ya existe.");
-                    estiloAlerta.darleEstiloAlPanel(existe);
-                    existe.showAndWait();
+                    vacia = new Alert(Alert.AlertType.ERROR);
+                    vacia.setTitle("Vacia");
+                    vacia.setHeaderText("No has introducido ninguna categoria.");
+                    estiloAlerta.darleEstiloAlPanel(vacia);
+                    vacia.showAndWait();
                 }
             } catch (SQLException ex) {
                 errorBusqueda = new Alert(Alert.AlertType.ERROR);

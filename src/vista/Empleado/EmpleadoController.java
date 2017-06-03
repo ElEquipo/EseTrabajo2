@@ -325,6 +325,7 @@ public class EmpleadoController implements Initializable {
                 sinDescripcion.setHeaderText("Por favor, introduzca una descripción.");
                 estiloAlerta.darleEstiloAlPanel(sinDescripcion);
                 sinDescripcion.showAndWait();
+                
             } else {
                 /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
                 if (tf_especificarTipoIncidencia.isVisible()) {
