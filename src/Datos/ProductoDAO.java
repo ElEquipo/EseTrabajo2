@@ -139,4 +139,15 @@ public class ProductoDAO {
 
     }
 
+    public boolean existe(Producto producto) throws SQLException {
+        PreparedStatement psProducto;
+        ResultSet rsProducto;
+        psProducto = conexion.prepareStatement("SELECT existeProducto(?) AS 'existe';");
+        psProducto.setString(1, producto.getNombre());
+        rsProducto = psProducto.executeQuery();
+        rsProducto.next();
+
+        return rsProducto.getBoolean("existe");
+    }
+
 }

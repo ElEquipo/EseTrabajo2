@@ -45,18 +45,27 @@ public class TiendaDAO {
     }
 
     public int idTienda(String nombreTienda) throws SQLException {
-        int resultado = 0;
 
         PreparedStatement psTiendas;
         ResultSet rsTiendas;
         psTiendas = conexion.prepareStatement("SELECT idTienda FROM tiendas WHERE nombre = ?;");
         psTiendas.setString(1, nombreTienda);
         rsTiendas = psTiendas.executeQuery();
-        while (rsTiendas.next()) {
-            resultado = rsTiendas.getInt("idTienda");
-        }
+        rsTiendas.next();
 
-        return resultado;
+        return rsTiendas.getInt("idTienda");
+    }
+
+    public String nombreTienda(int idTienda) throws SQLException {
+
+        PreparedStatement psTiendas;
+        ResultSet rsTiendas;
+        psTiendas = conexion.prepareStatement("SELECT nombre FROM tiendas WHERE idTienda = ?;");
+        psTiendas.setInt(1, idTienda);
+        rsTiendas = psTiendas.executeQuery();
+        rsTiendas.next();
+
+        return rsTiendas.getString("nombre");
     }
 
     public Tienda cargarTienda(Trabajador trabajador) throws SQLException {
@@ -77,20 +86,6 @@ public class TiendaDAO {
                 rsTienda.getString("ciudad"));
 
         return tienda;
-    }
-
-    public String nombreTienda(int idTienda) throws SQLException {
-        String nombre;
-        PreparedStatement psTienda;
-        ResultSet rsTienda = null;
-        
-        psTienda = conexion.prepareStatement("SELECT nombre FROM tiendas WHERE idTienda ?;");
-        psTienda.setInt(1, idTienda);
-        rsTienda = psTienda.executeQuery();
-        rsTienda.next();
-        
-        nombre = rsTienda.getString("nombre");
-        return nombre;
     }
 
 }

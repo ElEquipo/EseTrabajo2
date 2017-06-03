@@ -1,5 +1,4 @@
 package vista.gerente;
- 
 
 import Datos.ConexionBD;
 import Datos.IncidenciaDAO;
@@ -263,6 +262,8 @@ public class GerenteController implements Initializable {
     private ToggleGroup incidencias;
     @FXML
     private RadioButton rb_noLeidas;
+    @FXML
+    private Button bt_limpiarProductos;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -969,6 +970,7 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void AñadirProductosAction(ActionEvent event) {
+
         Object evento = event.getSource();
         List<String> camposVacios = new ArrayList<>();
         String nombre = tf_nombreProducto.getText(),
@@ -980,9 +982,11 @@ public class GerenteController implements Initializable {
                 descripcion = ta_descripcionProducto.getText();
         Double iva, precioCompra = null, precioVenta = null;
         Integer cantidad = null;
-        Alert faltaCampos, errorCarga, errorInsertar;
-        Producto producto;
+        Alert faltaCampos, errorCarga, errorInsertar, insertado, errorCargarTienda,
+                existeProducto;
+        Producto producto = null;
         Integer siguienteId = null;
+        boolean productoInsertado = false, conCantidad = false, existe = false;
 
         try {
             siguienteId = this.producto.mostrarSiguienteReferencia();
@@ -1040,7 +1044,12 @@ public class GerenteController implements Initializable {
                         precioVenta,
                         iva);
 
-                this.producto.anadirProducto(producto);
+                if (!this.producto.existe(producto)) {
+                    this.producto.anadirProducto(producto);
+                    productoInsertado = true;
+                } else {
+                    existe = true;
+                }
 
             } else if (!cantidadProducto.isEmpty()) {
                 cantidad = Integer.valueOf(cantidadProducto);
@@ -1054,9 +1063,15 @@ public class GerenteController implements Initializable {
                         iva,
                         cantidad);
 
-                this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(),
-                        producto,
-                        cantidad);
+                if (!this.producto.existe(producto)) {
+                    this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(),
+                            producto,
+                            cantidad);
+                    productoInsertado = true;
+                    conCantidad = true;
+                } else {
+                    existe = true;
+                }
             }
         } catch (SQLException ex) {
             errorInsertar = new Alert(AlertType.ERROR);
@@ -1067,10 +1082,45 @@ public class GerenteController implements Initializable {
             errorInsertar.showAndWait();
         }
 
+        if (productoInsertado) {
+            insertado = new Alert(AlertType.INFORMATION);
+            insertado.setTitle("Insertado");
+            insertado.setHeaderText("Producto " + producto.getNombre()
+                    + " insertado correctamente.");
+            if (conCantidad) {
+                try {
+                    insertado.setContentText("La tienda " + tienda.nombreTienda(gerenteActual.getIdTienda())
+                            + " dispone de una cantidad de " + cantidadProducto + " unidades del nuevo producto.");
+                } catch (SQLException ex) {
+                    errorCargarTienda = new Alert(AlertType.ERROR);
+                    errorCargarTienda.setTitle("Error");
+                    errorCargarTienda.setHeaderText("No se ha podido insertar el producto.");
+                    errorCargarTienda.setContentText("Error :" + ex.getMessage());
+                    estiloAlerta.darleEstiloAlPanel(errorCargarTienda);
+                    errorCargarTienda.showAndWait();
+                }
+            }
+            estiloAlerta.darleEstiloAlPanel(insertado);
+            insertado.showAndWait();
+        } else if (existe) {
+            existeProducto = new Alert(AlertType.ERROR);
+            existeProducto.setTitle("Error Añadir");
+            existeProducto.setHeaderText("El producto" + producto.getNombre()
+                    + " ya existe en nuestro almacen.");
+            estiloAlerta.darleEstiloAlPanel(existeProducto);
+            existeProducto.showAndWait();
+        }
+
     }
 
     public void limpiarProductos() {
         cb_categoriasExistentes.setValue("Categoria");
+        tf_nombreProducto.clear();
+        ta_descripcionProducto.clear();
+        tf_precioCompraProducto.clear();
+        tf_precioVentaProducto.clear();
+        tf_ivaProducto.clear();
+        nf_cantidad.clear();
     }
 
     public void limpiarIncidencias() {
@@ -1233,6 +1283,11 @@ public class GerenteController implements Initializable {
 //            estiloAlerta.darleEstiloAlPanel(errorCarga);
 //            errorCarga.showAndWait();
 //        }
+    }
+
+    @FXML
+    private void limpiarCamposProductosAction(ActionEvent event) {
+       limpiarProductos();
     }
 
 }

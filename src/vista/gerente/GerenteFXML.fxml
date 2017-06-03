@@ -223,10 +223,11 @@
                   <TextArea fx:id="ta_descripcionProducto" layoutX="27.0" layoutY="183.0" prefHeight="32.0" prefWidth="150.0" promptText="Descripcion..." />
                   <TextField fx:id="tf_precioCompraProducto" layoutX="27.0" layoutY="239.0" onKeyReleased="#controlNumericoAction" promptText="precioCompra" />
                   <TextField fx:id="tf_precioVentaProducto" layoutX="26.0" layoutY="279.0" onKeyReleased="#controlNumericoAction" promptText="precioVenta" />
-                  <TextField fx:id="tf_ivaProducto" layoutX="26.0" layoutY="320.0" promptText="IVA" />
+                  <TextField fx:id="tf_ivaProducto" layoutX="26.0" layoutY="320.0" onKeyReleased="#controlNumericoAction" promptText="IVA" />
                   <NumericTextField fx:id="nf_cantidad" layoutX="26.0" layoutY="358.0" promptText="cantidad" />
                   <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
                   <Button fx:id="bt_descripcion" layoutX="185.0" layoutY="187.0" mnemonicParsing="false" onAction="#productosAction" text="+" />
+                  <Button fx:id="bt_limpiarProductos" layoutX="475.0" layoutY="333.0" mnemonicParsing="false" onAction="#limpiarCamposProductosAction" prefHeight="25.0" prefWidth="133.0" text="Limpiar" />
                </children>
             </Pane>
          </children>
