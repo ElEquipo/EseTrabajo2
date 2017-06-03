@@ -412,8 +412,7 @@ public class EmpleadoController implements Initializable {
         boolean limpiar = false;
 
         if (listaDetalles.isEmpty()) {
-            limpiar = true;
-            listaDetalles.clear();
+            limpiar = true;    
             actualizarTicketAtiempoReal(listaDetalles);
             lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
