@@ -57,23 +57,6 @@ public class VentaDAO {
         return resultado.getInt("siguienteVenta") + 1;
     }
 
-    public void elimiarVenta(int idVenta) throws SQLException {
-        PreparedStatement psEliminar;
-        psEliminar = conexion.prepareStatement("CALL eliminarVenta(?);");
-        psEliminar.setInt(1, idVenta);
-        psEliminar.executeQuery();
-
-    }
-
-    public Double caluclarTotal(int idVenta) throws SQLException {
-        PreparedStatement psCalculo;
-        psCalculo = conexion.prepareStatement("SELECT calcularTotal(?) AS 'total';");
-        psCalculo.setInt(1, idVenta);
-        ResultSet resultado = psCalculo.executeQuery();
-        resultado.next();
-        return resultado.getDouble("total");
-    }
-
     public Double calcularTotal(List<DetalleVenta> listaDetalles) {
         Double precioTotal = 0.0;
         for (DetalleVenta detalle : listaDetalles) {
@@ -81,19 +64,6 @@ public class VentaDAO {
         }
 
         return precioTotal;
-    }
-
-    public int idActual() throws SQLException {
-        int operacion;
-
-        PreparedStatement psMostrar;
-        psMostrar = conexion.prepareStatement("SELECT MAX(idVenta) 'id' FROM ventas;");
-        ResultSet resultado = psMostrar.executeQuery();
-        resultado.next();
-
-        operacion = resultado.getInt("id");
-
-        return operacion;
     }
 
     public Path generarTicket(Venta venta, List<DetalleVenta> detalle) throws IOException, SQLException {
