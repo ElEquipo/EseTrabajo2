@@ -412,15 +412,15 @@ public class EmpleadoController implements Initializable {
         boolean limpiar = false;
 
         if (listaDetalles.isEmpty()) {
-            limpiar = true;    
+            limpiar = true;
             actualizarTicketAtiempoReal(listaDetalles);
-            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
         } else if (creada) {
             limpiar = true;
             listaDetalles.clear();
             actualizarTicketAtiempoReal(listaDetalles);
-            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
             cargarProductosParaVenta();
         } else {
@@ -438,7 +438,8 @@ public class EmpleadoController implements Initializable {
                 limpiar = true;
                 listaDetalles.clear();
                 actualizarTicketAtiempoReal(listaDetalles);
-                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+                lb_TotalTicket.setText("");
             }
         }
 
