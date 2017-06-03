@@ -9,7 +9,6 @@ import Datos.TrabajadorDAO;
 import Modelo.Alerta.Alerta;
 import Modelo.Incidencia;
 import Modelo.Producto;
-import Modelo.TiendasProductos;
 import Modelo.Trabajador;
 import Modelo.ValidadorDNI;
 import impl.com.calendarfx.view.NumericTextField;
@@ -217,11 +216,11 @@ public class GerenteController implements Initializable {
     @FXML
     private TableColumn<Producto, Integer> tc_stock;
     @FXML
-    private Button bt_irPanelAñadirProducto;
+    private Button bt_irPanelAnadirProducto;
     @FXML
     private Pane pn_añadirProductos;
     @FXML
-    private Button bt_añadirProducto;
+    private Button bt_anadirProducto;
     @FXML
     private Button bt_atrasAñadirProductos;
     @FXML
@@ -395,7 +394,9 @@ public class GerenteController implements Initializable {
     }
 
     public void cargarTooltips() {
-        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias, tt_productos, tt_tienda;
+        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias, 
+                tt_productos, tt_tienda, tt_anadirProducto, tt_limpiarProducto, tt_buscarTrabajador,
+                tt_listaTrabajadores;
 
         tt_personal = new Tooltip("Personal");
         tt_personal.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
@@ -421,11 +422,14 @@ public class GerenteController implements Initializable {
         tt_contratar.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_contratarPersonal, tt_contratar);
+        Tooltip.install(bt_contratar, tt_contratar);
 
         tt_despedir = new Tooltip("Despedir trabajador");
         tt_despedir.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_despedirPersonal, tt_despedir);
+        Tooltip.install(bt_despedir, tt_despedir);   
+        Tooltip.install(bt_irPaneDespedir, tt_despedir);  
 
         tt_atras = new Tooltip("Volver");
         tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
@@ -434,7 +438,30 @@ public class GerenteController implements Initializable {
         Tooltip.install(bt_atrasDespedir, tt_atras);
         Tooltip.install(bt_atrasContratar, tt_atras);
         Tooltip.install(bt_atrasProductos, tt_atras);
+        Tooltip.install(bt_atrasAñadirProductos, tt_atras);
+        Tooltip.install(bt_atrasVerTrabajadores, tt_atras);
 
+        tt_anadirProducto = new Tooltip("Añadir productos");
+        tt_anadirProducto.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_irPanelAnadirProducto, tt_anadirProducto);
+        Tooltip.install(bt_anadirProducto, tt_anadirProducto);
+
+        tt_limpiarProducto = new Tooltip("Limpiar");
+        tt_limpiarProducto.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_limpiarProductos, tt_limpiarProducto);
+        
+        tt_buscarTrabajador = new Tooltip("Buscar trabajador");
+        tt_buscarTrabajador.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_buscar, tt_buscarTrabajador);
+        
+        tt_listaTrabajadores = new Tooltip("Lista de trabajadores");
+        tt_listaTrabajadores.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_irVerTrabajadores, tt_listaTrabajadores);
+        
     }
 
     @FXML
@@ -938,7 +965,7 @@ public class GerenteController implements Initializable {
             pn_productos.setVisible(true);
             pn_inicio.setVisible(false);
 
-        } else if (evento == bt_irPanelAñadirProducto) { // ACCEDE AL MENU DE AÑADIR PRODUCTOS
+        } else if (evento == bt_irPanelAnadirProducto) { // ACCEDE AL MENU DE AÑADIR PRODUCTOS
             pn_productos.setVisible(false);
             pn_añadirProductos.setVisible(true);
             try {
@@ -970,20 +997,20 @@ public class GerenteController implements Initializable {
             bt_descripcion.setText("-");
             ta_descripcionProducto.setPrefWidth(486);
             ta_descripcionProducto.setPrefHeight(65);
-            tf_precioCompraProducto.setLayoutY(252);
-            tf_precioVentaProducto.setLayoutY(292);
-            tf_ivaProducto.setLayoutY(333);
-            nf_cantidad.setLayoutY(371);
+//            tf_precioCompraProducto.setLayoutY(252);
+//            tf_precioVentaProducto.setLayoutY(292);
+//            tf_ivaProducto.setLayoutY(333);
+//            nf_cantidad.setLayoutY(371);
 
         } else if (evento == bt_descripcion && botonDescripcion.equalsIgnoreCase("-")) {
             bt_descripcion.setLayoutX(185);
             bt_descripcion.setText("+");
             ta_descripcionProducto.setPrefWidth(150);
             ta_descripcionProducto.setPrefHeight(32);
-            tf_precioCompraProducto.setLayoutY(232);
-            tf_precioVentaProducto.setLayoutY(272);
-            tf_ivaProducto.setLayoutY(313);
-            nf_cantidad.setLayoutY(351);
+//            tf_precioCompraProducto.setLayoutY(232);
+//            tf_precioVentaProducto.setLayoutY(272);
+//            tf_ivaProducto.setLayoutY(313);
+//            nf_cantidad.setLayoutY(351);
 
         } else if (evento == bt_atrasProductos) {
             pn_productos.setVisible(false);
@@ -1292,11 +1319,14 @@ public class GerenteController implements Initializable {
         Incidencia seleccionada = tv_incidencias.getFocusModel().getFocusedItem();
 
         try {
-            if (incidencias.getSelectedToggle().getUserData().equals("No leidas")) {
+            if (incidencias.getSelectedToggle().getUserData().equals("No leidas") && seleccionada != null) {
                 incidencia.cambiarAleida(seleccionada);
             }
-            ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
-            ta_descripcionIncidencia.setWrapText(true);
+            if (seleccionada != null) {
+                ta_descripcionIncidencia.setText(seleccionada.getDescripcion());
+                ta_descripcionIncidencia.setWrapText(true);
+            }
+
         } catch (SQLException ex) {
             errorLeer = new Alert(Alert.AlertType.ERROR);
             errorLeer.setTitle("Error");

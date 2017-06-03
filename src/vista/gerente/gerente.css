@@ -40,7 +40,8 @@
 }
 
 #bt_productos, #bt_incidencias, #bt_conIncidendias, #bt_tienda, #bt_personal, #bt_contratarPersonal, 
-#bt_despedirPersonal, #bt_atras, #bt_contratar, #bt_despedir{
+#bt_despedirPersonal, #bt_atras, #bt_contratar, #bt_despedir, #bt_buscar, #bt_irVerTrabajadores,
+#bt_irPanelAnadirProducto, #bt_limpiarProductos{
     -fx-background-insets:0;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 5, 5);
     -fx-background-size: cover;
@@ -95,9 +96,26 @@
     -fx-background-image: url(../gerente/images/contratarMenos.jpg);
 }
 
+#bt_buscar{
+    -fx-background-image: url(../gerente/images/perfilBuscar.jpg);
+}
+
+#bt_irVerTrabajadores{
+    -fx-background-image: url(../gerente/images/trabajadores.jpg);
+}
+
+#bt_irPanelAnadirProducto{
+    -fx-background-image: url(../gerente/images/anadirProductos.jpg);
+}
+
+#bt_limpiarProductos{
+    -fx-background-image: url(../gerente/images/limpiar.jpg);
+}
+
 #bt_productos:pressed, #bt_incidencias:pressed, #bt_conIncidendias:pressed, #bt_tienda:pressed, 
 #bt_personal:pressed, #bt_contratarPersonal:pressed, #bt_despedirPersonal:pressed,
-#bt_atras:pressed , #bt_contratar:pressed, #bt_despedir:pressed{
+#bt_atras:pressed , #bt_contratar:pressed, #bt_despedir:pressed, #bt_buscar:pressed, #bt_irVerTrabajadores:pressed,
+#bt_irPanelAnadirProducto:pressed, #bt_limpiarProductos:pressed{
     -fx-translate-x: 5;
     -fx-translate-y: 5;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 0, 0 , 0, 0);
@@ -105,7 +123,8 @@
 
 #bt_productos:hover, #bt_incidencias:hover, #bt_conIncidendias:hover, #bt_tienda:hover, 
 #bt_personal:hover, #bt_contratarPersonal:hover, #bt_despedirPersonal:hover,
-#bt_atras:hover, #bt_contratar:hover, #bt_despedir:hover{
+#bt_atras:hover, #bt_contratar:hover, #bt_despedir:hover, #bt_buscar:hover, #bt_irVerTrabajadores:hover,
+#bt_irPanelAnadirProducto:hover, #bt_limpiarProductos:hover{
     -fx-border-color: orange;
 }
 
@@ -113,7 +132,8 @@
 #tf_fecha, #nf_salario, #tf_nick, #tf_pass, #tf_tienda, #tf_horaEntrada,
 #tf_horaSalida,
 #tf_idDespedir, #tf_nombreDespedir, #tf_apellido1Despedir, #tf_apellido2Despedir, 
-#tf_dniDespedir{
+#tf_dniDespedir, #tf_nombreProducto, #tf_precioCompraProducto, #tf_precioVentaProducto, #tf_ivaProducto,
+#nf_cantidad{
     -fx-background-color: #cccccc;
     -fx-text-fill: black;
     -fx-border-radius: 2px;
@@ -121,7 +141,7 @@
 }
 
 #tf_id, #tf_nombre, #tf_dni, #tf_puesto,#nf_salario, #tf_nick, #tf_pass, #tf_tienda, #tf_horaEntrada,
-#tf_horaSalida{
+#tf_horaSalida, #tf_nombreProducto, #tf_precioCompraProducto, #tf_precioVentaProducto, tf_ivaProducto{
     -fx-prompt-text-fill: #eba037;
 }
 
@@ -204,4 +224,17 @@
 .table-view > .virtual-flow > .scroll-bar > .increment-button, 
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
+}
+
+/* ------------- TEXT AREA -------------- */
+
+.text-area {
+    -fx-font-family: Open Sans;
+    -fx-font-size: 15;
+    -fx-text-fill: orange;
+    -fx-display-caret:true;
+}
+
+.text-area .content {
+    -fx-background-color: #1a1a1a;
 }

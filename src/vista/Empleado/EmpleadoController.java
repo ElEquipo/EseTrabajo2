@@ -52,6 +52,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -128,13 +129,11 @@ public class EmpleadoController implements Initializable {
     @FXML
     private TableColumn<Producto, Integer> tb_stock;
     @FXML
-    private Button bt_anadirProducto;
-    @FXML
     private Button bt_incidencias;
     @FXML
     private Pane pn_incidencias;
     @FXML
-    private Button bt_añadirIncidencia;
+    private Button bt_anadirIncidencia;
     @FXML
     private Button bt_atrasIncidencias;
     @FXML
@@ -172,7 +171,7 @@ public class EmpleadoController implements Initializable {
         detallesVenta = new DetallesVentaDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
         bt_Perfil.setText(empleadoActual.getNombre());
-        
+
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
@@ -193,7 +192,8 @@ public class EmpleadoController implements Initializable {
         tb_categoriaVenta.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         tb_precioVentaVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
         tb_stockVenta.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-
+                
+        cargarTooltips();
     }
 
     @FXML
@@ -299,7 +299,7 @@ public class EmpleadoController implements Initializable {
             tf_especificarTipoIncidencia.setVisible(false);
         }
 
-        if (evento == bt_añadirIncidencia) {
+        if (evento == bt_anadirIncidencia) {
 
             if (tipo.equalsIgnoreCase("Tipos de Incidencia")) {
 
@@ -700,6 +700,44 @@ public class EmpleadoController implements Initializable {
             estiloAlerta.darleEstiloAlPanel(sinProductos);
             sinProductos.showAndWait();
         }
+
+    }
+
+    public void cargarTooltips() {
+        Tooltip tt_atras, tt_incidencias, tt_productos, tt_anadirIncidencia, tt_ventas,
+                tt_finCompra;
+
+        tt_incidencias = new Tooltip("Incidencias");
+        tt_incidencias.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_incidencias, tt_incidencias);
+
+        tt_productos = new Tooltip("Productos");
+        tt_productos.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_productos, tt_productos);
+
+        tt_atras = new Tooltip("Volver");
+        tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_atrasProductos, tt_atras);
+        Tooltip.install(bt_atrasVentas, tt_atras);
+        Tooltip.install(bt_atrasIncidencias, tt_atras);
+        
+        tt_anadirIncidencia = new Tooltip("Añadir incidencia");
+        tt_anadirIncidencia.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_anadirIncidencia, tt_anadirIncidencia);
+        
+        tt_ventas = new Tooltip("Ventas");
+        tt_ventas.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_ventas, tt_ventas);
+        
+        tt_finCompra = new Tooltip("Finalizar compra");
+        tt_finCompra.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
+                + " -fx-text-fill:orange; -fx-font-size:16px;");
+        Tooltip.install(bt_regVenta, tt_finCompra);
 
     }
 
