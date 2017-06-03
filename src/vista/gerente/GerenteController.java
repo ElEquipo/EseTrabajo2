@@ -304,6 +304,7 @@ public class GerenteController implements Initializable {
         rb_noLeidas.setSelected(true);
         ta_descripcionProducto.setWrapText(true);
         ta_datosTrabajador.setWrapText(true);
+        bt_perfil.setText(gerenteActual.getNombre());
 
         tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
         tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -313,7 +314,7 @@ public class GerenteController implements Initializable {
         tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
         tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
         tc_stock.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        
+
         cargarProductos();
 
         /*
@@ -1100,7 +1101,7 @@ public class GerenteController implements Initializable {
                             cantidad);
                     productoInsertado = true;
                     conCantidad = true;
-                     limpiarProductos();
+                    limpiarProductos();
                 } else {
                     existe = true;
                 }

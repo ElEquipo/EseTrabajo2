@@ -171,7 +171,8 @@ public class EmpleadoController implements Initializable {
         trabajador = new TrabajadorDAO(ConexionBD.conexion);
         detallesVenta = new DetallesVentaDAO(ConexionBD.conexion);
         empleadoActual = ConexionBD.actualUser;
-
+        bt_Perfil.setText(empleadoActual.getNombre());
+        
         estiloAlerta = new Alerta();
         pn_productos.setVisible(false);
         pn_ventas.setVisible(false);
