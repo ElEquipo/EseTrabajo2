@@ -30,6 +30,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -49,6 +50,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import jfxtras.scene.control.LocalTimePicker;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -264,6 +266,8 @@ public class GerenteController implements Initializable {
     private RadioButton rb_noLeidas;
     @FXML
     private Button bt_limpiarProductos;
+    @FXML
+    private Button bt_nuevaCategoria;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -300,6 +304,17 @@ public class GerenteController implements Initializable {
         rb_noLeidas.setSelected(true);
         ta_descripcionProducto.setWrapText(true);
         ta_datosTrabajador.setWrapText(true);
+
+        tb_referencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+        tb_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        tb_categoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+        tb_descripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        tb_precioCompra.setCellValueFactory(new PropertyValueFactory<>("precioCompra"));
+        tb_precioVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
+        tb_iva.setCellValueFactory(new PropertyValueFactory<>("iva"));
+        tc_stock.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+        
+        cargarProductos();
 
         /*
         try {
@@ -358,6 +373,21 @@ public class GerenteController implements Initializable {
             errorCarga = new Alert(Alert.AlertType.ERROR);
             errorCarga.setTitle("Error Carga Incidenicas");
             errorCarga.setHeaderText("Error al cargar la lista de incidencias \n" + ex.getMessage());
+            estiloAlerta.darleEstiloAlPanel(errorCarga);
+            errorCarga.showAndWait();
+        }
+    }
+
+    public void cargarProductos() {
+        Alert errorCarga;
+        try {
+            listaProductos = FXCollections.observableArrayList(producto.cargarProductos(gerenteActual.getIdTienda()));
+            tv_productos.setItems(listaProductos);
+
+        } catch (SQLException ex) {
+            errorCarga = new Alert(Alert.AlertType.ERROR);
+            errorCarga.setTitle("Error Carga Productos");
+            errorCarga.setHeaderText("Error al cargar la lista de productos \n" + ex.getMessage());
             estiloAlerta.darleEstiloAlPanel(errorCarga);
             errorCarga.showAndWait();
         }
@@ -1044,9 +1074,10 @@ public class GerenteController implements Initializable {
                         precioVenta,
                         iva);
 
-                if (!this.producto.existe(producto)) {
+                if (!this.producto.existeProducto(producto)) {
                     this.producto.anadirProducto(producto);
                     productoInsertado = true;
+                    limpiarProductos();
                 } else {
                     existe = true;
                 }
@@ -1063,12 +1094,13 @@ public class GerenteController implements Initializable {
                         iva,
                         cantidad);
 
-                if (!this.producto.existe(producto)) {
+                if (!this.producto.existeProducto(producto)) {
                     this.tiendasProductos.anadirProducto(gerenteActual.getIdTienda(),
                             producto,
                             cantidad);
                     productoInsertado = true;
                     conCantidad = true;
+                     limpiarProductos();
                 } else {
                     existe = true;
                 }
@@ -1121,6 +1153,7 @@ public class GerenteController implements Initializable {
         tf_precioVentaProducto.clear();
         tf_ivaProducto.clear();
         nf_cantidad.clear();
+        cargarProductos();
     }
 
     public void limpiarIncidencias() {
@@ -1287,7 +1320,64 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void limpiarCamposProductosAction(ActionEvent event) {
-       limpiarProductos();
+        limpiarProductos();
+    }
+
+    @FXML
+    private void nuevaCategoriaAction(ActionEvent event) {
+        Alert nuevaCategoria, errorBusqueda, existe, creada;
+        String categoriaBuscada;
+
+        nuevaCategoria = new Alert(AlertType.CONFIRMATION);
+        nuevaCategoria.setTitle("Nueva categoria");
+        nuevaCategoria.setHeaderText(null);
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField tf_categoria = new TextField();
+        tf_categoria.setPromptText("Categoria");
+        grid.add(tf_categoria, 1, 0);
+        nuevaCategoria.getDialogPane().setContent(grid);
+        estiloAlerta.darleEstiloAlPanel(nuevaCategoria);
+        Optional<ButtonType> resultado;
+        resultado = nuevaCategoria.showAndWait();
+
+        if (resultado.get() == ButtonType.OK) {
+            categoriaBuscada = tf_categoria.getText();
+            try {
+                if (!this.producto.existeCategoria(categoriaBuscada)) {
+                    categorias.add(categoriaBuscada);
+                    cb_categoriasExistentes.setItems(categorias);
+                    creada = new Alert(Alert.AlertType.INFORMATION);
+                    creada.setTitle("Creada");
+                    creada.setHeaderText("La categoria " + categoriaBuscada
+                            + " ha sido creada.");
+                    creada.setContentText("Seleccione la categoria en el desplegable.");
+                    estiloAlerta.darleEstiloAlPanel(creada);
+                    creada.showAndWait();
+                } else {
+                    existe = new Alert(Alert.AlertType.ERROR);
+                    existe.setTitle("Existe");
+                    existe.setHeaderText("La categoria " + categoriaBuscada
+                            + " ya existe.");
+                    estiloAlerta.darleEstiloAlPanel(existe);
+                    existe.showAndWait();
+                }
+            } catch (SQLException ex) {
+                errorBusqueda = new Alert(Alert.AlertType.ERROR);
+                errorBusqueda.setTitle("Error");
+                errorBusqueda.setHeaderText("No se ha podido buscar si existe.");
+                errorBusqueda.setContentText("Error: " + ex.getMessage());
+                estiloAlerta.darleEstiloAlPanel(errorBusqueda);
+                errorBusqueda.showAndWait();
+            }
+        } else {
+            tf_categoria.clear();
+            cb_categoriasExistentes.setValue("Categoria");
+        }
+
     }
 
 }

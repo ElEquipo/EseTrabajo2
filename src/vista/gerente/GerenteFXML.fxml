@@ -228,6 +228,7 @@
                   <ComboBox fx:id="cb_categoriasExistentes" layoutX="26.0" layoutY="141.0" prefWidth="150.0" promptText="Categoria" />
                   <Button fx:id="bt_descripcion" layoutX="185.0" layoutY="187.0" mnemonicParsing="false" onAction="#productosAction" text="+" />
                   <Button fx:id="bt_limpiarProductos" layoutX="475.0" layoutY="333.0" mnemonicParsing="false" onAction="#limpiarCamposProductosAction" prefHeight="25.0" prefWidth="133.0" text="Limpiar" />
+                  <Button fx:id="bt_nuevaCategoria" layoutX="185.0" layoutY="141.0" mnemonicParsing="false" onAction="#nuevaCategoriaAction" prefHeight="25.0" prefWidth="118.0" text="Nueva Categoria" />
                </children>
             </Pane>
          </children>

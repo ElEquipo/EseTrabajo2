@@ -608,7 +608,6 @@ public class EmpleadoController implements Initializable {
             aviso.showAndWait();
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
             aviso = new Alert(AlertType.ERROR);
             aviso.setTitle("Error");
             aviso.setHeaderText("No se ha podido avisar al gerente.");
