@@ -37,7 +37,7 @@ public class TrabajadorDAO {
 // p_apellido2 VARCHAR(45), p_puesto VARCHAR(30), p_salario DECIMAL(8,2), p_fecha DATE, p_nick VARCHAR(45),
 // p_pass VARCHAR(45), p_horaEntrada TIME, p_horaSalida TIME, p_idTienda INT(5))
         PreparedStatement psInsertar;
-        psInsertar = conexion.prepareStatement("CALL insertarTrabajador(?,?,?,?,?,?,?,?,?,?,?,?,?);");
+        psInsertar = conexion.prepareStatement("INSERT INTO trabajadores VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);");
         psInsertar.setInt(1, trabajador.getId());
         psInsertar.setString(2, trabajador.getDni());
         psInsertar.setString(3, trabajador.getNombre());
@@ -68,7 +68,7 @@ public class TrabajadorDAO {
 
     public int mostrarSiguienteID() throws SQLException {
         PreparedStatement psMostrar;
-        psMostrar = conexion.prepareStatement("SELECT idSiguienteTrabajador() AS 'id';");
+        psMostrar = conexion.prepareStatement("SELECT MAX(idTrabajador) AS 'id' FROM trabajadores;");
         ResultSet resultado = psMostrar.executeQuery();
         resultado.next();
         return (resultado.getInt("id") + 1);

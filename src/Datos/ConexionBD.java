@@ -87,7 +87,7 @@ public class ConexionBD {
         String puesto = null;
 
         try {
-            psPuesto = conexion.prepareStatement("SELECT puestoTrabajador(?) AS 'puesto';");
+            psPuesto = conexion.prepareStatement("SELECT puesto FROM trabajadores WHERE nick = ?;");
             psPuesto.setString(1, user);
 
             resultado = psPuesto.executeQuery();
@@ -109,7 +109,7 @@ public class ConexionBD {
         String dni;
 
         try {
-            psExiste = conexion.prepareStatement("SELECT dni FROM trabajadores WHERE nick=?;");
+            psExiste = conexion.prepareStatement("SELECT dni FROM trabajadores WHERE nick = ?;");
             psExiste.setString(1, user);
             resultado = psExiste.executeQuery();
             resultado.next();
@@ -131,12 +131,12 @@ public class ConexionBD {
         String contraseña = null;
 
         try {
-            psContraseña = conexion.prepareStatement("SELECT contraseña(?) AS 'pass';");
+            psContraseña = conexion.prepareStatement("SELECT password FROM trabajadores WHERE nick = ?;");
             psContraseña.setString(1, user);
 
             resultado = psContraseña.executeQuery();
             resultado.next();
-            contraseña = resultado.getString("pass");
+            contraseña = resultado.getString("password");
         } catch (SQLException ex) {
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }

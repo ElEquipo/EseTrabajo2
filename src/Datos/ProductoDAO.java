@@ -140,24 +140,34 @@ public class ProductoDAO {
     }
 
     public boolean existeProducto(Producto producto) throws SQLException {
+        boolean existe = false;
         PreparedStatement psProducto;
         ResultSet rsProducto;
-        psProducto = conexion.prepareStatement("SELECT existeProducto(?) AS 'existe';");
+        psProducto = conexion.prepareStatement("SELECT count(nombre) FROM productos WHERE nombre = ?;");
         psProducto.setString(1, producto.getNombre());
         rsProducto = psProducto.executeQuery();
         rsProducto.next();
+        
+        if (rsProducto.getInt("existe") != 0) {
+            existe = true;
+        }
 
-        return rsProducto.getBoolean("existe");
+        return existe;
     }
 
     public boolean existeCategoria(String categoria) throws SQLException {
+        boolean existe = false;
         PreparedStatement psProducto;
         ResultSet rsProducto;
-        psProducto = conexion.prepareStatement("SELECT existeCategoria(?) AS 'existe';");
+        psProducto = conexion.prepareStatement("SELECT DISTINCT count(categoria) AS 'existe' FROM productos WHERE categoria = ?;");
         psProducto.setString(1, categoria);
         rsProducto = psProducto.executeQuery();
         rsProducto.next();
+        
+        if (rsProducto.getInt("existe") != 0) {
+            existe = true;
+        }
 
-        return rsProducto.getBoolean("existe");
+        return existe;
     }
 }
