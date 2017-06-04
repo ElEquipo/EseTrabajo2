@@ -20,11 +20,10 @@ public class ConexionBD {
 
     public ConexionBD() {
     }
-    
-    public ConexionBD(Connection conn){
+
+    public ConexionBD(Connection conn) {
         conexion = conn;
     }
-    
 
     public boolean conectar(String bd, String user, String pwd, String AppUser) {
         boolean conectado = false;
@@ -36,13 +35,13 @@ public class ConexionBD {
             }
             trabajadorDAO = new TrabajadorDAO(conexion);
             tiendaDAO = new TiendaDAO(conexion);
-            this.actualUser =  trabajadorDAO.cargarTrabajador(AppUser,0,0);            
-            
+            this.actualUser = trabajadorDAO.cargarTrabajador(AppUser, 0, 0);
+
             mensaje = "Conexión establecida con la Base de Datos " + bd;
             this.mensajeErrorConexion = mensaje;
 
         } catch (SQLException ex) {
-            
+
         }
         return conectado;
     }
@@ -114,14 +113,14 @@ public class ConexionBD {
             resultado = psExiste.executeQuery();
             resultado.next();
             dni = resultado.getString("dni");
-            if(passwordEncryptor.checkPassword(dni, contraseña(user))){
+            if (passwordEncryptor.checkPassword(dni, contraseña(user))) {
                 existe = true;
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return existe;
     }
 
@@ -138,10 +137,10 @@ public class ConexionBD {
             resultado.next();
             contraseña = resultado.getString("password");
         } catch (SQLException ex) {
-            Logger.getLogger(ConexionBD.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         return contraseña;
-        
+
     }
 
     // * * * * * * * * * * GET AND SET * * * * * * * * * * 
@@ -160,6 +159,5 @@ public class ConexionBD {
     public void setConectado(Trabajador conectado) {
         this.actualUser = conectado;
     }
-    
-    
+
 }
