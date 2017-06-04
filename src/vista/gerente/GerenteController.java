@@ -394,7 +394,7 @@ public class GerenteController implements Initializable {
     }
 
     public void cargarTooltips() {
-        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias, 
+        Tooltip tt_personal, tt_contratar, tt_despedir, tt_atras, tt_incidencias,
                 tt_productos, tt_tienda, tt_anadirProducto, tt_limpiarProducto, tt_buscarTrabajador,
                 tt_listaTrabajadores;
 
@@ -428,8 +428,8 @@ public class GerenteController implements Initializable {
         tt_despedir.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_despedirPersonal, tt_despedir);
-        Tooltip.install(bt_despedir, tt_despedir);   
-        Tooltip.install(bt_irPaneDespedir, tt_despedir);  
+        Tooltip.install(bt_despedir, tt_despedir);
+        Tooltip.install(bt_irPaneDespedir, tt_despedir);
 
         tt_atras = new Tooltip("Volver");
         tt_atras.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
@@ -451,17 +451,17 @@ public class GerenteController implements Initializable {
         tt_limpiarProducto.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_limpiarProductos, tt_limpiarProducto);
-        
+
         tt_buscarTrabajador = new Tooltip("Buscar trabajador");
         tt_buscarTrabajador.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_buscar, tt_buscarTrabajador);
-        
+
         tt_listaTrabajadores = new Tooltip("Lista de trabajadores");
         tt_listaTrabajadores.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_irVerTrabajadores, tt_listaTrabajadores);
-        
+
     }
 
     @FXML
@@ -1222,6 +1222,9 @@ public class GerenteController implements Initializable {
         } else if (evento == tf_precioVentaProducto) {
             texto = tf_precioVentaProducto.getText();
             campo = 2;
+        } else if (evento == tf_ivaProducto) {
+            texto = tf_ivaProducto.getText();
+            campo = 3;
         }
 
         tamaño = texto.length();
@@ -1246,6 +1249,10 @@ public class GerenteController implements Initializable {
                         case 2:
                             tf_precioVentaProducto.setText(texto.substring(0, tamaño - 1));
                             tf_precioVentaProducto.positionCaret(tamaño);
+                            break;
+                        case 3:
+                            tf_ivaProducto.setText(texto.substring(0, tamaño - 1));
+                            tf_ivaProducto.positionCaret(tamaño);
 
                             break;
                         default:
@@ -1261,6 +1268,11 @@ public class GerenteController implements Initializable {
                     case 2:
                         tf_precioVentaProducto.setText(texto.substring(0, tamaño - 1));
                         tf_precioVentaProducto.positionCaret(tamaño);
+
+                        break;
+                    case 3:
+                        tf_ivaProducto.setText(texto.substring(0, tamaño - 1));
+                        tf_ivaProducto.positionCaret(tamaño);
 
                         break;
                     default:
@@ -1356,7 +1368,7 @@ public class GerenteController implements Initializable {
 
     @FXML
     private void nuevaCategoriaAction(ActionEvent event) {
-        Alert nuevaCategoria, errorBusqueda, existe, creada;
+        Alert nuevaCategoria, errorBusqueda, existe, creada, vacia;
         String categoriaBuscada;
 
         nuevaCategoria = new Alert(AlertType.CONFIRMATION);
@@ -1378,23 +1390,31 @@ public class GerenteController implements Initializable {
         if (resultado.get() == ButtonType.OK) {
             categoriaBuscada = tf_categoria.getText();
             try {
-                if (!this.producto.existeCategoria(categoriaBuscada)) {
-                    categorias.add(categoriaBuscada);
-                    cb_categoriasExistentes.setItems(categorias);
-                    creada = new Alert(Alert.AlertType.INFORMATION);
-                    creada.setTitle("Creada");
-                    creada.setHeaderText("La categoria " + categoriaBuscada
-                            + " ha sido creada.");
-                    creada.setContentText("Seleccione la categoria en el desplegable.");
-                    estiloAlerta.darleEstiloAlPanel(creada);
-                    creada.showAndWait();
+                if (!categoriaBuscada.isEmpty()) {
+                    if (!this.producto.existeCategoria(categoriaBuscada)) {
+                        categorias.add(categoriaBuscada);
+                        cb_categoriasExistentes.setItems(categorias);
+                        cb_categoriasExistentes.setValue(categoriaBuscada);
+                        creada = new Alert(Alert.AlertType.INFORMATION);
+                        creada.setTitle("Creada");
+                        creada.setHeaderText("La categoria " + categoriaBuscada
+                                + " ha sido creada.");
+                        estiloAlerta.darleEstiloAlPanel(creada);
+                        creada.showAndWait();
+                    } else {
+                        existe = new Alert(Alert.AlertType.ERROR);
+                        existe.setTitle("Existe");
+                        existe.setHeaderText("La categoria " + categoriaBuscada
+                                + " ya existe.");
+                        estiloAlerta.darleEstiloAlPanel(existe);
+                        existe.showAndWait();
+                    }
                 } else {
-                    existe = new Alert(Alert.AlertType.ERROR);
-                    existe.setTitle("Existe");
-                    existe.setHeaderText("La categoria " + categoriaBuscada
-                            + " ya existe.");
-                    estiloAlerta.darleEstiloAlPanel(existe);
-                    existe.showAndWait();
+                    vacia = new Alert(Alert.AlertType.ERROR);
+                    vacia.setTitle("Vacia");
+                    vacia.setHeaderText("No has introducido ninguna categoria.");
+                    estiloAlerta.darleEstiloAlPanel(vacia);
+                    vacia.showAndWait();
                 }
             } catch (SQLException ex) {
                 errorBusqueda = new Alert(Alert.AlertType.ERROR);

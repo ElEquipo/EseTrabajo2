@@ -192,7 +192,7 @@ public class EmpleadoController implements Initializable {
         tb_categoriaVenta.setCellValueFactory(new PropertyValueFactory<>("categoria"));
         tb_precioVentaVenta.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
         tb_stockVenta.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-                
+
         cargarTooltips();
     }
 
@@ -288,7 +288,7 @@ public class EmpleadoController implements Initializable {
         Incidencia incidencia;
         String tipo = cb_tipoIncidencia.getValue(), especifico = tf_especificarTipoIncidencia.getText(),
                 descripcion = ta_descripcionIncidencia.getText();
-        Alert errorTipo, errorInsertar, incidenciaCreada;
+        Alert errorTipo, errorInsertar, incidenciaCreada, sinDescripcion;
 
         if (tipo.equalsIgnoreCase("Otros")) {
             ta_descripcionIncidencia.setLayoutY(148);
@@ -319,6 +319,13 @@ public class EmpleadoController implements Initializable {
                 estiloAlerta.darleEstiloAlPanel(errorTipo);
                 errorTipo.showAndWait();
 
+            } else if (descripcion.isEmpty()) {
+                sinDescripcion = new Alert(AlertType.ERROR);
+                sinDescripcion.setTitle("Incidencias Error");
+                sinDescripcion.setHeaderText("Por favor, introduzca una descripción.");
+                estiloAlerta.darleEstiloAlPanel(sinDescripcion);
+                sinDescripcion.showAndWait();
+                
             } else {
                 /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
                 if (tf_especificarTipoIncidencia.isVisible()) {
@@ -413,15 +420,14 @@ public class EmpleadoController implements Initializable {
 
         if (listaDetalles.isEmpty()) {
             limpiar = true;
-            listaDetalles.clear();
             actualizarTicketAtiempoReal(listaDetalles);
-            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
         } else if (creada) {
             limpiar = true;
             listaDetalles.clear();
             actualizarTicketAtiempoReal(listaDetalles);
-            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//            lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
             lb_TotalTicket.setText("");
             cargarProductosParaVenta();
         } else {
@@ -439,7 +445,8 @@ public class EmpleadoController implements Initializable {
                 limpiar = true;
                 listaDetalles.clear();
                 actualizarTicketAtiempoReal(listaDetalles);
-                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+//                lb_TotalTicket.setText(redondear.format(venta.calcularTotal(listaDetalles)) + " €");
+                lb_TotalTicket.setText("");
             }
         }
 
@@ -723,17 +730,17 @@ public class EmpleadoController implements Initializable {
         Tooltip.install(bt_atrasProductos, tt_atras);
         Tooltip.install(bt_atrasVentas, tt_atras);
         Tooltip.install(bt_atrasIncidencias, tt_atras);
-        
+
         tt_anadirIncidencia = new Tooltip("Añadir incidencia");
         tt_anadirIncidencia.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_anadirIncidencia, tt_anadirIncidencia);
-        
+
         tt_ventas = new Tooltip("Ventas");
         tt_ventas.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_ventas, tt_ventas);
-        
+
         tt_finCompra = new Tooltip("Finalizar compra");
         tt_finCompra.setStyle("-fx-background-color:rgba(153, 153, 153,0.5);"
                 + " -fx-text-fill:orange; -fx-font-size:16px;");

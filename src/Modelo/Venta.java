@@ -16,13 +16,14 @@ public class Venta {
     private final IntegerProperty idTienda;
     private final IntegerProperty idTrabajador;
     private final ObjectProperty<LocalDate> fecha;
-    private final ListProperty<DetalleVenta> detalles = new SimpleListProperty<>();
+    private final ListProperty<DetalleVenta> detalles;
 
     public Venta(int idVenta, int idTienda, int idtrabajdor, LocalDate fecha, List<DetalleVenta> detalle) {
         this.idVenta = new SimpleIntegerProperty(idVenta);
         this.idTienda = new SimpleIntegerProperty(idTienda);
         this.idTrabajador = new SimpleIntegerProperty(idtrabajdor);
         this.fecha = new SimpleObjectProperty<>(fecha);
+        this.detalles = new SimpleListProperty<>();
 
     }
 

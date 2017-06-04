@@ -25,7 +25,7 @@ public class ProductoDAO {
         this.conexion = conexion;
     }
 
-    public List cargarProductos(int idTienda) throws SQLException {
+    public List<Producto> cargarProductos(int idTienda) throws SQLException {
         Producto producto;
         PreparedStatement psProductos;
         ResultSet rsProductos;
