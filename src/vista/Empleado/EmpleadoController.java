@@ -198,12 +198,16 @@ public class EmpleadoController implements Initializable {
 
     @FXML
     private void CloseAction(ActionEvent event) throws SQLException {
-        try {
-            AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/login/LoginFXML.fxml"));
-            ac_empleado.getChildren().setAll(pane);
-        } catch (IOException ex) {
-            Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
+
+        if (limpiarVentas(false)) {
+            try {
+                AnchorPane pane = FXMLLoader.load(getClass().getResource("/vista/login/LoginFXML.fxml"));
+                ac_empleado.getChildren().setAll(pane);
+            } catch (IOException ex) {
+                Logger.getLogger(EmpleadoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
     }
 
     @FXML
@@ -325,7 +329,7 @@ public class EmpleadoController implements Initializable {
                 sinDescripcion.setHeaderText("Por favor, introduzca una descripción.");
                 estiloAlerta.darleEstiloAlPanel(sinDescripcion);
                 sinDescripcion.showAndWait();
-                
+
             } else {
                 /*(idIncidencia,idTienda,idTrabajador,tipo,fecha,descripcion,leido)*/
                 if (tf_especificarTipoIncidencia.isVisible()) {
