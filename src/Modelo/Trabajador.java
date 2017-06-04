@@ -247,7 +247,7 @@ public class Trabajador {
     
     public String verDatos(){
         return ("ID: " + this.id.get()  + "\n" +
-                "DNI: " + this.dni.get() + "\n" + 
+                "DNI: " + this.nombre.get() + "\n" + 
                 "Nombre: " + this.nombre.get() + "\n" + 
                 "Apellido/s: " + this.apellido1.get() + " " + this.apellido2.get() + "\n" + 
                 "Puesto: " + this.puesto.get() + "\n" + 

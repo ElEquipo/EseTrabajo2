@@ -143,7 +143,7 @@ public class ProductoDAO {
         boolean existe = false;
         PreparedStatement psProducto;
         ResultSet rsProducto;
-        psProducto = conexion.prepareStatement("SELECT count(nombre) 'existe' FROM productos WHERE nombre = ?;");
+        psProducto = conexion.prepareStatement("SELECT count(nombre) FROM productos WHERE nombre = ?;");
         psProducto.setString(1, producto.getNombre());
         rsProducto = psProducto.executeQuery();
         rsProducto.next();
