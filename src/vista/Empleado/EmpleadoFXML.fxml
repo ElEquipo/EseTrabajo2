@@ -28,7 +28,7 @@
                      <cursor>
                         <Cursor fx:constant="HAND" /> 
                      </cursor></Button>
-                  <Button fx:id="bt_Ayuda" layoutX="573.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="100.0" stylesheets="@empleado.css" text="Ayuda" textFill="WHITE">
+                  <Button fx:id="bt_Ayuda" layoutX="573.0" mnemonicParsing="false" onAction="#manualAction" prefHeight="72.0" prefWidth="100.0" stylesheets="@empleado.css" text="Ayuda" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>

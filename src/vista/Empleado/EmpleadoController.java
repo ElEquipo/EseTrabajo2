@@ -48,6 +48,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
@@ -56,6 +57,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 public class EmpleadoController implements Initializable {
 
@@ -750,6 +753,18 @@ public class EmpleadoController implements Initializable {
                 + " -fx-text-fill:orange; -fx-font-size:16px;");
         Tooltip.install(bt_regVenta, tt_finCompra);
 
+    }
+
+    @FXML
+    private void manualAction(ActionEvent event) {
+        WebView wv_web = new WebView();
+        WebEngine webEngine = wv_web.getEngine();
+        webEngine.load("https://justcomerceweb.wordpress.com/");
+        Dialog web = new Dialog();
+        web.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        web.getDialogPane().setContent(wv_web);
+        web.setTitle("Manual de usuario");
+        web.show();
     }
 
 }

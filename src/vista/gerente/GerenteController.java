@@ -36,6 +36,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
@@ -51,6 +52,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import jfxtras.scene.control.LocalTimePicker;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import vista.Empleado.EmpleadoController;
@@ -1429,6 +1432,18 @@ public class GerenteController implements Initializable {
             cb_categoriasExistentes.setValue("Categoria");
         }
 
+    }
+
+    @FXML
+    private void manualAction(ActionEvent event) {
+        WebView wv_web = new WebView();
+        WebEngine webEngine = wv_web.getEngine();
+        webEngine.load("https://justcomerceweb.wordpress.com/");
+        Dialog web = new Dialog();
+        web.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        web.getDialogPane().setContent(wv_web);
+        web.setTitle("Manual de usuario");
+        web.show();
     }
 
 }
